@@ -3,133 +3,154 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>PizChat - Full Working</title>
+<title>PizChat - Login Edition</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
-body{background:#0a0a0a;color:#fff;height:100vh;overflow:hidden;display:flex;flex-direction:column}
-.header{background:#FFD600;color:#000;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:20}
-.header h1{font-weight:900;font-size:20px;letter-spacing:-1px}
-.h-icons{display:flex;gap:16px;font-size:20px;align-items:center}
-.h-icons span{cursor:pointer}
-.searchBar{display:none;background:#1e1e1e;margin:0;padding:10px 14px;align-items:center;gap:10px}
-.searchBar.active{display:flex}
-.searchBar input{flex:1;background:#000;border:1px solid #333;border-radius:20px;padding:8px 14px;color:#fff;outline:none}
-.menu{position:absolute;top:50px;right:10px;background:#1e1e1e;border:1px solid #333;border-radius:12px;width:180px;display:none;z-index:100}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:#080808;color:#fff;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+/* AUTH */
+#authScreen{position:fixed;inset:0;background:#080808;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+#authScreen.hide{display:none}
+.authCard{background:#121212;border:1px solid #222;width:100%;max-width:360px;border-radius:22px;padding:22px;animation:fade 0.3s ease}
+.authCard h1{color:#FFD600;font-weight:900;font-size:28px;text-align:center;letter-spacing:-1px}
+.authCard p{color:#777;text-align:center;font-size:13px;margin:6px 0 14px}
+.tabBtns{display:flex;background:#1a1a1a;border-radius:12px;padding:4px;margin-bottom:14px}
+.tabBtn{flex:1;padding:10px;border-radius:9px;text-align:center;font-weight:700;font-size:13px;cursor:pointer;color:#666;transition:0.2s}
+.tabBtn.active{background:#FFD600;color:#000}
+.authCard input{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:12px;padding:13px;margin-top:10px;width:100%;color:#fff;outline:none}
+.authCard input:focus{border-color:#FFD600}
+.btn{background:#FFD600;color:#000;border:none;padding:13px;border-radius:14px;font-weight:800;width:100%;margin-top:14px;cursor:pointer}
+.btn:active{transform:scale(0.98)}
+.small{font-size:11px;color:#666;text-align:center;margin-top:10px}
+/* MAIN APP */
+.header{background:#FFD600;color:#000;padding:13px 16px;display:flex;justify-content:space-between;align-items:center;z-index:30}
+.header h1{font-weight:900;font-size:21px}
+.icons{display:flex;gap:18px;font-size:20px}
+.icons span{cursor:pointer}
+.searchBar{height:0;overflow:hidden;background:#111;transition:0.25s;display:flex;align-items:center;gap:10px;padding:0 14px}
+.searchBar.open{height:48px;padding:10px 14px}
+.searchBar input{flex:1;background:#1e1e1e;border:none;border-radius:20px;padding:9px 14px;color:#fff;outline:none}
+.menu{position:absolute;top:52px;right:12px;background:#1c1c1c;border:1px solid #2a2a2a;border-radius:14px;width:180px;display:none;z-index:50;box-shadow:0 10px 30px rgba(0,0,0,0.5)}
 .menu.show{display:block}
-.menu div{padding:12px 16px;font-size:14px;color:#fff;border-bottom:1px solid #222;cursor:pointer}
-.tab{flex:1;overflow-y:auto;display:none;padding-bottom:80px}
+.menu div{padding:13px 16px;font-size:14px;border-bottom:1px solid #222;cursor:pointer}
+.tab{flex:1;overflow-y:auto;display:none;padding-bottom:78px;animation:fade 0.25s ease}
 .tab.active{display:block}
-.chat-item{display:flex;gap:12px;padding:14px;border-bottom:1px solid #141414;align-items:center;cursor:pointer}
-.avatar{width:48px;height:48px;border-radius:50%;background:#FFD600;color:#000;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;overflow:hidden}
-.avatar img{width:100%;height:100%;object-fit:cover}
-.chat-info{flex:1;min-width:0}
-.top-row{display:flex;justify-content:space-between}
-.name{font-weight:700;font-size:15px}
-.time{font-size:11px;color:#888}
-.last{color:#aaa;font-size:13px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card{background:#151515;margin:10px 12px;border-radius:16px;padding:14px;border:1px solid #222}
-.card h3{color:#FFD600;margin-bottom:6px;font-size:16px}
-.btn{background:#FFD600;color:#000;border:none;padding:12px;border-radius:12px;font-weight:800;width:100%;margin-top:10px;cursor:pointer}
-.btn2{background:#222;color:#fff;border:1px solid #333;padding:10px;border-radius:10px;width:100%;margin-top:8px}
-input,textarea{width:100%;background:#1a1a1a;border:1px solid #333;color:#fff;padding:12px;border-radius:12px;margin-top:8px;outline:none}
-.fab{position:fixed;bottom:85px;right:16px;background:#FFD600;color:#000;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;z-index:10;cursor:pointer}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#0f0f0f;border-top:1px solid #222;display:flex;justify-content:space-around;padding:8px 0 14px;z-index:15}
-.nav{flex:1;text-align:center;color:#666;font-size:10px;font-weight:700;cursor:pointer}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.item{display:flex;gap:12px;padding:14px;border-bottom:1px solid #121212;align-items:center}
+.item:active{background:#151515}
+.av{width:48px;height:48px;border-radius:50%;background:#FFD600;color:#000;display:flex;align-items:center;justify-content:center;font-weight:800;overflow:hidden;flex-shrink:0}
+.av img{width:100%;height:100%;object-fit:cover;object-position:center}
+.info{flex:1;min-width:0}
+.row{display:flex;justify-content:space-between}
+.nm{font-weight:700;font-size:15px}
+.tm{font-size:11px;color:#777}
+.ls{color:#999;font-size:13px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card{background:#121212;margin:12px;border-radius:18px;padding:16px;border:1px solid #1e1e1e}
+.card h3{color:#FFD600;font-size:15px;margin-bottom:6px}
+.btn2{background:#1e1e1e;color:#fff;border:1px solid #2a2a2a;padding:10px;border-radius:12px;width:100%;margin-top:8px}
+input,textarea{width:100%;background:#1a1a1a;border:1px solid #2a2a2a;color:#fff;padding:12px;border-radius:12px;margin-top:8px;outline:none}
+.fab{position:fixed;bottom:86px;right:18px;background:#FFD600;color:#000;width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;z-index:10}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:rgba(12,12,12,0.98);border-top:1px solid #1e1e1e;display:flex;justify-content:space-around;padding:8px 0 14px;z-index:20}
+.nav{flex:1;text-align:center;color:#555;font-size:10px;font-weight:700;cursor:pointer}
 .nav.active{color:#FFD600}
-.nav b{font-size:20px;display:block}
-#chatView{position:fixed;inset:0;background:#0a0a0a;z-index:50;display:none;flex-direction:column}
-#chatView.show{display:flex}
-.chatHeader{background:#FFD600;color:#000;padding:12px;display:flex;gap:12px;align-items:center}
-.messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:#0e0e0e}
-.msg{max-width:75%;padding:10px 12px;border-radius:16px;font-size:14px}
-.msg.me{align-self:flex-end;background:#FFD600;color:#000;border-bottom-right-radius:4px}
-.msg.other{align-self:flex-start;background:#1e1e1e;border-bottom-left-radius:4px}
-.sendRow{display:flex;gap:8px;padding:10px;background:#111;border-top:1px solid #222}
-.sendRow input{margin:0;flex:1}
-.cover{height:120px;background:#222;position:relative;overflow:hidden;cursor:pointer}
-.cover img{width:100%;height:100%;object-fit:cover}
-.cover span{position:absolute;bottom:8px;right:12px;background:rgba(0,0,0,0.6);padding:4px 10px;border-radius:12px;font-size:11px}
-.pAvatarWrap{margin-top:-36px;margin-left:16px;display:flex;align-items:end;gap:12px}
-.pAvatar{width:80px;height:80px;border-radius:50%;border:3px solid #0a0a0a;background:#FFD600;color:#000;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;overflow:hidden;cursor:pointer}
-.pAvatar img{width:100%;height:100%;object-fit:cover}
-.hiddenFile{display:none}
-.adImg{width:100%;border-radius:12px;margin-top:8px;max-height:200px;object-fit:cover}
+.nav b{font-size:21px;display:block}
+#chatView{position:fixed;inset:0;background:#080808;z-index:100;display:flex;flex-direction:column;transform:translateX(100%);transition:0.3s}
+#chatView.show{transform:translateX(0)}
+.cHead{background:#FFD600;color:#000;padding:12px 14px;display:flex;gap:12px;align-items:center}
+.msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:#0a0a0a}
+.msg{max-width:78%;padding:11px 14px;border-radius:18px;font-size:14px}
+.me{align-self:flex-end;background:#FFD600;color:#000;border-bottom-right-radius:6px}
+.other{align-self:flex-start;background:#1c1c1c;border-bottom-left-radius:6px}
+.send{display:flex;gap:8px;padding:10px;background:#111;border-top:1px solid #1e1e1e}
+.send input{margin:0;flex:1;background:#1e1e1e}
+/* PROFILE FIX - NO CUT */
+.cover{height:180px;background:linear-gradient(135deg,#222,#111);position:relative;overflow:hidden;cursor:pointer;border-radius:0 0 20px 20px}
+.cover img{width:100%;height:100%;object-fit:cover;object-position:center center;display:block}
+.cover span{position:absolute;bottom:12px;right:14px;background:rgba(0,0,0,0.65);padding:6px 12px;border-radius:20px;font-size:11px}
+.pWrap{margin-top:-42px;margin-left:16px;display:flex;align-items:end;gap:14px;position:relative;z-index:2}
+.pAv{width:92px;height:92px;border-radius:50%;border:4px solid #080808;background:#FFD600;color:#000;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;overflow:hidden;cursor:pointer;flex-shrink:0;box-shadow:0 4px 15px rgba(0,0,0,0.5)}
+.pAv img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1e1e1e;color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;border:1px solid #333;z-index:300;display:none}
+.toast.show{display:block;animation:toast 2.5s ease}
+@keyframes toast{0%{opacity:0;transform:translate(-50%,20px)}15%{opacity:1;transform:translate(-50%,0)}85%{opacity:1}100%{opacity:0;transform:translate(-50%,-10px)}}
+.hideFile{display:none}
+.aImg{width:100%;border-radius:14px;margin-top:10px;max-height:240px;object-fit:cover;object-position:center}
 </style>
 </head>
 <body>
-<div class="header">
+<!-- AUTH SCREEN -->
+<div id="authScreen">
+<div class="authCard">
 <h1>PIZCHAT</h1>
-<div class="h-icons"><span onclick="toggleSearch()">🔍</span><span onclick="toggleMenu()">⋮</span></div>
-<div class="menu" id="menu">
-<div onclick="newGroup()">➕ New Group</div>
-<div onclick="openTab('profile',4)">⚙️ Settings</div>
-<div onclick="alert('Starred: 0')">⭐ Starred</div>
-<div onclick="if(confirm('Clear all?')){localStorage.clear();location.reload()}">🗑️ Clear All</div>
+<p>Login with phone & email to continue</p>
+<div class="tabBtns"><div class="tabBtn active" id="loginBtn" onclick="switchAuth('login')">Login</div><div class="tabBtn" id="signupBtn" onclick="switchAuth('signup')">Sign Up</div></div>
+<div id="loginForm">
+<input id="lEmail" type="email" placeholder="Email address">
+<input id="lPass" type="password" placeholder="Password">
+<button class="btn" onclick="doLogin()">Login to PizChat</button>
+</div>
+<div id="signupForm" style="display:none">
+<input id="sName" placeholder="Full name">
+<input id="sPhone" type="tel" placeholder="Phone number e.g 080...">
+<input id="sEmail" type="email" placeholder="Email address">
+<input id="sPass" type="password" placeholder="Password (min 6)">
+<button class="btn" onclick="doSignup()">Create Account</button>
+</div>
+<div class="small">Your login dey saved for this phone automatically 🔒</div>
 </div>
 </div>
-<div class="searchBar" id="searchBar"><span onclick="toggleSearch()">←</span><input id="searchInput" placeholder="Search name or message..." oninput="doSearch()"></div>
+
+<!-- MAIN APP -->
+<div class="header"><h1>PIZCHAT</h1><div class="icons"><span onclick="toggleSearch()">🔍</span><span onclick="toggleMenu()">⋮</span></div>
+<div class="menu" id="menu"><div onclick="newGroup();toggleMenu()">➕ New Group</div><div onclick="openTab('profile',4);toggleMenu()">⚙️ Settings</div><div onclick="logout();toggleMenu()">🚪 Logout</div><div onclick="if(confirm('Clear all?')){localStorage.clear();location.reload()}">🗑️ Clear All</div></div></div>
+<div class="searchBar" id="searchBar"><span onclick="toggleSearch()">←</span><input id="sInput" placeholder="Search chats..." oninput="renderChats(this.value)"></div>
 
 <div id="tab-chats" class="tab active"><div id="chatList"></div><div class="fab" onclick="createChat()">+</div></div>
-<div id="tab-community" class="tab"><div class="card"><h3>👥 Create Community</h3><input id="commName" placeholder="Community name"><input id="commDesc" placeholder="Description"><button class="btn" onclick="createComm()">Create Community</button></div><div id="commList"></div></div>
-<div id="tab-advert" class="tab"><div class="card"><h3>🛒 Post Advert</h3><input id="adTitle" placeholder="Product name"><input id="adPrice" placeholder="Price e.g ₦15,000"><textarea id="adDesc" placeholder="Description..."></textarea><input type="file" id="adFile" class="hiddenFile" accept="image/*" onchange="previewAd(event)"><img id="adPreview" class="adImg" style="display:none"><button class="btn2" onclick="document.getElementById('adFile').click()">📷 Add Photo</button><button class="btn" onclick="postAd()">Post Advert</button></div><div id="adList"></div></div>
-<div id="tab-camera" class="tab" style="padding:0;position:relative"><video id="cameraVideo" autoplay playsinline style="width:100%;height:calc(100vh - 110px);display:none;object-fit:cover"></video><canvas id="cameraCanvas" style="display:none"></canvas><div id="camPlaceholder" style="text-align:center;padding-top:80px"><div style="font-size:60px">📷</div><h3 style="margin-top:12px">PizCamera</h3><p style="color:#777">Snap product for advert</p><button class="btn" style="width:auto;padding:12px 24px;margin-top:16px" onclick="startCamera()">Open Camera</button></div><div id="camControls" style="position:absolute;bottom:90px;left:0;right:0;display:none;justify-content:center;gap:20px"><button class="btn" style="width:60px;height:60px;border-radius:50%;font-size:24px" onclick="capture()">📸</button><button class="btn2" style="width:auto" onclick="stopCamera()">Close</button></div><div id="capturedList" style="padding:12px"></div></div>
+<div id="tab-community" class="tab"><div class="card"><h3>👥 Create Community</h3><input id="cName" placeholder="Community name"><input id="cDesc" placeholder="Description"><button class="btn" onclick="createComm()">Create</button></div><div id="commList"></div></div>
+<div id="tab-advert" class="tab"><div class="card"><h3>🛒 Post Advert</h3><input id="adTitle" placeholder="Product name"><input id="adPrice" placeholder="Price"><textarea id="adDesc" placeholder="Description"></textarea><input type="file" id="adFile" class="hideFile" accept="image/*" onchange="previewAd(event)"><img id="adPrev" class="aImg" style="display:none"><button class="btn2" onclick="document.getElementById('adFile').click()">📷 Add Photo</button><button class="btn" onclick="postAd()">Post Advert</button></div><div id="adList"></div></div>
+<div id="tab-camera" class="tab" style="padding:0"><video id="camV" autoplay playsinline style="width:100%;height:calc(100vh - 110px);display:none;object-fit:cover"></video><canvas id="camC" style="display:none"></canvas><div id="camPH" style="text-align:center;padding-top:90px"><div style="font-size:64px">📷</div><h3>PizCamera</h3><p style="color:#666">Snap product</p><button class="btn" style="width:auto;padding:12px 26px;margin-top:18px" onclick="startCam()">Open Camera</button></div><div id="camCtrl" style="position:absolute;bottom:95px;left:0;right:0;display:none;justify-content:center;gap:18px"><button class="btn" style="width:62px;height:62px;border-radius:50%;font-size:26px" onclick="snap()">📸</button><button class="btn2" style="width:auto" onclick="stopCam()">✕</button></div><div id="capList" style="padding:12px"></div></div>
 
 <div id="tab-profile" class="tab">
-<div class="cover" onclick="document.getElementById('coverFile').click()"><img id="coverImg" style="display:none"><span>Tap to change cover</span></div>
-<div class="pAvatarWrap"><div class="pAvatar" id="pAvatar" onclick="document.getElementById('avatarFile').click()">P</div><div><div id="pNameView" style="font-weight:800;font-size:18px">PizChat User</div><div id="pHandleView" style="color:#FFD600;font-size:13px">@bb4101436-boop</div></div></div>
-<div class="card"><h3>✏️ Edit Profile</h3><input id="pName" placeholder="Display name"><input id="pHandle" placeholder="Handle e.g @yourname"><input id="pMiddle" placeholder="Middle name (optional)"><textarea id="pBio" placeholder="Bio..."></textarea><input id="pLink" placeholder="Your PizChat link"><button class="btn" onclick="saveProfile()">Save Profile</button></div>
-<div class="card"><h3>🔗 Your Link</h3><p id="linkText" style="color:#FFD600;font-size:12px;word-break:break-all">https://bb4101436-boop.github.io/Pizchat-/</p><button class="btn2" onclick="copyLink()">Copy Link</button><button class="btn2" onclick="shareLink()">Share to WhatsApp</button></div>
-<input type="file" id="avatarFile" class="hiddenFile" accept="image/*" onchange="uploadAvatar(event)"><input type="file" id="coverFile" class="hiddenFile" accept="image/*" onchange="uploadCover(event)">
+<div class="cover" onclick="document.getElementById('coverF').click()"><img id="coverI" style="display:none"><span>Change cover</span></div>
+<div class="pWrap"><div class="pAv" id="pAv" onclick="document.getElementById('avF').click()">P</div><div><div id="pNameV" style="font-weight:800;font-size:18px">User</div><div id="pHandleV" style="color:#FFD600;font-size:13px">@user</div><div id="pPhoneV" style="color:#888;font-size:11px"></div></div></div>
+<div class="card"><h3>✏️ Edit Profile (No cut now!)</h3><input id="pName" placeholder="Display name"><input id="pHandle" placeholder="Handle"><input id="pMiddle" placeholder="Middle name"><textarea id="pBio" placeholder="Bio"></textarea><input id="pLink" placeholder="Your link"><button class="btn" onclick="saveProfile()">Save Profile</button><button class="btn2" onclick="logout()">🚪 Logout</button></div>
+<div class="card"><h3>🔗 Your Link</h3><p id="linkT" style="color:#FFD600;font-size:11px;word-break:break-all">https://bb4101436-boop.github.io/Pizchat-/</p><button class="btn2" onclick="copyLink()">Copy Link</button><button class="btn2" onclick="shareLink()">Share to WhatsApp</button></div>
+<input type="file" id="avF" class="hideFile" accept="image/*" onchange="upAv(event)"><input type="file" id="coverF" class="hideFile" accept="image/*" onchange="upCover(event)">
 </div>
 
-<div class="bottom-nav">
-<div class="nav active" onclick="openTab('chats',0)"><b>💬</b>Chats</div>
-<div class="nav" onclick="openTab('community',1)"><b>👥</b>Community</div>
-<div class="nav" onclick="openTab('advert',2)"><b>🛒</b>Advert</div>
-<div class="nav" onclick="openTab('camera',3)"><b>📷</b>Camera</div>
-<div class="nav" onclick="openTab('profile',4)"><b>👤</b>Profile</div>
-</div>
-
-<div id="chatView">
-<div class="chatHeader"><span onclick="closeChat()" style="font-size:22px;cursor:pointer">←</span><div class="avatar" id="cvAvatar">A</div><div><div id="cvName" style="font-weight:800">Name</div><div style="font-size:11px">Online</div></div><span style="margin-left:auto">📞 🎥</span></div>
-<div class="messages" id="messages"></div>
-<div class="sendRow"><input id="msgInput" placeholder="Type message..." onkeydown="if(event.key==='Enter')sendMsg()"><button class="btn" style="width:auto;margin:0;padding:10px 16px" onclick="sendMsg()">➤</button></div>
-</div>
+<div class="bottom"><div class="nav active" onclick="openTab('chats',0)"><b>💬</b>Chats</div><div class="nav" onclick="openTab('community',1)"><b>👥</b>Community</div><div class="nav" onclick="openTab('advert',2)"><b>🛒</b>Advert</div><div class="nav" onclick="openTab('camera',3)"><b>📷</b>Camera</div><div class="nav" onclick="openTab('profile',4)"><b>👤</b>Profile</div></div>
+<div id="chatView"><div class="cHead"><span onclick="closeChat()" style="font-size:24px;cursor:pointer">←</span><div class="av" id="cvAv">A</div><div><div id="cvName" style="font-weight:800">Name</div><div style="font-size:11px">online</div></div></div><div class="msgs" id="msgs"></div><div class="send"><input id="mInput" placeholder="Type..." onkeydown="if(event.key==='Enter')sendMsg()"><button class="btn" style="width:auto;margin:0;padding:10px 16px" onclick="sendMsg()">➤</button></div></div>
+<div class="toast" id="toast"></div>
 
 <script>
-let chats=JSON.parse(localStorage.getItem('piz_chats_v2')||'[{"id":1,"name":"Advert Store","letter":"A","last":"🔥 New shoe don land! Check Advert tab","time":"10:42","msgs":[{"from":"other","text":"Welcome!"}]},{"id":2,"name":"Community","letter":"C","last":"Welcome to PizChat! 💛","time":"09:15","msgs":[]},{"id":3,"name":"John Doe","letter":"J","last":"Baba how far?","time":"Yesterday","msgs":[]},{"id":4,"name":"PizChat Team","letter":"P","last":"Your app don live! 🚀","time":"Mon","msgs":[]}]');
-let comms=JSON.parse(localStorage.getItem('piz_comms')||'[{"name":"Lagos Sellers","desc":"Buy & sell in Lagos","members":1200},{"name":"Abuja Market","desc":"Best market","members":890}]');
-let adverts=JSON.parse(localStorage.getItem('piz_adverts_v2')||'[]');
-let profile=JSON.parse(localStorage.getItem('piz_profile')||'{"name":"PizChat User","handle":"@bb4101436-boop","middle":"","bio":"","link":"https://bb4101436-boop.github.io/Pizchat-/","avatar":"","cover":""}');
-let currentChat=null;let adImgData='';
-function renderChats(filter=''){const q=filter.toLowerCase();const list=chats.filter(c=>c.name.toLowerCase().includes(q)||c.last.toLowerCase().includes(q));document.getElementById('chatList').innerHTML=list.map(c=>`<div class="chat-item" onclick="openChat(${c.id})"><div class="avatar">${c.letter}</div><div class="chat-info"><div class="top-row"><span class="name">${c.name}</span><span class="time">${c.time}</span></div><div class="last">${c.last}</div></div></div>`).join('')}
-function renderComms(){document.getElementById('commList').innerHTML=comms.map(c=>`<div class="chat-item"><div class="avatar">${c.name[0]}</div><div class="chat-info"><div class="top-row"><span class="name">${c.name}</span><span class="time">${c.members} members</span></div><div class="last">${c.desc}</div></div><button class="btn" style="width:auto;padding:6px 14px;margin:0" onclick="alert('Joined '+this.parentElement.querySelector('.name').innerText)">Join</button></div>`).join('')}
-function renderAds(){document.getElementById('adList').innerHTML=adverts.map((a,i)=>`<div class="card"><h3>${a.title} - ${a.price}</h3>${a.img?`<img src="${a.img}" class="adImg">`:''}<p style="color:#aaa;font-size:13px;margin-top:6px">${a.desc}</p><div style="display:flex;gap:8px;margin-top:10px"><button class="btn2" style="margin:0" onclick="shareAd(${i})">Share</button><button class="btn2" style="margin:0" onclick="deleteAd(${i})">Delete</button></div></div>`).join('')||'<p style="text-align:center;color:#555;margin-top:20px">No adverts yet</p>'}
-function openTab(name,idx){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));document.querySelectorAll('.nav')[idx].classList.add('active');if(name!=='camera')stopCamera();if(name==='profile')loadProfile()}
+let users=JSON.parse(localStorage.getItem('piz_users')||'[]');
+let currentUser=JSON.parse(localStorage.getItem('piz_current_user')||'null');
+let chats=JSON.parse(localStorage.getItem('piz_chats_v4')||'[{"id":1,"name":"Advert Store","l":"A","last":"🔥 New shoe don land!","time":"10:42","msgs":[{"f":"other","t":"Welcome!"}]},{"id":2,"name":"Community","l":"C","last":"Welcome! 💛","time":"09:15","msgs":[]}]');
+let comms=JSON.parse(localStorage.getItem('piz_comms_v4')||'[{"name":"Lagos Sellers","desc":"Buy & sell","m":1200}]');
+let adverts=JSON.parse(localStorage.getItem('piz_ads_v4')||'[]');
+let profile=JSON.parse(localStorage.getItem('piz_prof_v4')||'{"name":"User","handle":"@user","middle":"","bio":"","link":"https://bb4101436-boop.github.io/Pizchat-/","av":"","cover":"","phone":"","email":""}');
+let cur=null,adImg='',stream=null;
+
+function checkAuth(){if(currentUser){document.getElementById('authScreen').classList.add('hide');profile.name=currentUser.name;profile.email=currentUser.email;profile.phone=currentUser.phone;loadP()}else{document.getElementById('authScreen').classList.remove('hide')}}
+function switchAuth(t){document.getElementById('loginBtn').classList.toggle('active',t==='login');document.getElementById('signupBtn').classList.toggle('active',t==='signup');document.getElementById('loginForm').style.display=t==='login'?'block':'none';document.getElementById('signupForm').style.display=t==='signup'?'block':'none'}
+function toast(t){const el=document.getElementById('toast');el.innerText=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2500)}
+function doSignup(){const name=document.getElementById('sName').value.trim(),phone=document.getElementById('sPhone').value.trim(),email=document.getElementById('sEmail').value.trim().toLowerCase(),pass=document.getElementById('sPass').value.trim();if(!name||!phone||!email||!pass)return toast('Fill all fields');if(pass.length<6)return toast('Password min 6');if(users.find(u=>u.email===email))return toast('Email already exists');const u={name,phone,email,pass,av:'',cover:''};users.push(u);localStorage.setItem('piz_users',JSON.stringify(users));currentUser=u;localStorage.setItem('piz_current_user',JSON.stringify(u));profile.name=name;profile.phone=phone;profile.email=email;profile.handle='@'+name.split(' ')[0].toLowerCase();save();checkAuth();toast('Account created! 🎉');renderChats();renderComms();renderAds();loadP()}
+function doLogin(){const email=document.getElementById('lEmail').value.trim().toLowerCase(),pass=document.getElementById('lPass').value.trim();const u=users.find(x=>x.email===email&&x.pass===pass);if(!u)return toast('Wrong email or password');currentUser=u;localStorage.setItem('piz_current_user',JSON.stringify(u));profile.name=u.name;profile.phone=u.phone;profile.email=u.email;profile.handle='@'+u.name.split(' ')[0].toLowerCase();profile.av=u.av||profile.av;profile.cover=u.cover||profile.cover;save();checkAuth();toast('Welcome '+u.name+'!');renderChats();renderComms();renderAds();loadP()}
+function logout(){if(confirm('Logout?')){localStorage.removeItem('piz_current_user');currentUser=null;location.reload()}}
+
+function renderChats(f=''){const q=f.toLowerCase();const list=chats.filter(c=>c.name.toLowerCase().includes(q)||c.last.toLowerCase().includes(q));document.getElementById('chatList').innerHTML=list.map(c=>`<div class="item" onclick="openChat(${c.id})"><div class="av">${c.l}</div><div class="info"><div class="row"><span class="nm">${c.name}</span><span class="tm">${c.time}</span></div><div class="ls">${c.last}</div></div></div>`).join('')}
+function renderComms(){document.getElementById('commList').innerHTML=comms.map(c=>`<div class="item"><div class="av">${c.name[0]}</div><div class="info"><div class="row"><span class="nm">${c.name}</span><span class="tm">${c.m} members</span></div><div class="ls">${c.desc}</div></div><button class="btn" style="width:auto;padding:7px 14px;margin:0" onclick="toast('Joined ${c.name}!')">Join</button></div>`).join('')}
+function renderAds(){document.getElementById('adList').innerHTML=adverts.map((a,i)=>`<div class="card"><h3>${a.title} • ${a.price}</h3>${a.img?`<img src="${a.img}" class="aImg">`:''}<p style="color:#999;font-size:13px;margin-top:8px">${a.desc}</p><div style="display:flex;gap:8px;margin-top:12px"><button class="btn2" style="margin:0" onclick="toast('Link copied!')">Share</button><button class="btn2" style="margin:0" onclick="delAd(${i})">Delete</button></div></div>`).join('')||`<p style="text-align:center;color:#444;margin-top:30px">No adverts</p>`}
+function openTab(name,idx){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));document.querySelectorAll('.nav')[idx].classList.add('active');if(name!=='camera')stopCam();if(name==='profile')loadP()}
 function toggleMenu(){document.getElementById('menu').classList.toggle('show')}
-function toggleSearch(){document.getElementById('searchBar').classList.toggle('active');document.getElementById('searchInput').focus()}
-function doSearch(){renderChats(document.getElementById('searchInput').value)}
-function openChat(id){currentChat=chats.find(c=>c.id===id);document.getElementById('cvName').innerText=currentChat.name;document.getElementById('cvAvatar').innerText=currentChat.letter;const box=document.getElementById('messages');box.innerHTML=currentChat.msgs.map(m=>`<div class="msg ${m.from==='me'?'me':'other'}">${m.text}</div>`).join('')||'<p style="text-align:center;color:#555">Start chatting!</p>';document.getElementById('chatView').classList.add('show')}
+function toggleSearch(){document.getElementById('searchBar').classList.toggle('open');if(document.getElementById('searchBar').classList.contains('open'))document.getElementById('sInput').focus()}
+function openChat(id){cur=chats.find(c=>c.id===id);document.getElementById('cvName').innerText=cur.name;document.getElementById('cvAv').innerText=cur.l;document.getElementById('msgs').innerHTML=cur.msgs.map(m=>`<div class="msg ${m.f==='me'?'me':'other'}">${m.t}</div>`).join('')||`<p style="text-align:center;color:#555">Say hi! 👋</p>`;document.getElementById('chatView').classList.add('show');setTimeout(()=>{document.getElementById('msgs').scrollTop=9999},100)}
 function closeChat(){document.getElementById('chatView').classList.remove('show');save()}
-function sendMsg(){const input=document.getElementById('msgInput');const txt=input.value.trim();if(!txt||!currentChat)return;currentChat.msgs.push({from:'me',text:txt});currentChat.last='You: '+txt;currentChat.time='Now';input.value='';openChat(currentChat.id);renderChats();save()}
-function createChat(){const name=prompt('Enter friend name:');if(!name)return;const id=Date.now();chats.unshift({id,name,letter:name[0].toUpperCase(),last:'Chat created',time:'Now',msgs:[]});save();renderChats()}
-function newGroup(){const name=prompt('Group name:');if(name){chats.unshift({id:Date.now(),name,letter:name[0].toUpperCase(),last:'Group created',time:'Now',msgs:[]});save();renderChats();toggleMenu()}}
-function createComm(){const n=document.getElementById('commName').value,d=document.getElementById('commDesc').value;if(!n)return alert('Enter name');comms.unshift({name:n,desc:d,members:1});localStorage.setItem('piz_comms',JSON.stringify(comms));document.getElementById('commName').value='';document.getElementById('commDesc').value='';renderComms()}
-function previewAd(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{adImgData=ev.target.result;document.getElementById('adPreview').src=adImgData;document.getElementById('adPreview').style.display='block'};r.readAsDataURL(f)}
-function postAd(){const t=document.getElementById('adTitle').value,p=document.getElementById('adPrice').value,d=document.getElementById('adDesc').value;if(!t||!p)return alert('Add title & price');adverts.unshift({title:t,price:p,desc:d,img:adImgData});save();document.getElementById('adTitle').value='';document.getElementById('adPrice').value='';document.getElementById('adDesc').value='';document.getElementById('adPreview').style.display='none';adImgData='';renderAds();alert('Advert posted!');openTab('chats',0)}
-function deleteAd(i){if(confirm('Delete?')){adverts.splice(i,1);save();renderAds()}}
-function shareAd(i){const a=adverts[i];navigator.clipboard.writeText(`${a.title} - ${a.price} - ${a.desc} Link: ${profile.link}`);alert('Copied!')}
-function saveProfile(){profile.name=document.getElementById('pName').value||profile.name;profile.handle=document.getElementById('pHandle').value||profile.handle;profile.middle=document.getElementById('pMiddle').value;profile.bio=document.getElementById('pBio').value;profile.link=document.getElementById('pLink').value||profile.link;save();loadProfile();alert('Profile saved!')}
-function loadProfile(){document.getElementById('pName').value=profile.name;document.getElementById('pHandle').value=profile.handle;document.getElementById('pMiddle').value=profile.middle;document.getElementById('pBio').value=profile.bio;document.getElementById('pLink').value=profile.link;document.getElementById('pNameView').innerText=profile.name+(profile.middle?' '+profile.middle:'');document.getElementById('pHandleView').innerText=profile.handle;document.getElementById('linkText').innerText=profile.link;if(profile.avatar){document.getElementById('pAvatar').innerHTML=`<img src="${profile.avatar}">`}if(profile.cover){document.getElementById('coverImg').src=profile.cover;document.getElementById('coverImg').style.display='block'}}
-function uploadAvatar(e){const f=e.target.files[0];const r=new FileReader();r.onload=ev=>{profile.avatar=ev.target.result;save();loadProfile()};r.readAsDataURL(f)}
-function uploadCover(e){const f=e.target.files[0];const r=new FileReader();r.onload=ev=>{profile.cover=ev.target.result;save();loadProfile()};r.readAsDataURL(f)}
-function copyLink(){navigator.clipboard.writeText(profile.link);alert('Link copied!')}
-function shareLink(){window.open(`https://wa.me/?text=Join me on PizChat! ${encodeURIComponent(profile.link)}`)}
-function save(){localStorage.setItem('piz_chats_v2',JSON.stringify(chats));localStorage.setItem('piz_adverts_v2',JSON.stringify(adverts));localStorage.setItem('piz_profile',JSON.stringify(profile))}
-let stream=null;async function startCamera(){try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});const v=document.getElementById('cameraVideo');v.srcObject=stream;v.style.display='block';document.getElementById('camPlaceholder').style.display='none';document.getElementById('camControls').style.display='flex'}catch(e){alert('Need HTTPS & permission: '+e.message)}}function stopCamera(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}document.getElementById('cameraVideo').style.display='none';document.getElementById('camPlaceholder').style.display='block';document.getElementById('camControls').style.display='none'}function capture(){const v=document.getElementById('cameraVideo');const c=document.getElementById('cameraCanvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);const data=c.toDataURL('image/jpeg');adverts.unshift({title:'Camera Snap',price:'',desc:'Snapped',img:data});save();document.getElementById('capturedList').innerHTML=`<div class="card"><h3>Captured!</h3><img src="${data}" class="adImg"><button class="btn" onclick="openTab('advert',2)">Go to Advert</button></div>`+document.getElementById('capturedList').innerHTML}
-renderChats();renderComms();renderAds();loadProfile();
-document.addEventListener('click',e=>{if(!e.target.closest('#menu')&&!e.target.closest('.h-icons'))document.getElementById('menu').classList.remove('show')});
-</script>
-</body>
-</html>
+function sendMsg(){const inp=document.getElementById('mInput');const t=inp.value.trim();if(!t||!cur)return;cur.msgs.push({f:'me',t});cur.last='You: '+t;cur.time='Now';inp.value='';openChat(cur.id);renderChats();save()}
+function createChat(){const n=prompt('Friend name:');if(!n)return;chats.unshift({id:Date.now(),name:n,l:n[0].toUpperCase(),last:'Chat created',time:'Now',msgs:[]});save();renderChats();toast('Chat created!')}
+function newGroup(){const n=prompt('Group name:');if(!n)return;chats.unshift({id:Date.now(),name:n,l:n[0].toUpperCase(),last:'Group created',time:'Now',msgs:[]});save();renderChats()}
+function createComm(){const n=document.getElementById('cName').value,d=document.getElementById('cDesc').value;if(!n)return toast('Enter name');comms.unshift({name:n,desc:d,m:1});save();document.getElementById('cName').value='';document.getElementById('cDesc').value='';renderComms();toast('Community created!')}
+function previewAd(e){const f=e.target.files[0];const r=new FileReader();r.onload=ev=>{adImg=ev.target.result;document.getElementById('adPrev').src=adImg;document.getElementById('adPrev').style.display='block'};r.readAsDataURL(f)}
+function postAd(){const t=document.getElementById('adTitle').value,p=document.getElementById('adPrice').value,d=document.getElementById('adDesc').value;if(!t||!p)return toast('Add title & price');adverts.unshift({title:t,price:p,desc:d,img:adImg});save();document.getElementById('adTitle').value='';document.getElementById('adPrice').value='';document.getElementById('adDesc').value='';document.getElementById('adPrev').style.display='none';adImg='';renderAds();toast('Advert posted!');openTab('chats',0)}
+function delAd(i){if(confirm('Delete?')){adverts.splice(i,1);save();renderAds();toast('Deleted')}}
+function saveProfile(){profile.name=document.getElementById('pName').value||profile.name;profile.handle=document.getElementById('pHandle').value||profile.handle;profile.middle=do
