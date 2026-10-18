@@ -3,39 +3,87 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>PizChat - Chat & Sell</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<title>PizChat</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
-body{background:#0f0f0f;color:#fff;height:100vh;overflow:hidden}
-.header{background:#FFD600;color:#000;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+body{background:#0a0a0a;color:#fff;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+.header{background:#FFD600;color:#000;padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
 .header h1{font-weight:900;font-size:22px;letter-spacing:-1px}
-.header-icons{display:flex;gap:14px;font-size:20px}
-.chat-list{padding:8px;overflow-y:auto;height:calc(100vh - 120px)}
-.chat-item{display:flex;gap:12px;padding:12px 8px;border-bottom:1px solid #222;align-items:center}
-.chat-item:active{background:#1a1a1a}
-.avatar{width:52px;height:52px;border-radius:50%;background:#FFD600;color:#000;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;flex-shrink:0}
-.chat-info{flex:1;min-width:0}
-.chat-name{font-weight:700;font-size:16px;display:flex;justify-content:space-between}
-.chat-last{color:#aaa;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:4px}
-.time{font-size:11px;color:#888}
-.unread{background:#FFD600;color:#000;font-size:11px;font-weight:800;padding:2px 7px;border-radius:12px}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;display:flex;justify-content:space-around;padding:8px 0 14px}
-.nav-item{text-align:center;color:#777;font-size:11px;font-weight:600}
+.tab-content{flex:1;overflow-y:auto;padding-bottom:80px;display:none}
+.tab-content.active{display:block}
+.search{background:#1e1e1e;margin:10px 14px;border-radius:22px;padding:11px 16px;display:flex;gap:10px;color:#777;font-size:14px}
+.chat-item{display:flex;gap:12px;padding:14px 14px;border-bottom:1px solid #1a1a1a;align-items:center}
+.avatar{width:50px;height:50px;border-radius:50%;background:#FFD600;color:#000;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px}
+.chat-info{flex:1}
+.chat-top{display:flex;justify-content:space-between}
+.chat-name{font-weight:700}
+.chat-time{font-size:11px;color:#888}
+.chat-last{color:#aaa;font-size:13px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card{background:#1a1a1a;margin:12px;border-radius:16px;padding:16px;border:1px solid #222}
+.card h3{color:#FFD600;margin-bottom:8px}
+.btn{background:#FFD600;color:#000;border:none;padding:10px 18px;border-radius:20px;font-weight:800;width:100%;margin-top:10px}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;display:flex;justify-content:space-around;padding:10px 0 16px;z-index:100}
+.nav-item{text-align:center;color:#666;font-size:11px;font-weight:700;flex:1}
 .nav-item.active{color:#FFD600}
-.nav-item div{font-size:22px;margin-bottom:2px}
-.fab{position:fixed;bottom:80px;right:16px;background:#FFD600;color:#000;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;box-shadow:0 4px 12px rgba(0,0,0,0.5)}
-.search{background:#1e1e1e;margin:8px 12px;border-radius:24px;padding:10px 16px;display:flex;gap:10px;color:#777;font-size:14px}
+.nav-item span{font-size:22px;display:block}
+.fab{position:fixed;bottom:85px;right:16px;background:#FFD600;color:#000;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;box-shadow:0 6px 16px rgba(255,214,0,0.3)}
+input,textarea{width:100%;background:#1e1e1e;border:1px solid #333;color:#fff;padding:12px;border-radius:12px;margin-top:8px;outline:none}
+input:focus{border-color:#FFD600}
 </style>
 </head>
 <body>
-<div class="header">
-<h1>PIZCHAT</h1>
-<div class="header-icons"><span>🔍</span><span>⋮</span></div>
+<div class="header"><h1>PIZCHAT</h1><div>🔍 ⋮</div></div>
+
+<!-- CHATS TAB -->
+<div id="chats" class="tab-content active">
+<div class="search">🔍 Search or start new chat</div>
+<div id="chatList"></div>
+<div class="fab" onclick="newChat()">+</div>
 </div>
-<div class="search"><span>🔍</span> Search or start new chat</div>
-<div class="chat-list">
-<div class="chat-item">
-<div class="avatar">A</div>
-<div class="chat-info">
-<div class="chat-name"><span>
+
+<!-- COMMUNITY TAB -->
+<div id="community" class="tab-content">
+<div class="card"><h3>👥 PizChat Community</h3><p style="color:#aaa;font-size:13px">Join 1,200+ sellers & buyers. Share updates, get customers!</p><button class="btn" onclick="alert('Community chat go open here - coming soon!')">Join Community</button></div>
+<div class="chat-item"><div class="avatar">L</div><div class="chat-info"><div class="chat-top"><span class="chat-name">Lagos Sellers</span><span class="chat-time">12:30</span></div><div class="chat-last">Rita: Who get iPhone 13 for sale?</div></div></div>
+<div class="chat-item"><div class="avatar">A</div><div class="chat-info"><div class="chat-top"><span class="chat-name">Abuja Market</span><span class="chat-time">11:02</span></div><div class="chat-last">New goods just landed 🔥</div></div></div>
+</div>
+
+<!-- ADVERT TAB -->
+<div id="advert" class="tab-content">
+<div class="card"><h3>🛒 Advert Store</h3><p style="color:#aaa;font-size:13px">Sell anything. People go see am for Chats like Status!</p><input id="prodName" placeholder="Product name e.g. Sneakers"><input id="prodPrice" placeholder="Price e.g. ₦15,000"><textarea id="prodDesc" placeholder="Description..."></textarea><button class="btn" onclick="postAdvert()">Post Advert</button></div>
+<div id="advertList"></div>
+</div>
+
+<!-- CAMERA TAB -->
+<div id="camera" class="tab-content" style="text-align:center;padding-top:60px">
+<div style="font-size:60px">📷</div><h3 style="margin-top:10px">Camera</h3><p style="color:#777;margin-top:6px;font-size:13px">Snap product photo & post as advert</p><button class="btn" style="width:auto;margin-top:20px;padding:12px 24px" onclick="alert('Camera go open - allow browser camera permission')">Open Camera</button>
+</div>
+
+<!-- PROFILE TAB -->
+<div id="profile" class="tab-content" style="padding:16px">
+<div style="text-align:center;margin-top:20px"><div class="avatar" style="width:90px;height:90px;font-size:36px;margin:0 auto">P</div><h2 style="margin-top:12px">PizChat User</h2><p style="color:#777;font-size:13px">bb4101436-boop</p></div>
+<div class="card"><h3>⚙️ Settings</h3><p style="color:#aaa;font-size:13px">App: PizChat v1.0<br>Link: bb4101436-boop.github.io/Pizchat-/</p><button class="btn" onclick="navigator.clipboard.writeText('https://bb4101436-boop.github.io/Pizchat-/');alert('Link copied! Share to friends')">Copy My App Link</button></div>
+</div>
+
+<div class="bottom-nav">
+<div class="nav-item active" onclick="switchTab('chats',this)"><span>💬</span>Chats</div>
+<div class="nav-item" onclick="switchTab('community',this)"><span>👥</span>Community</div>
+<div class="nav-item" onclick="switchTab('advert',this)"><span>🛒</span>Advert</div>
+<div class="nav-item" onclick="switchTab('camera',this)"><span>📷</span>Camera</div>
+<div class="nav-item" onclick="switchTab('profile',this)"><span>👤</span>Profile</div>
+</div>
+
+<script>
+let chats = JSON.parse(localStorage.getItem('pizChats')||'[{"name":"Advert Store","last":"🔥 New shoe don land! Check Advert tab","time":"10:42","letter":"A"},{"name":"Community","last":"Welcome to PizChat! 💛","time":"09:15","letter":"C"},{"name":"John Doe","last":"Baba how far, you don see update?","time":"Yesterday","letter":"J"},{"name":"PizChat Team","last":"Your app don live! 🚀","time":"Mon","letter":"P"}]');
+let adverts = JSON.parse(localStorage.getItem('pizAdverts')||'[]');
+function renderChats(){document.getElementById('chatList').innerHTML=chats.map(c=>`<div class="chat-item" onclick="openChat('${c.name}')"><div class="avatar">${c.letter}</div><div class="chat-info"><div class="chat-top"><span class="chat-name">${c.name}</span><span class="chat-time">${c.time}</span></div><div class="chat-last">${c.last}</div></div></div>`).join('')}
+function renderAdverts(){document.getElementById('advertList').innerHTML=adverts.map(a=>`<div class="card"><h3>${a.name} - ${a.price}</h3><p style="color:#aaa;font-size:13px">${a.desc}</p><small style="color:#666">${a.time}</small></div>`).join('')||'<p style="text-align:center;color:#555;margin-top:20px">No adverts yet. Post one!</p>'}
+function switchTab(id,el){document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active')}
+function newChat(){let n=prompt('Enter name to chat with:');if(!n)return;let m=prompt('Type first message:');if(!m)return;chats.unshift({name:n,last:'You: '+m,time:'Now',letter:n[0].toUpperCase()});localStorage.setItem('pizChats',JSON.stringify(chats));renderChats()}
+function openChat(name){let msg=prompt('Chat with '+name+'\nType message:');if(!msg)return;let c=chats.find(x=>x.name===name);if(c){c.last='You: '+msg;c.time='Now';localStorage.setItem('pizChats',JSON.stringify(chats));renderChats()}}
+function postAdvert(){let name=document.getElementById('prodName').value,price=document.getElementById('prodPrice').value,desc=document.getElementById('prodDesc').value;if(!name||!price)return alert('Add name & price');adverts.unshift({name,price,desc,time:new Date().toLocaleString()});localStorage.setItem('pizAdverts',JSON.stringify(adverts));document.getElementById('prodName').value='';document.getElementById('prodPrice').value='';document.getElementById('prodDesc').value='';renderAdverts();alert('Advert posted! Go check Chats tab - e go show like WhatsApp Status!');switchTab('chats',document.querySelectorAll('.nav-item')[0])}
+renderChats();renderAdverts();
+</script>
+</body>
+</html>
