@@ -3,87 +3,133 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>PizChat</title>
+<title>PizChat - Full Working</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
 body{background:#0a0a0a;color:#fff;height:100vh;overflow:hidden;display:flex;flex-direction:column}
-.header{background:#FFD600;color:#000;padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
-.header h1{font-weight:900;font-size:22px;letter-spacing:-1px}
-.tab-content{flex:1;overflow-y:auto;padding-bottom:80px;display:none}
-.tab-content.active{display:block}
-.search{background:#1e1e1e;margin:10px 14px;border-radius:22px;padding:11px 16px;display:flex;gap:10px;color:#777;font-size:14px}
-.chat-item{display:flex;gap:12px;padding:14px 14px;border-bottom:1px solid #1a1a1a;align-items:center}
-.avatar{width:50px;height:50px;border-radius:50%;background:#FFD600;color:#000;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px}
-.chat-info{flex:1}
-.chat-top{display:flex;justify-content:space-between}
-.chat-name{font-weight:700}
-.chat-time{font-size:11px;color:#888}
-.chat-last{color:#aaa;font-size:13px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card{background:#1a1a1a;margin:12px;border-radius:16px;padding:16px;border:1px solid #222}
-.card h3{color:#FFD600;margin-bottom:8px}
-.btn{background:#FFD600;color:#000;border:none;padding:10px 18px;border-radius:20px;font-weight:800;width:100%;margin-top:10px}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;display:flex;justify-content:space-around;padding:10px 0 16px;z-index:100}
-.nav-item{text-align:center;color:#666;font-size:11px;font-weight:700;flex:1}
-.nav-item.active{color:#FFD600}
-.nav-item span{font-size:22px;display:block}
-.fab{position:fixed;bottom:85px;right:16px;background:#FFD600;color:#000;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;box-shadow:0 6px 16px rgba(255,214,0,0.3)}
-input,textarea{width:100%;background:#1e1e1e;border:1px solid #333;color:#fff;padding:12px;border-radius:12px;margin-top:8px;outline:none}
-input:focus{border-color:#FFD600}
+.header{background:#FFD600;color:#000;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:20}
+.header h1{font-weight:900;font-size:20px;letter-spacing:-1px}
+.h-icons{display:flex;gap:16px;font-size:20px;align-items:center}
+.h-icons span{cursor:pointer}
+.searchBar{display:none;background:#1e1e1e;margin:0;padding:10px 14px;align-items:center;gap:10px}
+.searchBar.active{display:flex}
+.searchBar input{flex:1;background:#000;border:1px solid #333;border-radius:20px;padding:8px 14px;color:#fff;outline:none}
+.menu{position:absolute;top:50px;right:10px;background:#1e1e1e;border:1px solid #333;border-radius:12px;width:180px;display:none;z-index:100}
+.menu.show{display:block}
+.menu div{padding:12px 16px;font-size:14px;color:#fff;border-bottom:1px solid #222;cursor:pointer}
+.tab{flex:1;overflow-y:auto;display:none;padding-bottom:80px}
+.tab.active{display:block}
+.chat-item{display:flex;gap:12px;padding:14px;border-bottom:1px solid #141414;align-items:center;cursor:pointer}
+.avatar{width:48px;height:48px;border-radius:50%;background:#FFD600;color:#000;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.chat-info{flex:1;min-width:0}
+.top-row{display:flex;justify-content:space-between}
+.name{font-weight:700;font-size:15px}
+.time{font-size:11px;color:#888}
+.last{color:#aaa;font-size:13px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card{background:#151515;margin:10px 12px;border-radius:16px;padding:14px;border:1px solid #222}
+.card h3{color:#FFD600;margin-bottom:6px;font-size:16px}
+.btn{background:#FFD600;color:#000;border:none;padding:12px;border-radius:12px;font-weight:800;width:100%;margin-top:10px;cursor:pointer}
+.btn2{background:#222;color:#fff;border:1px solid #333;padding:10px;border-radius:10px;width:100%;margin-top:8px}
+input,textarea{width:100%;background:#1a1a1a;border:1px solid #333;color:#fff;padding:12px;border-radius:12px;margin-top:8px;outline:none}
+.fab{position:fixed;bottom:85px;right:16px;background:#FFD600;color:#000;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;z-index:10;cursor:pointer}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#0f0f0f;border-top:1px solid #222;display:flex;justify-content:space-around;padding:8px 0 14px;z-index:15}
+.nav{flex:1;text-align:center;color:#666;font-size:10px;font-weight:700;cursor:pointer}
+.nav.active{color:#FFD600}
+.nav b{font-size:20px;display:block}
+#chatView{position:fixed;inset:0;background:#0a0a0a;z-index:50;display:none;flex-direction:column}
+#chatView.show{display:flex}
+.chatHeader{background:#FFD600;color:#000;padding:12px;display:flex;gap:12px;align-items:center}
+.messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:#0e0e0e}
+.msg{max-width:75%;padding:10px 12px;border-radius:16px;font-size:14px}
+.msg.me{align-self:flex-end;background:#FFD600;color:#000;border-bottom-right-radius:4px}
+.msg.other{align-self:flex-start;background:#1e1e1e;border-bottom-left-radius:4px}
+.sendRow{display:flex;gap:8px;padding:10px;background:#111;border-top:1px solid #222}
+.sendRow input{margin:0;flex:1}
+.cover{height:120px;background:#222;position:relative;overflow:hidden;cursor:pointer}
+.cover img{width:100%;height:100%;object-fit:cover}
+.cover span{position:absolute;bottom:8px;right:12px;background:rgba(0,0,0,0.6);padding:4px 10px;border-radius:12px;font-size:11px}
+.pAvatarWrap{margin-top:-36px;margin-left:16px;display:flex;align-items:end;gap:12px}
+.pAvatar{width:80px;height:80px;border-radius:50%;border:3px solid #0a0a0a;background:#FFD600;color:#000;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;overflow:hidden;cursor:pointer}
+.pAvatar img{width:100%;height:100%;object-fit:cover}
+.hiddenFile{display:none}
+.adImg{width:100%;border-radius:12px;margin-top:8px;max-height:200px;object-fit:cover}
 </style>
 </head>
 <body>
-<div class="header"><h1>PIZCHAT</h1><div>🔍 ⋮</div></div>
-
-<!-- CHATS TAB -->
-<div id="chats" class="tab-content active">
-<div class="search">🔍 Search or start new chat</div>
-<div id="chatList"></div>
-<div class="fab" onclick="newChat()">+</div>
+<div class="header">
+<h1>PIZCHAT</h1>
+<div class="h-icons"><span onclick="toggleSearch()">🔍</span><span onclick="toggleMenu()">⋮</span></div>
+<div class="menu" id="menu">
+<div onclick="newGroup()">➕ New Group</div>
+<div onclick="openTab('profile',4)">⚙️ Settings</div>
+<div onclick="alert('Starred: 0')">⭐ Starred</div>
+<div onclick="if(confirm('Clear all?')){localStorage.clear();location.reload()}">🗑️ Clear All</div>
 </div>
-
-<!-- COMMUNITY TAB -->
-<div id="community" class="tab-content">
-<div class="card"><h3>👥 PizChat Community</h3><p style="color:#aaa;font-size:13px">Join 1,200+ sellers & buyers. Share updates, get customers!</p><button class="btn" onclick="alert('Community chat go open here - coming soon!')">Join Community</button></div>
-<div class="chat-item"><div class="avatar">L</div><div class="chat-info"><div class="chat-top"><span class="chat-name">Lagos Sellers</span><span class="chat-time">12:30</span></div><div class="chat-last">Rita: Who get iPhone 13 for sale?</div></div></div>
-<div class="chat-item"><div class="avatar">A</div><div class="chat-info"><div class="chat-top"><span class="chat-name">Abuja Market</span><span class="chat-time">11:02</span></div><div class="chat-last">New goods just landed 🔥</div></div></div>
 </div>
+<div class="searchBar" id="searchBar"><span onclick="toggleSearch()">←</span><input id="searchInput" placeholder="Search name or message..." oninput="doSearch()"></div>
 
-<!-- ADVERT TAB -->
-<div id="advert" class="tab-content">
-<div class="card"><h3>🛒 Advert Store</h3><p style="color:#aaa;font-size:13px">Sell anything. People go see am for Chats like Status!</p><input id="prodName" placeholder="Product name e.g. Sneakers"><input id="prodPrice" placeholder="Price e.g. ₦15,000"><textarea id="prodDesc" placeholder="Description..."></textarea><button class="btn" onclick="postAdvert()">Post Advert</button></div>
-<div id="advertList"></div>
-</div>
+<div id="tab-chats" class="tab active"><div id="chatList"></div><div class="fab" onclick="createChat()">+</div></div>
+<div id="tab-community" class="tab"><div class="card"><h3>👥 Create Community</h3><input id="commName" placeholder="Community name"><input id="commDesc" placeholder="Description"><button class="btn" onclick="createComm()">Create Community</button></div><div id="commList"></div></div>
+<div id="tab-advert" class="tab"><div class="card"><h3>🛒 Post Advert</h3><input id="adTitle" placeholder="Product name"><input id="adPrice" placeholder="Price e.g ₦15,000"><textarea id="adDesc" placeholder="Description..."></textarea><input type="file" id="adFile" class="hiddenFile" accept="image/*" onchange="previewAd(event)"><img id="adPreview" class="adImg" style="display:none"><button class="btn2" onclick="document.getElementById('adFile').click()">📷 Add Photo</button><button class="btn" onclick="postAd()">Post Advert</button></div><div id="adList"></div></div>
+<div id="tab-camera" class="tab" style="padding:0;position:relative"><video id="cameraVideo" autoplay playsinline style="width:100%;height:calc(100vh - 110px);display:none;object-fit:cover"></video><canvas id="cameraCanvas" style="display:none"></canvas><div id="camPlaceholder" style="text-align:center;padding-top:80px"><div style="font-size:60px">📷</div><h3 style="margin-top:12px">PizCamera</h3><p style="color:#777">Snap product for advert</p><button class="btn" style="width:auto;padding:12px 24px;margin-top:16px" onclick="startCamera()">Open Camera</button></div><div id="camControls" style="position:absolute;bottom:90px;left:0;right:0;display:none;justify-content:center;gap:20px"><button class="btn" style="width:60px;height:60px;border-radius:50%;font-size:24px" onclick="capture()">📸</button><button class="btn2" style="width:auto" onclick="stopCamera()">Close</button></div><div id="capturedList" style="padding:12px"></div></div>
 
-<!-- CAMERA TAB -->
-<div id="camera" class="tab-content" style="text-align:center;padding-top:60px">
-<div style="font-size:60px">📷</div><h3 style="margin-top:10px">Camera</h3><p style="color:#777;margin-top:6px;font-size:13px">Snap product photo & post as advert</p><button class="btn" style="width:auto;margin-top:20px;padding:12px 24px" onclick="alert('Camera go open - allow browser camera permission')">Open Camera</button>
-</div>
-
-<!-- PROFILE TAB -->
-<div id="profile" class="tab-content" style="padding:16px">
-<div style="text-align:center;margin-top:20px"><div class="avatar" style="width:90px;height:90px;font-size:36px;margin:0 auto">P</div><h2 style="margin-top:12px">PizChat User</h2><p style="color:#777;font-size:13px">bb4101436-boop</p></div>
-<div class="card"><h3>⚙️ Settings</h3><p style="color:#aaa;font-size:13px">App: PizChat v1.0<br>Link: bb4101436-boop.github.io/Pizchat-/</p><button class="btn" onclick="navigator.clipboard.writeText('https://bb4101436-boop.github.io/Pizchat-/');alert('Link copied! Share to friends')">Copy My App Link</button></div>
+<div id="tab-profile" class="tab">
+<div class="cover" onclick="document.getElementById('coverFile').click()"><img id="coverImg" style="display:none"><span>Tap to change cover</span></div>
+<div class="pAvatarWrap"><div class="pAvatar" id="pAvatar" onclick="document.getElementById('avatarFile').click()">P</div><div><div id="pNameView" style="font-weight:800;font-size:18px">PizChat User</div><div id="pHandleView" style="color:#FFD600;font-size:13px">@bb4101436-boop</div></div></div>
+<div class="card"><h3>✏️ Edit Profile</h3><input id="pName" placeholder="Display name"><input id="pHandle" placeholder="Handle e.g @yourname"><input id="pMiddle" placeholder="Middle name (optional)"><textarea id="pBio" placeholder="Bio..."></textarea><input id="pLink" placeholder="Your PizChat link"><button class="btn" onclick="saveProfile()">Save Profile</button></div>
+<div class="card"><h3>🔗 Your Link</h3><p id="linkText" style="color:#FFD600;font-size:12px;word-break:break-all">https://bb4101436-boop.github.io/Pizchat-/</p><button class="btn2" onclick="copyLink()">Copy Link</button><button class="btn2" onclick="shareLink()">Share to WhatsApp</button></div>
+<input type="file" id="avatarFile" class="hiddenFile" accept="image/*" onchange="uploadAvatar(event)"><input type="file" id="coverFile" class="hiddenFile" accept="image/*" onchange="uploadCover(event)">
 </div>
 
 <div class="bottom-nav">
-<div class="nav-item active" onclick="switchTab('chats',this)"><span>💬</span>Chats</div>
-<div class="nav-item" onclick="switchTab('community',this)"><span>👥</span>Community</div>
-<div class="nav-item" onclick="switchTab('advert',this)"><span>🛒</span>Advert</div>
-<div class="nav-item" onclick="switchTab('camera',this)"><span>📷</span>Camera</div>
-<div class="nav-item" onclick="switchTab('profile',this)"><span>👤</span>Profile</div>
+<div class="nav active" onclick="openTab('chats',0)"><b>💬</b>Chats</div>
+<div class="nav" onclick="openTab('community',1)"><b>👥</b>Community</div>
+<div class="nav" onclick="openTab('advert',2)"><b>🛒</b>Advert</div>
+<div class="nav" onclick="openTab('camera',3)"><b>📷</b>Camera</div>
+<div class="nav" onclick="openTab('profile',4)"><b>👤</b>Profile</div>
+</div>
+
+<div id="chatView">
+<div class="chatHeader"><span onclick="closeChat()" style="font-size:22px;cursor:pointer">←</span><div class="avatar" id="cvAvatar">A</div><div><div id="cvName" style="font-weight:800">Name</div><div style="font-size:11px">Online</div></div><span style="margin-left:auto">📞 🎥</span></div>
+<div class="messages" id="messages"></div>
+<div class="sendRow"><input id="msgInput" placeholder="Type message..." onkeydown="if(event.key==='Enter')sendMsg()"><button class="btn" style="width:auto;margin:0;padding:10px 16px" onclick="sendMsg()">➤</button></div>
 </div>
 
 <script>
-let chats = JSON.parse(localStorage.getItem('pizChats')||'[{"name":"Advert Store","last":"🔥 New shoe don land! Check Advert tab","time":"10:42","letter":"A"},{"name":"Community","last":"Welcome to PizChat! 💛","time":"09:15","letter":"C"},{"name":"John Doe","last":"Baba how far, you don see update?","time":"Yesterday","letter":"J"},{"name":"PizChat Team","last":"Your app don live! 🚀","time":"Mon","letter":"P"}]');
-let adverts = JSON.parse(localStorage.getItem('pizAdverts')||'[]');
-function renderChats(){document.getElementById('chatList').innerHTML=chats.map(c=>`<div class="chat-item" onclick="openChat('${c.name}')"><div class="avatar">${c.letter}</div><div class="chat-info"><div class="chat-top"><span class="chat-name">${c.name}</span><span class="chat-time">${c.time}</span></div><div class="chat-last">${c.last}</div></div></div>`).join('')}
-function renderAdverts(){document.getElementById('advertList').innerHTML=adverts.map(a=>`<div class="card"><h3>${a.name} - ${a.price}</h3><p style="color:#aaa;font-size:13px">${a.desc}</p><small style="color:#666">${a.time}</small></div>`).join('')||'<p style="text-align:center;color:#555;margin-top:20px">No adverts yet. Post one!</p>'}
-function switchTab(id,el){document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active')}
-function newChat(){let n=prompt('Enter name to chat with:');if(!n)return;let m=prompt('Type first message:');if(!m)return;chats.unshift({name:n,last:'You: '+m,time:'Now',letter:n[0].toUpperCase()});localStorage.setItem('pizChats',JSON.stringify(chats));renderChats()}
-function openChat(name){let msg=prompt('Chat with '+name+'\nType message:');if(!msg)return;let c=chats.find(x=>x.name===name);if(c){c.last='You: '+msg;c.time='Now';localStorage.setItem('pizChats',JSON.stringify(chats));renderChats()}}
-function postAdvert(){let name=document.getElementById('prodName').value,price=document.getElementById('prodPrice').value,desc=document.getElementById('prodDesc').value;if(!name||!price)return alert('Add name & price');adverts.unshift({name,price,desc,time:new Date().toLocaleString()});localStorage.setItem('pizAdverts',JSON.stringify(adverts));document.getElementById('prodName').value='';document.getElementById('prodPrice').value='';document.getElementById('prodDesc').value='';renderAdverts();alert('Advert posted! Go check Chats tab - e go show like WhatsApp Status!');switchTab('chats',document.querySelectorAll('.nav-item')[0])}
-renderChats();renderAdverts();
+let chats=JSON.parse(localStorage.getItem('piz_chats_v2')||'[{"id":1,"name":"Advert Store","letter":"A","last":"🔥 New shoe don land! Check Advert tab","time":"10:42","msgs":[{"from":"other","text":"Welcome!"}]},{"id":2,"name":"Community","letter":"C","last":"Welcome to PizChat! 💛","time":"09:15","msgs":[]},{"id":3,"name":"John Doe","letter":"J","last":"Baba how far?","time":"Yesterday","msgs":[]},{"id":4,"name":"PizChat Team","letter":"P","last":"Your app don live! 🚀","time":"Mon","msgs":[]}]');
+let comms=JSON.parse(localStorage.getItem('piz_comms')||'[{"name":"Lagos Sellers","desc":"Buy & sell in Lagos","members":1200},{"name":"Abuja Market","desc":"Best market","members":890}]');
+let adverts=JSON.parse(localStorage.getItem('piz_adverts_v2')||'[]');
+let profile=JSON.parse(localStorage.getItem('piz_profile')||'{"name":"PizChat User","handle":"@bb4101436-boop","middle":"","bio":"","link":"https://bb4101436-boop.github.io/Pizchat-/","avatar":"","cover":""}');
+let currentChat=null;let adImgData='';
+function renderChats(filter=''){const q=filter.toLowerCase();const list=chats.filter(c=>c.name.toLowerCase().includes(q)||c.last.toLowerCase().includes(q));document.getElementById('chatList').innerHTML=list.map(c=>`<div class="chat-item" onclick="openChat(${c.id})"><div class="avatar">${c.letter}</div><div class="chat-info"><div class="top-row"><span class="name">${c.name}</span><span class="time">${c.time}</span></div><div class="last">${c.last}</div></div></div>`).join('')}
+function renderComms(){document.getElementById('commList').innerHTML=comms.map(c=>`<div class="chat-item"><div class="avatar">${c.name[0]}</div><div class="chat-info"><div class="top-row"><span class="name">${c.name}</span><span class="time">${c.members} members</span></div><div class="last">${c.desc}</div></div><button class="btn" style="width:auto;padding:6px 14px;margin:0" onclick="alert('Joined '+this.parentElement.querySelector('.name').innerText)">Join</button></div>`).join('')}
+function renderAds(){document.getElementById('adList').innerHTML=adverts.map((a,i)=>`<div class="card"><h3>${a.title} - ${a.price}</h3>${a.img?`<img src="${a.img}" class="adImg">`:''}<p style="color:#aaa;font-size:13px;margin-top:6px">${a.desc}</p><div style="display:flex;gap:8px;margin-top:10px"><button class="btn2" style="margin:0" onclick="shareAd(${i})">Share</button><button class="btn2" style="margin:0" onclick="deleteAd(${i})">Delete</button></div></div>`).join('')||'<p style="text-align:center;color:#555;margin-top:20px">No adverts yet</p>'}
+function openTab(name,idx){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));document.querySelectorAll('.nav')[idx].classList.add('active');if(name!=='camera')stopCamera();if(name==='profile')loadProfile()}
+function toggleMenu(){document.getElementById('menu').classList.toggle('show')}
+function toggleSearch(){document.getElementById('searchBar').classList.toggle('active');document.getElementById('searchInput').focus()}
+function doSearch(){renderChats(document.getElementById('searchInput').value)}
+function openChat(id){currentChat=chats.find(c=>c.id===id);document.getElementById('cvName').innerText=currentChat.name;document.getElementById('cvAvatar').innerText=currentChat.letter;const box=document.getElementById('messages');box.innerHTML=currentChat.msgs.map(m=>`<div class="msg ${m.from==='me'?'me':'other'}">${m.text}</div>`).join('')||'<p style="text-align:center;color:#555">Start chatting!</p>';document.getElementById('chatView').classList.add('show')}
+function closeChat(){document.getElementById('chatView').classList.remove('show');save()}
+function sendMsg(){const input=document.getElementById('msgInput');const txt=input.value.trim();if(!txt||!currentChat)return;currentChat.msgs.push({from:'me',text:txt});currentChat.last='You: '+txt;currentChat.time='Now';input.value='';openChat(currentChat.id);renderChats();save()}
+function createChat(){const name=prompt('Enter friend name:');if(!name)return;const id=Date.now();chats.unshift({id,name,letter:name[0].toUpperCase(),last:'Chat created',time:'Now',msgs:[]});save();renderChats()}
+function newGroup(){const name=prompt('Group name:');if(name){chats.unshift({id:Date.now(),name,letter:name[0].toUpperCase(),last:'Group created',time:'Now',msgs:[]});save();renderChats();toggleMenu()}}
+function createComm(){const n=document.getElementById('commName').value,d=document.getElementById('commDesc').value;if(!n)return alert('Enter name');comms.unshift({name:n,desc:d,members:1});localStorage.setItem('piz_comms',JSON.stringify(comms));document.getElementById('commName').value='';document.getElementById('commDesc').value='';renderComms()}
+function previewAd(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{adImgData=ev.target.result;document.getElementById('adPreview').src=adImgData;document.getElementById('adPreview').style.display='block'};r.readAsDataURL(f)}
+function postAd(){const t=document.getElementById('adTitle').value,p=document.getElementById('adPrice').value,d=document.getElementById('adDesc').value;if(!t||!p)return alert('Add title & price');adverts.unshift({title:t,price:p,desc:d,img:adImgData});save();document.getElementById('adTitle').value='';document.getElementById('adPrice').value='';document.getElementById('adDesc').value='';document.getElementById('adPreview').style.display='none';adImgData='';renderAds();alert('Advert posted!');openTab('chats',0)}
+function deleteAd(i){if(confirm('Delete?')){adverts.splice(i,1);save();renderAds()}}
+function shareAd(i){const a=adverts[i];navigator.clipboard.writeText(`${a.title} - ${a.price} - ${a.desc} Link: ${profile.link}`);alert('Copied!')}
+function saveProfile(){profile.name=document.getElementById('pName').value||profile.name;profile.handle=document.getElementById('pHandle').value||profile.handle;profile.middle=document.getElementById('pMiddle').value;profile.bio=document.getElementById('pBio').value;profile.link=document.getElementById('pLink').value||profile.link;save();loadProfile();alert('Profile saved!')}
+function loadProfile(){document.getElementById('pName').value=profile.name;document.getElementById('pHandle').value=profile.handle;document.getElementById('pMiddle').value=profile.middle;document.getElementById('pBio').value=profile.bio;document.getElementById('pLink').value=profile.link;document.getElementById('pNameView').innerText=profile.name+(profile.middle?' '+profile.middle:'');document.getElementById('pHandleView').innerText=profile.handle;document.getElementById('linkText').innerText=profile.link;if(profile.avatar){document.getElementById('pAvatar').innerHTML=`<img src="${profile.avatar}">`}if(profile.cover){document.getElementById('coverImg').src=profile.cover;document.getElementById('coverImg').style.display='block'}}
+function uploadAvatar(e){const f=e.target.files[0];const r=new FileReader();r.onload=ev=>{profile.avatar=ev.target.result;save();loadProfile()};r.readAsDataURL(f)}
+function uploadCover(e){const f=e.target.files[0];const r=new FileReader();r.onload=ev=>{profile.cover=ev.target.result;save();loadProfile()};r.readAsDataURL(f)}
+function copyLink(){navigator.clipboard.writeText(profile.link);alert('Link copied!')}
+function shareLink(){window.open(`https://wa.me/?text=Join me on PizChat! ${encodeURIComponent(profile.link)}`)}
+function save(){localStorage.setItem('piz_chats_v2',JSON.stringify(chats));localStorage.setItem('piz_adverts_v2',JSON.stringify(adverts));localStorage.setItem('piz_profile',JSON.stringify(profile))}
+let stream=null;async function startCamera(){try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});const v=document.getElementById('cameraVideo');v.srcObject=stream;v.style.display='block';document.getElementById('camPlaceholder').style.display='none';document.getElementById('camControls').style.display='flex'}catch(e){alert('Need HTTPS & permission: '+e.message)}}function stopCamera(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}document.getElementById('cameraVideo').style.display='none';document.getElementById('camPlaceholder').style.display='block';document.getElementById('camControls').style.display='none'}function capture(){const v=document.getElementById('cameraVideo');const c=document.getElementById('cameraCanvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);const data=c.toDataURL('image/jpeg');adverts.unshift({title:'Camera Snap',price:'',desc:'Snapped',img:data});save();document.getElementById('capturedList').innerHTML=`<div class="card"><h3>Captured!</h3><img src="${data}" class="adImg"><button class="btn" onclick="openTab('advert',2)">Go to Advert</button></div>`+document.getElementById('capturedList').innerHTML}
+renderChats();renderComms();renderAds();loadProfile();
+document.addEventListener('click',e=>{if(!e.target.closest('#menu')&&!e.target.closest('.h-icons'))document.getElementById('menu').classList.remove('show')});
 </script>
 </body>
 </html>
