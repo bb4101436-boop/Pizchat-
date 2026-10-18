@@ -16,7 +16,7 @@ body{background:#080808;color:#fff;height:100vh;overflow:hidden;display:flex;fle
 .tabs{display:flex;background:#1e1e1e;border-radius:12px;padding:4px;margin-bottom:12px}
 .t{flex:1;padding:11px;text-align:center;border-radius:9px;font-weight:800;font-size:13px;cursor:pointer;color:#888}
 .t.on{background:#FFD600;color:#000}
-.box input{width:100%;background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:13px;margin-top:10px;color:#fff;outline:none;font-size:14px}
+.box input{width:100%;background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:13px;margin-top:10px;color:#fff;outline:none}
 .btn{background:#FFD600;color:#000;border:none;padding:14px;border-radius:12px;font-weight:900;width:100%;margin-top:14px;cursor:pointer;font-size:15px}
 .header{background:#FFD600;color:#000;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
 .bottom{position:fixed;bottom:0;left:0;right:0;background:#0c0c0c;border-top:1px solid #1e1e1e;display:flex;justify-content:space-around;padding:8px 0 14px;z-index:20}
@@ -52,115 +52,23 @@ input,textarea{width:100%;background:#1a1a1a;border:1px solid #2a2a2a;color:#fff
 </style>
 </head>
 <body>
-
-<div id="auth">
-<div class="box">
-<h1>PIZCHAT</h1>
-<p id="sub">Create account to continue</p>
-<div class="tabs">
-<div class="t" id="tL" onclick="showLogin()">Login</div>
-<div class="t on" id="tS" onclick="showSignup()">Sign Up</div>
-</div>
-
-<div id="loginBox" style="display:none">
-<input id="lE" type="email" placeholder="Email address">
-<input id="lP" type="password" placeholder="Password">
-<button class="btn" onclick="doLogin()">LOGIN</button>
-</div>
-
-<div id="signupBox">
-<input id="sN" placeholder="Full Name">
-<input id="sPh" type="tel" placeholder="Phone number - e.g 08012345678">
-<input id="sE" type="email" placeholder="Email - e.g john@gmail.com">
-<input id="sPw" type="password" placeholder="Password - at least 6 characters">
-<button class="btn" onclick="doSignup()">CREATE ACCOUNT</button>
-</div>
-<p style="color:#333;font-size:10px;text-align:center;margin-top:12px">Fill all 4 fields ✅ Auto-login forever</p>
-</div>
-</div>
-
-<div class="header"><h1>PIZCHAT</h1><div style="display:flex;gap:14px"><span onclick="openTab('chats',0)" style="cursor:pointer">🔍</span><span onclick="logout()" style="cursor:pointer">🚪</span></div></div>
-
+<div id="auth"><div class="box"><h1>PIZCHAT</h1><p id="sub">Create account</p><div class="tabs"><div class="t" id="tL" onclick="showLogin()">Login</div><div class="t on" id="tS" onclick="showSignup()">Sign Up</div></div><div id="loginBox" style="display:none"><input id="lE" placeholder="Email"><input id="lP" type="password" placeholder="Password"><button class="btn" onclick="doLogin()">LOGIN</button></div><div id="signupBox"><input id="sN" placeholder="Full Name"><input id="sPh" placeholder="Phone"><input id="sE" placeholder="Email"><input id="sPw" type="password" placeholder="Password"><button class="btn" onclick="doSignup()">CREATE ACCOUNT</button></div></div></div>
+<div class="header"><h1>PIZCHAT</h1><div style="display:flex;gap:14px"><span>💬</span><span onclick="logout()" style="cursor:pointer">🚪</span></div></div>
 <div id="tab-chats" class="tab active"><div id="chatList"></div></div>
-<div id="tab-community" class="tab"><div class="card"><h3>Community</h3><input id="cN" placeholder="Community name"><input id="cD" placeholder="Description"><button class="btn" onclick="createComm()">Create</button></div><div id="commList"></div></div>
-<div id="tab-advert" class="tab"><div class="card"><h3>Post Advert</h3><input id="aT" placeholder="Product"><input id="aP" placeholder="Price"><textarea id="aD" placeholder="Description"></textarea><input type="file" id="aF" class="hideFile" accept="image/*" onchange="prevAd(event)"><img id="aPrev" class="aImg" style="display:none"><button class="btn2" onclick="document.getElementById('aF').click()">📷 Add Photo</button><button class="btn" onclick="postAd()">Post Advert</button></div><div id="adList"></div></div>
-<div id="tab-camera" class="tab"><div style="text-align:center;padding-top:80px"><div style="font-size:60px">📷</div><p>Camera</p></div></div>
-
-<div id="tab-profile" class="tab">
-<div class="cover" onclick="document.getElementById('cF').click()"><img id="cI" style="display:none"><span>Change cover</span></div>
-<div class="pWrap"><div class="pAv" id="pAv" onclick="document.getElementById('aF2').click()">P</div><div><div id="pNV" style="font-weight:800">User</div><div id="pHV" style="color:#FFD600;font-size:12px">@user</div><div id="pPV" style="color:#888;font-size:10px"></div></div></div>
-<div class="card"><h3>Edit Profile - FULL NO CUT ✅</h3><input id="pN" placeholder="Display name"><input id="pH" placeholder="Handle"><input id="pM" placeholder="Middle name"><textarea id="pB" placeholder="Bio"></textarea><input id="pL" placeholder="Your link"><button class="btn" onclick="saveP()">Save Profile</button><button class="btn2" onclick="logout()">Logout</button></div>
-<div class="card"><h3>Your Link</h3><p id="lT" style="color:#FFD600;font-size:11px;word-break:break-all">https://bb4101436-boop.github.io/Pizchat-/</p></div>
-<input type="file" id="aF2" class="hideFile" accept="image/*" onchange="upAv(event)"><input type="file" id="cF" class="hideFile" accept="image/*" onchange="upCover(event)">
-</div>
-
-<div class="bottom">
-<div class="nav active" onclick="openTab('chats',0)"><b>💬</b>Chats</div>
-<div class="nav" onclick="openTab('community',1)"><b>👥</b>Community</div>
-<div class="nav" onclick="openTab('advert',2)"><b>🛒</b>Advert</div>
-<div class="nav" onclick="openTab('camera',3)"><b>📷</b>Camera</div>
-<div class="nav" onclick="openTab('profile',4)"><b>👤</b>Profile</div>
-</div>
-
+<div id="tab-community" class="tab"><div class="card"><h3>Community</h3><input id="cN" placeholder="Name"><input id="cD" placeholder="Desc"><button class="btn" onclick="createComm()">Create</button></div><div id="commList"></div></div>
+<div id="tab-advert" class="tab"><div class="card"><h3>Post Advert</h3><input id="aT" placeholder="Product"><input id="aP" placeholder="Price"><textarea id="aD" placeholder="Desc"></textarea><input type="file" id="aF" class="hideFile" accept="image/*" onchange="prevAd(event)"><img id="aPrev" class="aImg" style="display:none"><button class="btn2" onclick="document.getElementById('aF').click()">📷 Add Photo</button><button class="btn" onclick="postAd()">Post</button></div><div id="adList"></div></div>
+<div id="tab-camera" class="tab"><div style="text-align:center;padding-top:80px"><div style="font-size:60px">📷</div></div></div>
+<div id="tab-profile" class="tab"><div class="cover" onclick="document.getElementById('cF').click()"><img id="cI" style="display:none"><span>Change cover - FULL</span></div><div class="pWrap"><div class="pAv" id="pAv" onclick="document.getElementById('aF2').click()">W</div><div><div id="pNV" style="font-weight:800">Wisdom</div><div id="pHV" style="color:#FFD600;font-size:12px">@wisdom</div><div id="pPV" style="color:#888;font-size:10px">09066218919 • ikeagwuchi...@gmail.com</div></div></div><div class="card"><h3>Edit Profile - FULL PICTURE NO CUT ✅</h3><input id="pN" placeholder="Name"><input id="pH" placeholder="Handle"><textarea id="pB" placeholder="Bio"></textarea><button class="btn" onclick="saveP()">Save</button><button class="btn2" onclick="logout()">Logout</button></div><input type="file" id="aF2" class="hideFile" accept="image/*" onchange="upAv(event)"><input type="file" id="cF" class="hideFile" accept="image/*" onchange="upCover(event)"></div>
+<div class="bottom"><div class="nav active" onclick="openTab('chats',0)"><b>💬</b>Chats</div><div class="nav" onclick="openTab('community',1)"><b>👥</b>Community</div><div class="nav" onclick="openTab('advert',2)"><b>🛒</b>Advert</div><div class="nav" onclick="openTab('camera',3)"><b>📷</b>Camera</div><div class="nav" onclick="openTab('profile',4)"><b>👤</b>Profile</div></div>
 <div id="chatView"><div class="cHead"><span onclick="closeChat()" style="font-size:24px">←</span><div class="av" id="cvAv">A</div><div id="cvName" style="font-weight:800">Name</div></div><div class="msgs" id="msgs"></div><div class="send"><input id="mI" placeholder="Type..." onkeydown="if(event.key==='Enter')sendMsg()"><button class="btn" style="width:auto;margin:0" onclick="sendMsg()">➤</button></div></div>
-
 <script>
-function showLogin(){document.getElementById('tL').className='t on';document.getElementById('tS').className='t';document.getElementById('loginBox').style.display='block';document.getElementById('signupBox').style.display='none';document.getElementById('sub').innerText='Login to your account';}
-function showSignup(){document.getElementById('tL').className='t';document.getElementById('tS').className='t on';document.getElementById('loginBox').style.display='none';document.getElementById('signupBox').style.display='block';document.getElementById('sub').innerText='Create account to continue';}
-
-function doSignup(){
- var n=document.getElementById('sN').value.trim();
- var ph=document.getElementById('sPh').value.trim();
- var e=document.getElementById('sE').value.trim().toLowerCase();
- var p=document.getElementById('sPw').value.trim();
- if(!n){alert('Please enter your Full Name');return}
- if(!ph){alert('Please enter your Phone number');return}
- if(!e){alert('Please enter your Email');return}
- if(p.length<6){alert('Password must be at least 6 characters');return}
- var users=JSON.parse(localStorage.getItem('PZ_USERS')||'[]');
- for(var i=0;i<users.length;i++){if(users[i].email===e){alert('Email already exists! Please Login instead');showLogin();return}}
- var u={name:n,phone:ph,email:e,pass:p,handle:'@'+n.split(' ')[0].toLowerCase(),av:'',cover:'',id:Date.now()};
- users.push(u);
- localStorage.setItem('PZ_USERS',JSON.stringify(users));
- localStorage.setItem('PZ_CURRENT',JSON.stringify(u));
- localStorage.setItem('PZ_PROFILE',JSON.stringify({name:n,handle:u.handle,phone:ph,email:e,av:'',cover:'',bio:'',middle:'',link:'https://bb4101436-boop.github.io/Pizchat-/'}));
- alert('SUCCESS! Welcome '+n+' - Account created!');
- document.getElementById('auth').classList.add('hide');
- loadP();renderAll();
-}
-
-function doLogin(){
- var e=document.getElementById('lE').value.trim().toLowerCase();
- var p=document.getElementById('lP').value.trim();
- if(!e||!p){alert('Enter Email and Password');return}
- var users=JSON.parse(localStorage.getItem('PZ_USERS')||'[]');
- var found=null;
- for(var i=0;i<users.length;i++){if(users[i].email===e && users[i].pass===p){found=users[i];break}}
- if(!found){alert('Wrong Email or Password! If you are new, click Sign Up');return}
- localStorage.setItem('PZ_CURRENT',JSON.stringify(found));
- alert('Welcome back '+found.name+'!');
- document.getElementById('auth').classList.add('hide');
- loadP();renderAll();
-}
-
+function showLogin(){document.getElementById('tL').className='t on';document.getElementById('tS').className='t';document.getElementById('loginBox').style.display='block';document.getElementById('signupBox').style.display='none';}
+function showSignup(){document.getElementById('tL').className='t';document.getElementById('tS').className='t on';document.getElementById('loginBox').style.display='none';document.getElementById('signupBox').style.display='block';}
+function doSignup(){var n=document.getElementById('sN').value.trim(),ph=document.getElementById('sPh').value.trim(),e=document.getElementById('sE').value.trim().toLowerCase(),p=document.getElementById('sPw').value.trim();if(!n||!ph||!e||p.length<6){alert('Fill all 4 fields');return}var users=JSON.parse(localStorage.getItem('PZ_USERS')||'[]');users.push({name:n,phone:ph,email:e,pass:p,handle:'@'+n.split(' ')[0].toLowerCase(),av:'',cover:'',id:Date.now()});localStorage.setItem('PZ_USERS',JSON.stringify(users));localStorage.setItem('PZ_CURRENT',JSON.stringify({name:n,phone:ph,email:e,handle:'@'+n.split(' ')[0].toLowerCase(),av:'',cover:''}));localStorage.setItem('PZ_PROFILE',JSON.stringify({name:n,phone:ph,email:e,handle:'@'+n.split(' ')[0].toLowerCase(),av:'',cover:'',bio:'',link:'https://bb4101436-boop.github.io/Pizchat-/'}));document.getElementById('auth').classList.add('hide');loadP();renderAll();}
+function doLogin(){var e=document.getElementById('lE').value.trim().toLowerCase(),p=document.getElementById('lP').value.trim(),users=JSON.parse(localStorage.getItem('PZ_USERS')||'[]'),f=null;for(var i=0;i<users.length;i++){if(users[i].email===e&&users[i].pass===p){f=users[i];break}}if(!f){alert('Wrong details');return}localStorage.setItem('PZ_CURRENT',JSON.stringify(f));document.getElementById('auth').classList.add('hide');loadP();renderAll();}
 function logout(){if(confirm('Logout?')){localStorage.removeItem('PZ_CURRENT');location.reload()}}
-
-function checkAuth(){
- var cur=localStorage.getItem('PZ_CURRENT');
- if(cur){
-  try{var u=JSON.parse(cur);if(u&&u.email){document.getElementById('auth').classList.add('hide');return true}}catch(e){}
- }
- document.getElementById('auth').classList.remove('hide');
- showSignup();
- return false;
-}
-
-var chats=JSON.parse(localStorage.getItem('PZ_CHATS')||'[{"id":1,"name":"Advert Store","l":"A","last":"New product!","time":"Now","msgs":[]},{"id":2,"name":"PizTeam","l":"P","last":"Welcome","time":"Now","msgs":[]}]');
-var comms=JSON.parse(localStorage.getItem('PZ_COMMS')||'[{"name":"Lagos Sellers","desc":"Buy & sell","m":1200}]');
-var adverts=JSON.parse(localStorage.getItem('PZ_ADS')||'[]');
-var profile=JSON.parse(localStorage.getItem('PZ_PROFILE')||'{"name":"User","handle":"@user","middle":"","bio":"","link":"https://bb4101436-boop.github.io/Pizchat-/","av":"","cover":"","phone":"","email":""}');
-var curChat=null,adImg='';
-
+function checkAuth(){var cur=localStorage.getItem('PZ_CURRENT');if(cur){try{var u=JSON.parse(cur);if(u&&u.email){document.getElementById('auth').classList.add('hide');return true}}catch(e){}}document.getElementById('auth').classList.remove('hide');showSignup();return false;}
+var chats=JSON.parse(localStorage.getItem('PZ_CHATS')||'[{"id":1,"name":"Advert Store","l":"A","last":"Welcome Wisdom!","time":"Now","msgs":[]}]');var comms=JSON.parse(localStorage.getItem('PZ_COMMS')||'[{"name":"Lagos Sellers","desc":"Buy & sell","m":1200}]');var adverts=JSON.parse(localStorage.getItem('PZ_ADS')||'[]');var profile=JSON.parse(localStorage.getItem('PZ_PROFILE')||'{"name":"Wisdom","handle":"@wisdom","bio":"","link":"https://bb4101436-boop.github.io/Pizchat-/","av":"","cover":"","phone":"09066218919","email":"ikeagwuchiwisdom7@gmail.com"}');var curChat=null,adImg='';
 function renderAll(){renderChats();renderComms();renderAds();loadP()}
 function renderChats(){document.getElementById('chatList').innerHTML=chats.map(function(c){return '<div class="item" onclick="openChat('+c.id+')"><div class="av">'+c.l+'</div><div style="flex:1"><div style="display:flex;justify-content:space-between"><span style="font-weight:700">'+c.name+'</span><span style="font-size:11px;color:#777">'+c.time+'</span></div><div style="color:#999;font-size:13px">'+c.last+'</div></div></div>'}).join('')}
 function renderComms(){document.getElementById('commList').innerHTML=comms.map(function(c){return '<div class="item"><div class="av">'+c.name[0]+'</div><div style="flex:1"><div style="font-weight:700">'+c.name+'</div><div style="color:#999;font-size:12px">'+c.desc+'</div></div></div>'}).join('')}
@@ -174,11 +82,10 @@ function prevAd(e){var f=e.target.files[0];var r=new FileReader();r.onload=funct
 function postAd(){var t=document.getElementById('aT').value,p=document.getElementById('aP').value,d=document.getElementById('aD').value;if(!t||!p){alert('Add title & price');return}adverts.unshift({title:t,price:p,desc:d,img:adImg});save();renderAds();alert('Posted!')}
 function delAd(i){if(confirm('Delete?')){adverts.splice(i,1);save();renderAds()}}
 function save(){localStorage.setItem('PZ_CHATS',JSON.stringify(chats));localStorage.setItem('PZ_ADS',JSON.stringify(adverts));localStorage.setItem('PZ_COMMS',JSON.stringify(comms));localStorage.setItem('PZ_PROFILE',JSON.stringify(profile))}
-function saveP(){profile.name=document.getElementById('pN').value||profile.name;profile.handle=document.getElementById('pH').value||profile.handle;profile.middle=document.getElementById('pM').value;profile.bio=document.getElementById('pB').value;profile.link=document.getElementById('pL').value||profile.link;save();loadP();alert('Saved!')}
-function loadP(){var p=JSON.parse(localStorage.getItem('PZ_PROFILE')||'null');if(p&&p.name)profile=p;document.getElementById('pN').value=profile.name||'';document.getElementById('pH').value=profile.handle||'';document.getElementById('pM').value=profile.middle||'';document.getElementById('pB').value=profile.bio||'';document.getElementById('pL').value=profile.link||'';document.getElementById('pNV').innerText=profile.name+(profile.middle?' '+profile.middle:'');document.getElementById('pHV').innerText=profile.handle;document.getElementById('pPV').innerText=(profile.phone||'')+' '+ (profile.email||'');document.getElementById('lT').innerText=profile.link;if(profile.av){document.getElementById('pAv').innerHTML='<img src="'+profile.av+'">'}else{document.getElementById('pAv').innerText=(profile.name||'P')[0].toUpperCase()}if(profile.cover){document.getElementById('cI').src=profile.cover;document.getElementById('cI').style.display='block'}}
-function upAv(e){var f=e.target.files[0];var r=new FileReader();r.onload=function(ev){profile.av=ev.target.result;save();var cur=JSON.parse(localStorage.getItem('PZ_CURRENT')||'{}');cur.av=ev.target.result;localStorage.setItem('PZ_CURRENT',JSON.stringify(cur));loadP();alert('Profile FULL - no cut!')};r.readAsDataURL(f)}
+function saveP(){profile.name=document.getElementById('pN').value||profile.name;profile.handle=document.getElementById('pH').value||profile.handle;profile.bio=document.getElementById('pB').value;save();loadP();alert('Saved!')}
+function loadP(){var p=JSON.parse(localStorage.getItem('PZ_PROFILE')||'null');if(p&&p.name)profile=p;else{var cur=JSON.parse(localStorage.getItem('PZ_CURRENT')||'{}');if(cur.name){profile.name=cur.name;profile.phone=cur.phone;profile.email=cur.email;profile.handle=cur.handle}}document.getElementById('pN').value=profile.name||'';document.getElementById('pH').value=profile.handle||'';document.getElementById('pNV').innerText=profile.name||'Wisdom';document.getElementById('pHV').innerText=profile.handle||'@wisdom';document.getElementById('pPV').innerText=(profile.phone||'09066218919')+' • '+(profile.email||'');if(profile.av){document.getElementById('pAv').innerHTML='<img src="'+profile.av+'">'}else{document.getElementById('pAv').innerText=(profile.name||'W')[0].toUpperCase()}if(profile.cover){document.getElementById('cI').src=profile.cover;document.getElementById('cI').style.display='block'}}
+function upAv(e){var f=e.target.files[0];var r=new FileReader();r.onload=function(ev){profile.av=ev.target.result;save();var cur=JSON.parse(localStorage.getItem('PZ_CURRENT')||'{}');cur.av=ev.target.result;localStorage.setItem('PZ_CURRENT',JSON.stringify(cur));loadP();alert('Profile photo FULL - no cut!')};r.readAsDataURL(f)}
 function upCover(e){var f=e.target.files[0];var r=new FileReader();r.onload=function(ev){profile.cover=ev.target.result;save();var cur=JSON.parse(localStorage.getItem('PZ_CURRENT')||'{}');cur.cover=ev.target.result;localStorage.setItem('PZ_CURRENT',JSON.stringify(cur));loadP();alert('Cover FULL!')};r.readAsDataURL(f)}
-
 checkAuth();renderAll();
 </script>
 </body>
