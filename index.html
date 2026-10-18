@@ -9,15 +9,15 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
 body{background:#080808;color:#fff;height:100vh;overflow:hidden;display:flex;flex-direction:column}
 #auth{position:fixed;inset:0;background:#080808;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
-#auth.hide{display:none}
-.box{background:#121212;border:1px solid #222;width:100%;max-width:360px;border-radius:20px;padding:20px}
-.box h1{color:#FFD600;text-align:center;font-weight:900;font-size:28px}
+#auth.hide{display:none!important}
+.box{background:#151515;border:1px solid #222;width:100%;max-width:360px;border-radius:20px;padding:20px}
+.box h1{color:#FFD600;text-align:center;font-weight:900;font-size:30px}
 .box p{color:#777;text-align:center;font-size:12px;margin:6px 0 14px}
-.tabs{display:flex;background:#1a1a1a;border-radius:12px;padding:4px;margin-bottom:12px}
-.t{flex:1;padding:10px;text-align:center;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;color:#666}
+.tabs{display:flex;background:#1e1e1e;border-radius:12px;padding:4px;margin-bottom:12px}
+.t{flex:1;padding:11px;text-align:center;border-radius:9px;font-weight:800;font-size:13px;cursor:pointer;color:#888}
 .t.on{background:#FFD600;color:#000}
-.box input{width:100%;background:#1a1a1a;border:1px solid #333;border-radius:12px;padding:12px;margin-top:10px;color:#fff;outline:none}
-.btn{background:#FFD600;color:#000;border:none;padding:13px;border-radius:12px;font-weight:800;width:100%;margin-top:12px;cursor:pointer;font-size:15px}
+.box input{width:100%;background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:13px;margin-top:10px;color:#fff;outline:none;font-size:14px}
+.btn{background:#FFD600;color:#000;border:none;padding:14px;border-radius:12px;font-weight:900;width:100%;margin-top:14px;cursor:pointer;font-size:15px}
 .header{background:#FFD600;color:#000;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
 .bottom{position:fixed;bottom:0;left:0;right:0;background:#0c0c0c;border-top:1px solid #1e1e1e;display:flex;justify-content:space-around;padding:8px 0 14px;z-index:20}
 .nav{flex:1;text-align:center;color:#555;font-size:10px;font-weight:700}
@@ -26,7 +26,7 @@ body{background:#080808;color:#fff;height:100vh;overflow:hidden;display:flex;fle
 .tab{flex:1;overflow-y:auto;display:none;padding-bottom:78px}
 .tab.active{display:block}
 .item{display:flex;gap:12px;padding:14px;border-bottom:1px solid #121212;align-items:center}
-.av{width:48px;height:48px;border-radius:50%;background:#FFD600;color:#000;display:flex;align-items:center;justify-content:center;font-weight:800;overflow:hidden;flex-shrink:0}
+.av{width:48px;height:48px;border-radius:50%;background:#FFD600;color:#000;display:flex;align-items:center;justify-content:center;font-weight:800;overflow:hidden}
 .av img{width:100%;height:100%;object-fit:cover;object-position:center}
 .card{background:#121212;margin:12px;border-radius:16px;padding:14px;border:1px solid #1e1e1e}
 .card h3{color:#FFD600;font-size:14px}
@@ -36,7 +36,7 @@ input,textarea{width:100%;background:#1a1a1a;border:1px solid #2a2a2a;color:#fff
 .cover img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
 .cover span{position:absolute;bottom:10px;right:12px;background:rgba(0,0,0,0.6);padding:5px 10px;border-radius:14px;font-size:11px}
 .pWrap{margin-top:-40px;margin-left:16px;display:flex;gap:12px;align-items:end}
-.pAv{width:90px;height:90px;border-radius:50%;border:4px solid #080808;background:#FFD600;color:#000;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:900;overflow:hidden;cursor:pointer}
+.pAv{width:92px;height:92px;border-radius:50%;border:4px solid #080808;background:#FFD600;color:#000;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:900;overflow:hidden;cursor:pointer}
 .pAv img{width:100%;height:100%;object-fit:cover;object-position:center top}
 #chatView{position:fixed;inset:0;background:#080808;z-index:100;display:none;flex-direction:column}
 #chatView.show{display:flex}
@@ -47,8 +47,6 @@ input,textarea{width:100%;background:#1a1a1a;border:1px solid #2a2a2a;color:#fff
 .other{align-self:flex-start;background:#1e1e1e}
 .send{display:flex;gap:8px;padding:10px;background:#111}
 .send input{margin:0;flex:1;background:#1e1e1e}
-.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#222;padding:10px 16px;border-radius:20px;font-size:13px;display:none;z-index:99999;border:1px solid #333}
-.toast.show{display:block}
 .hideFile{display:none}
 .aImg{width:100%;border-radius:12px;margin-top:8px;max-height:240px;object-fit:cover;object-position:center}
 </style>
@@ -58,41 +56,43 @@ input,textarea{width:100%;background:#1a1a1a;border:1px solid #2a2a2a;color:#fff
 <div id="auth">
 <div class="box">
 <h1>PIZCHAT</h1>
-<p id="authSub">Create account to continue</p>
-<div class="tabs"><div class="t on" id="tabLogin" onclick="showTab('login')">Login</div><div class="t" id="tabSignup" onclick="showTab('signup')">Sign Up</div></div>
-
-<div id="loginDiv">
-<input id="loginEmail" type="email" placeholder="Email">
-<input id="loginPass" type="password" placeholder="Password">
-<button class="btn" onclick="loginNow()">LOGIN</button>
+<p id="sub">Create account to continue</p>
+<div class="tabs">
+<div class="t" id="tL" onclick="showLogin()">Login</div>
+<div class="t on" id="tS" onclick="showSignup()">Sign Up</div>
 </div>
 
-<div id="signupDiv" style="display:none">
-<input id="suName" placeholder="Full Name">
-<input id="suPhone" type="tel" placeholder="Phone e.g 08012345678">
-<input id="suEmail" type="email" placeholder="Email">
-<input id="suPass" type="password" placeholder="Password min 6">
-<button class="btn" onclick="signupNow()">CREATE ACCOUNT</button>
+<div id="loginBox" style="display:none">
+<input id="lE" type="email" placeholder="Email">
+<input id="lP" type="password" placeholder="Password">
+<button class="btn" onclick="doLogin()">LOGIN</button>
 </div>
 
-<p style="color:#444;font-size:10px;text-align:center;margin-top:12px">Login go save automatically - no need to login again</p>
+<div id="signupBox">
+<input id="sN" placeholder="Full Name e.g John Doe">
+<input id="sPh" type="tel" placeholder="Phone e.g 08012345678">
+<input id="sE" type="email" placeholder="Email e.g john@gmail.com">
+<input id="sPw" type="password" placeholder="Password min 6">
+<button class="btn" onclick="doSignup()">CREATE ACCOUNT</button>
+</div>
+
+<p style="color:#333;font-size:10px;text-align:center;margin-top:12px">Auto-login saves forever ✅</p>
 </div>
 </div>
 
-<div class="header"><h1>PIZCHAT</h1><div style="display:flex;gap:16px;font-size:20px"><span onclick="document.getElementById('searchBar').classList.toggle('open')">🔍</span><span onclick="logoutNow()">🚪</span></div></div>
-<div id="searchBar" style="height:0;overflow:hidden;background:#111;transition:0.2s;display:flex;gap:8px;padding:0 12px"><input id="searchInput" style="flex:1;background:#1e1e1e;border:none;border-radius:20px;padding:8px 12px;color:#fff;margin:0" placeholder="Search..." oninput="renderChats(this.value)"><span onclick="document.getElementById('searchBar').classList.remove('open')" style="cursor:pointer">✕</span></div>
+<div class="header"><h1>PIZCHAT</h1><div style="display:flex;gap:14px"><span onclick="openTab('chats',0)" style="cursor:pointer">🔍</span><span onclick="logout()" style="cursor:pointer">🚪</span></div></div>
 
 <div id="tab-chats" class="tab active"><div id="chatList"></div></div>
-<div id="tab-community" class="tab"><div class="card"><h3>Community</h3><input id="cName" placeholder="Name"><input id="cDesc" placeholder="Desc"><button class="btn" onclick="createComm()">Create</button></div><div id="commList"></div></div>
-<div id="tab-advert" class="tab"><div class="card"><h3>Post Advert</h3><input id="adTitle" placeholder="Product"><input id="adPrice" placeholder="Price"><textarea id="adDesc" placeholder="Desc"></textarea><input type="file" id="adFile" class="hideFile" accept="image/*" onchange="previewAd(event)"><img id="adPrev" class="aImg" style="display:none"><button class="btn2" onclick="document.getElementById('adFile').click()">📷 Add Photo</button><button class="btn" onclick="postAd()">Post</button></div><div id="adList"></div></div>
-<div id="tab-camera" class="tab"><div style="text-align:center;padding-top:80px"><div style="font-size:60px">📷</div><p style="color:#666">Camera works with HTTPS</p><button class="btn" style="width:auto;margin-top:12px" onclick="alert('Camera needs HTTPS - use advert photo upload')">Test Camera</button></div></div>
+<div id="tab-community" class="tab"><div class="card"><h3>Community</h3><input id="cN" placeholder="Name"><input id="cD" placeholder="Desc"><button class="btn" onclick="createComm()">Create</button></div><div id="commList"></div></div>
+<div id="tab-advert" class="tab"><div class="card"><h3>Post Advert</h3><input id="aT" placeholder="Product"><input id="aP" placeholder="Price"><textarea id="aD" placeholder="Desc"></textarea><input type="file" id="aF" class="hideFile" accept="image/*" onchange="prevAd(event)"><img id="aPrev" class="aImg" style="display:none"><button class="btn2" onclick="document.getElementById('aF').click()">📷 Add Photo</button><button class="btn" onclick="postAd()">Post</button></div><div id="adList"></div></div>
+<div id="tab-camera" class="tab"><div style="text-align:center;padding-top:80px"><div style="font-size:60px">📷</div><p>Camera tab</p></div></div>
 
 <div id="tab-profile" class="tab">
-<div class="cover" onclick="document.getElementById('coverF').click()"><img id="coverI" style="display:none"><span>Tap to change cover</span></div>
-<div class="pWrap"><div class="pAv" id="pAv" onclick="document.getElementById('avF').click()">P</div><div><div id="pNameV" style="font-weight:800">User</div><div id="pHandleV" style="color:#FFD600;font-size:12px">@user</div><div id="pPhoneV" style="color:#888;font-size:10px"></div></div></div>
-<div class="card"><h3>Edit Profile - FULL PICTURE NO CUT</h3><input id="pName" placeholder="Name"><input id="pHandle" placeholder="Handle"><input id="pMiddle" placeholder="Middle name"><textarea id="pBio" placeholder="Bio"></textarea><input id="pLink" placeholder="Link"><button class="btn" onclick="saveProfile()">Save</button><button class="btn2" onclick="logoutNow()">Logout</button></div>
-<div class="card"><h3>Your Link</h3><p id="linkT" style="color:#FFD600;font-size:11px;word-break:break-all"></p></div>
-<input type="file" id="avF" class="hideFile" accept="image/*" onchange="uploadAv(event)"><input type="file" id="coverF" class="hideFile" accept="image/*" onchange="uploadCover(event)">
+<div class="cover" onclick="document.getElementById('cF').click()"><img id="cI" style="display:none"><span>Change cover</span></div>
+<div class="pWrap"><div class="pAv" id="pAv" onclick="document.getElementById('aF2').click()">P</div><div><div id="pNV" style="font-weight:800">User</div><div id="pHV" style="color:#FFD600;font-size:12px">@user</div><div id="pPV" style="color:#888;font-size:10px"></div></div></div>
+<div class="card"><h3>Edit Profile - FULL NO CUT</h3><input id="pN" placeholder="Name"><input id="pH" placeholder="Handle"><input id="pM" placeholder="Middle"><textarea id="pB" placeholder="Bio"></textarea><input id="pL" placeholder="Link"><button class="btn" onclick="saveP()">Save</button><button class="btn2" onclick="logout()">Logout</button></div>
+<div class="card"><h3>Link</h3><p id="lT" style="color:#FFD600;font-size:11px;word-break:break-all"></p></div>
+<input type="file" id="aF2" class="hideFile" accept="image/*" onchange="upAv(event)"><input type="file" id="cF" class="hideFile" accept="image/*" onchange="upCover(event)">
 </div>
 
 <div class="bottom">
@@ -103,101 +103,96 @@ input,textarea{width:100%;background:#1a1a1a;border:1px solid #2a2a2a;color:#fff
 <div class="nav" onclick="openTab('profile',4)"><b>👤</b>Profile</div>
 </div>
 
-<div id="chatView"><div class="cHead"><span onclick="closeChat()" style="font-size:24px">←</span><div class="av" id="cvAv">A</div><div id="cvName" style="font-weight:800">Name</div></div><div class="msgs" id="msgs"></div><div class="send"><input id="mInput" placeholder="Type..." onkeydown="if(event.key==='Enter')sendMsg()"><button class="btn" style="width:auto;margin:0" onclick="sendMsg()">➤</button></div></div>
-<div class="toast" id="toast"></div>
+<div id="chatView"><div class="cHead"><span onclick="closeChat()" style="font-size:24px">←</span><div class="av" id="cvAv">A</div><div id="cvName" style="font-weight:800">Name</div></div><div class="msgs" id="msgs"></div><div class="send"><input id="mI" placeholder="Type..." onkeydown="if(event.key==='Enter')sendMsg()"><button class="btn" style="width:auto;margin:0" onclick="sendMsg()">➤</button></div></div>
 
 <script>
-function showToast(m){var el=document.getElementById('toast');el.innerText=m;el.classList.add('show');setTimeout(function(){el.classList.remove('show')},2500)}
-
-function showTab(which){
-  document.getElementById('tabLogin').className = which==='login' ? 't on' : 't';
-  document.getElementById('tabSignup').className = which==='signup' ? 't on' : 't';
-  document.getElementById('loginDiv').style.display = which==='login' ? 'block' : 'none';
-  document.getElementById('signupDiv').style.display = which==='signup' ? 'block' : 'none';
-  document.getElementById('authSub').innerText = which==='login' ? 'Login to your account' : 'Create new account';
+function showLogin(){
+ document.getElementById('tL').className='t on';
+ document.getElementById('tS').className='t';
+ document.getElementById('loginBox').style.display='block';
+ document.getElementById('signupBox').style.display='none';
+ document.getElementById('sub').innerText='Login to your account';
+}
+function showSignup(){
+ document.getElementById('tL').className='t';
+ document.getElementById('tS').className='t on';
+ document.getElementById('loginBox').style.display='none';
+ document.getElementById('signupBox').style.display='block';
+ document.getElementById('sub').innerText='Create account to continue';
 }
 
-function signupNow(){
-  var name = document.getElementById('suName').value.trim();
-  var phone = document.getElementById('suPhone').value.trim();
-  var email = document.getElementById('suEmail').value.trim().toLowerCase();
-  var pass = document.getElementById('suPass').value.trim();
-  if(!name){showToast('Enter name');return}
-  if(!phone){showToast('Enter phone');return}
-  if(!email){showToast('Enter email');return}
-  if(pass.length<6){showToast('Password min 6 chars');return}
-  
-  var users = JSON.parse(localStorage.getItem('PZ_USERS')||'[]');
-  if(users.find(function(u){return u.email===email})){showToast('Email already exists - Login');showTab('login');return}
-  
-  var user = {name:name, phone:phone, email:email, pass:pass, handle:'@'+name.split(' ')[0].toLowerCase(), av:'', cover:'', id:Date.now()};
-  users.push(user);
-  localStorage.setItem('PZ_USERS', JSON.stringify(users));
-  localStorage.setItem('PZ_CURRENT', JSON.stringify(user));
-  localStorage.setItem('PZ_PROFILE', JSON.stringify({name:name, handle:user.handle, phone:phone, email:email, av:'', cover:'', bio:'', link:'https://bb4101436-boop.github.io/Pizchat-/', middle:''}));
-  
-  document.getElementById('auth').classList.add('hide');
-  showToast('Account created! Welcome '+name);
-  loadProfile();
-  renderAll();
+function doSignup(){
+ var n=document.getElementById('sN').value.trim();
+ var ph=document.getElementById('sPh').value.trim();
+ var e=document.getElementById('sE').value.trim().toLowerCase();
+ var p=document.getElementById('sPw').value.trim();
+ if(!n){alert('Enter Full Name');return}
+ if(!ph){alert('Enter Phone');return}
+ if(!e){alert('Enter Email');return}
+ if(p.length<6){alert('Password must be 6+ characters');return}
+ var users=JSON.parse(localStorage.getItem('PZ_USERS')||'[]');
+ for(var i=0;i<users.length;i++){if(users[i].email===e){alert('Email already exists! Go to Login');showLogin();return}}
+ var u={name:n,phone:ph,email:e,pass:p,handle:'@'+n.split(' ')[0].toLowerCase(),av:'',cover:'',id:Date.now()};
+ users.push(u);
+ localStorage.setItem('PZ_USERS',JSON.stringify(users));
+ localStorage.setItem('PZ_CURRENT',JSON.stringify(u));
+ localStorage.setItem('PZ_PROFILE',JSON.stringify({name:n,handle:u.handle,phone:ph,email:e,av:'',cover:'',bio:'',middle:'',link:'https://bb4101436-boop.github.io/Pizchat-/'}));
+ alert('SUCCESS! Account created for '+n+' - Auto login saved!');
+ document.getElementById('auth').classList.add('hide');
+ loadP();renderAll();
 }
 
-function loginNow(){
-  var email = document.getElementById('loginEmail').value.trim().toLowerCase();
-  var pass = document.getElementById('loginPass').value.trim();
-  if(!email||!pass){showToast('Enter email & password');return}
-  var users = JSON.parse(localStorage.getItem('PZ_USERS')||'[]');
-  var found = null;
-  for(var i=0;i<users.length;i++){if(users[i].email===email && users[i].pass===pass){found=users[i];break}}
-  if(!found){showToast('Wrong email or password - Signup first if new');return}
-  localStorage.setItem('PZ_CURRENT', JSON.stringify(found));
-  var prof = JSON.parse(localStorage.getItem('PZ_PROFILE')||'{}');
-  prof.name = found.name; prof.phone = found.phone; prof.email = found.email; prof.handle = found.handle; prof.av = found.av||prof.av; prof.cover = found.cover||prof.cover;
-  localStorage.setItem('PZ_PROFILE', JSON.stringify(prof));
-  document.getElementById('auth').classList.add('hide');
-  showToast('Welcome back '+found.name);
-  loadProfile();
-  renderAll();
+function doLogin(){
+ var e=document.getElementById('lE').value.trim().toLowerCase();
+ var p=document.getElementById('lP').value.trim();
+ if(!e||!p){alert('Enter Email and Password');return}
+ var users=JSON.parse(localStorage.getItem('PZ_USERS')||'[]');
+ var found=null;
+ for(var i=0;i<users.length;i++){if(users[i].email===e && users[i].pass===p){found=users[i];break}}
+ if(!found){alert('Wrong Email or Password! If new, click Sign Up');return}
+ localStorage.setItem('PZ_CURRENT',JSON.stringify(found));
+ alert('Welcome back '+found.name+'!');
+ document.getElementById('auth').classList.add('hide');
+ loadP();renderAll();
 }
 
-function logoutNow(){
-  if(confirm('Logout?')){
-    localStorage.removeItem('PZ_CURRENT');
-    document.getElementById('auth').classList.remove('hide');
-    showTab('login');
-    showToast('Logged out');
-  }
+function logout(){if(confirm('Logout?')){localStorage.removeItem('PZ_CURRENT');location.reload()}}
+
+function checkAuth(){
+ var cur=localStorage.getItem('PZ_CURRENT');
+ if(cur){
+  try{var u=JSON.parse(cur);if(u&&u.email){document.getElementById('auth').classList.add('hide');return true}}catch(e){}
+ }
+ document.getElementById('auth').classList.remove('hide');
+ showSignup();
+ return false;
 }
 
-function checkLogin(){
-  var cur = localStorage.getItem('PZ_CURRENT');
-  if(cur){
-    try{var u=JSON.parse(cur);if(u&&u.email){document.getElementById('auth').classList.add('hide');return true}}catch(e){}
-  }
-  document.getElementById('auth').classList.remove('hide');
-  return false;
-}
+var chats=JSON.parse(localStorage.getItem('PZ_CHATS')||'[{"id":1,"name":"Advert Store","l":"A","last":"New product!","time":"Now","msgs":[]},{"id":2,"name":"PizTeam","l":"P","last":"Welcome","time":"Now","msgs":[]}]');
+var comms=JSON.parse(localStorage.getItem('PZ_COMMS')||'[{"name":"Lagos Sellers","desc":"Buy & sell","m":1200}]');
+var adverts=JSON.parse(localStorage.getItem('PZ_ADS')||'[]');
+var profile=JSON.parse(localStorage.getItem('PZ_PROFILE')||'{"name":"User","handle":"@user","middle":"","bio":"","link":"https://bb4101436-boop.github.io/Pizchat-/","av":"","cover":"","phone":"","email":""}');
+var curChat=null,adImg='';
 
-var chats = JSON.parse(localStorage.getItem('PZ_CHATS')||'[{"id":1,"name":"Advert Store","l":"A","last":"New product!","time":"Now","msgs":[]},{"id":2,"name":"PizTeam","l":"P","last":"Welcome!","time":"Now","msgs":[]}]');
-var comms = JSON.parse(localStorage.getItem('PZ_COMMS')||'[{"name":"Lagos Sellers","desc":"Buy & sell","m":1200}]');
-var adverts = JSON.parse(localStorage.getItem('PZ_ADS')||'[]');
-var profile = JSON.parse(localStorage.getItem('PZ_PROFILE')||'{"name":"User","handle":"@user","middle":"","bio":"","link":"https://bb4101436-boop.github.io/Pizchat-/","av":"","cover":"","phone":"","email":""}');
-var curChat=null, adImg='';
-
-function renderAll(){renderChats();renderComms();renderAds();loadProfile()}
-function renderChats(f){var q=(f||'').toLowerCase();var list=chats.filter(function(c){return c.name.toLowerCase().includes(q)});document.getElementById('chatList').innerHTML=list.map(function(c){return '<div class="item" onclick="openChat('+c.id+')"><div class="av">'+c.l+'</div><div style="flex:1"><div class="row"><span style="font-weight:700">'+c.name+'</span><span style="font-size:11px;color:#777">'+c.time+'</span></div><div style="color:#999;font-size:13px">'+c.last+'</div></div></div>'}).join('')}
-function renderComms(){document.getElementById('commList').innerHTML=comms.map(function(c){return '<div class="item"><div class="av">'+c.name[0]+'</div><div style="flex:1"><div style="font-weight:700">'+c.name+'</div><div style="color:#999;font-size:12px">'+c.desc+'</div></div><button class="btn" style="width:auto;padding:6px 12px;margin:0" onclick="showToast(\'Joined!\')">Join</button></div>'}).join('')}
+function renderAll(){renderChats();renderComms();renderAds();loadP()}
+function renderChats(){document.getElementById('chatList').innerHTML=chats.map(function(c){return '<div class="item" onclick="openChat('+c.id+')"><div class="av">'+c.l+'</div><div style="flex:1"><div style="display:flex;justify-content:space-between"><span style="font-weight:700">'+c.name+'</span><span style="font-size:11px;color:#777">'+c.time+'</span></div><div style="color:#999;font-size:13px">'+c.last+'</div></div></div>'}).join('')}
+function renderComms(){document.getElementById('commList').innerHTML=comms.map(function(c){return '<div class="item"><div class="av">'+c.name[0]+'</div><div style="flex:1"><div style="font-weight:700">'+c.name+'</div><div style="color:#999;font-size:12px">'+c.desc+'</div></div></div>'}).join('')}
 function renderAds(){document.getElementById('adList').innerHTML=adverts.map(function(a,i){return '<div class="card"><h3>'+a.title+' • '+a.price+'</h3>'+(a.img?'<img src="'+a.img+'" class="aImg">':'')+'<p style="color:#999;font-size:13px;margin-top:6px">'+a.desc+'</p><button class="btn2" onclick="delAd('+i+')">Delete</button></div>'}).join('')||'<p style="text-align:center;color:#444;margin-top:20px">No adverts</p>'}
-function openTab(n,i){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});document.getElementById('tab-'+n).classList.add('active');document.querySelectorAll('.nav').forEach(function(x){x.classList.remove('active')});document.querySelectorAll('.nav')[i].classList.add('active');if(n==='profile')loadProfile()}
+function openTab(n,i){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});document.getElementById('tab-'+n).classList.add('active');document.querySelectorAll('.nav').forEach(function(x){x.classList.remove('active')});document.querySelectorAll('.nav')[i].classList.add('active')}
 function openChat(id){curChat=chats.find(function(c){return c.id===id});document.getElementById('cvName').innerText=curChat.name;document.getElementById('cvAv').innerText=curChat.l;document.getElementById('msgs').innerHTML=curChat.msgs.map(function(m){return '<div class="msg '+(m.f==='me'?'me':'other')+'">'+m.t+'</div>'}).join('')||'<p style="text-align:center;color:#555">Say hi!</p>';document.getElementById('chatView').classList.add('show')}
 function closeChat(){document.getElementById('chatView').classList.remove('show');save()}
-function sendMsg(){var inp=document.getElementById('mInput');var t=inp.value.trim();if(!t||!curChat)return;curChat.msgs.push({f:'me',t:t});curChat.last='You: '+t;inp.value='';openChat(curChat.id);renderChats();save()}
-function createComm(){var n=document.getElementById('cName').value,d=document.getElementById('cDesc').value;if(!n){showToast('Enter name');return}comms.unshift({name:n,desc:d,m:1});save();document.getElementById('cName').value='';document.getElementById('cDesc').value='';renderComms();showToast('Created!')}
-function previewAd(e){var f=e.target.files[0];var r=new FileReader();r.onload=function(ev){adImg=ev.target.result;document.getElementById('adPrev').src=adImg;document.getElementById('adPrev').style.display='block'};r.readAsDataURL(f)}
-function postAd(){var t=document.getElementById('adTitle').value,p=document.getElementById('adPrice').value,d=document.getElementById('adDesc').value;if(!t||!p){showToast('Add title & price');return}adverts.unshift({title:t,price:p,desc:d,img:adImg});save();document.getElementById('adTitle').value='';document.getElementById('adPrice').value='';document.getElementById('adDesc').value='';document.getElementById('adPrev').style.display='none';adImg='';renderAds();showToast('Posted!');openTab('chats',0)}
+function sendMsg(){var inp=document.getElementById('mI');var t=inp.value.trim();if(!t||!curChat)return;curChat.msgs.push({f:'me',t:t});curChat.last='You: '+t;inp.value='';openChat(curChat.id);renderChats();save()}
+function createComm(){var n=document.getElementById('cN').value,d=document.getElementById('cD').value;if(!n){alert('Enter name');return}comms.unshift({name:n,desc:d,m:1});save();renderComms()}
+function prevAd(e){var f=e.target.files[0];var r=new FileReader();r.onload=function(ev){adImg=ev.target.result;document.getElementById('aPrev').src=adImg;document.getElementById('aPrev').style.display='block'};r.readAsDataURL(f)}
+function postAd(){var t=document.getElementById('aT').value,p=document.getElementById('aP').value,d=document.getElementById('aD').value;if(!t||!p){alert('Add title & price');return}adverts.unshift({title:t,price:p,desc:d,img:adImg});save();renderAds();alert('Posted!')}
 function delAd(i){if(confirm('Delete?')){adverts.splice(i,1);save();renderAds()}}
 function save(){localStorage.setItem('PZ_CHATS',JSON.stringify(chats));localStorage.setItem('PZ_ADS',JSON.stringify(adverts));localStorage.setItem('PZ_COMMS',JSON.stringify(comms));localStorage.setItem('PZ_PROFILE',JSON.stringify(profile))}
-function saveProfile(){profile.name=document.getElementById('pName').value||profile.name;profile.handle=document.getElementById('pHandle').value||profile.handle;profile.middle=document.getElementById('pMiddle').value;profile.bio=document.getElementById('pBio').value;profile.link=document.getElementById('pLink').value||profile.link;save();var cur=JSON.parse(localStorage.getItem('PZ_CURRENT')||'{}');cur.name=profile.name;cur.handle=profile.handle;cur.av=profile.av;cur.cover=profile.cover;localStorage.setItem('PZ_CURRENT',JSON.stringify(cur));var users=JSON.parse(localStorage.getItem('PZ_USERS')||'[]');var idx=users.findIndex(function(u){return u.email===cur.email});if(idx>-1){users[idx]=cur;localStorage.setItem('PZ_USERS',JSON.stringify(users))}loadProfile();showToast('Saved!')}
-function loadProfile(){var p=JSON.parse(localStorage.getItem('PZ_PROFILE')||'{}');profile=p.name?p:profile;document.getElementById('pName').value=profile.name||'';document.getElementById('pHandle').value=profile.handle||'';document.getElementById('pMiddle').value=profile.middle||'';document.getElementById('pBio').value=profile.bio||'';document.getElementById('pLink').value=profile.link||'https://bb4101436-boop.github.io/Pizchat-/';document.getElementById('pNameV').innerText=profile.name+(profile.middle?' '+profile.middle:'');document.getElementById('pHandleV').innerText=profile.handle;document.getElementById('pPhoneV').innerText=(profile.phone||'')+' '+(profile.email||'');document.getElementById('linkT').innerText=profile.link;if(profile.av){document.getElementById('pAv').innerHTML='<img src="'+profile.av+'">'}else{document.getElementById('pAv').innerText=(profile.name||'P')[0].toUpperCase()}if(profile.cover){document.getElementById('coverI').src=profile.cover;document.getElementById('coverI').style.display='block'}}
-function uploadAv(e){var f=e.target.files[0];var r=new FileReader();r.onload=function(ev){profile.av=ev.target.result;save();var cur=JSON.parse(localStorage.getItem('PZ_CURRENT')||'{}');cur.av=ev.target.result;localStorage.setItem('PZ_CURRENT',JSON.stringify(cur));var users=JSON.parse(localStorage.getItem('PZ_USERS')||'[]');var idx=users.findIndex(function(u){return u.email===cur.email});if(idx>-1){users[idx].av=ev.target.result;localStorage.setItem('PZ_USERS',JSON.stringify(users))}loadProfile();showToast('Profile photo FULL - no cut!')};r.readAsDataURL(f)}
-function uploadCover(e){var f=e.target.files[0];var r=new FileReader();r.onload=function(ev){profile.cover=ev.target.result;save();var cur=JSON.parse(localStorage.getItem('PZ_CURRENT')||'{}');cur.cover=ev.target.result;localStorage.setItem('PZ_CURRENT',JSON.stringify(cur));var users=JSON.parse(localStorage.getItem('PZ_USERS')||'[]');var idx=users.findIndex(function(u){return u.email===cur.email});if(idx>-1){users[idx].cover=ev.target.result;localStorage.setItem('PZ_USERS',JSON.stringify(users))}loadProfile()
+function saveP(){profile.name=document.getElementById('pN').value||profile.name;profile.handle=document.getElementById('pH').value||profile.handle;profile.middle=document.getElementById('pM').value;profile.bio=document.getElementById('pB').value;profile.link=document.getElementById('pL').value||profile.link;save();loadP();alert('Saved!')}
+function loadP(){var p=JSON.parse(localStorage.getItem('PZ_PROFILE')||'null');if(p&&p.name)profile=p;document.getElementById('pN').value=profile.name||'';document.getElementById('pH').value=profile.handle||'';document.getElementById('pM').value=profile.middle||'';document.getElementById('pB').value=profile.bio||'';document.getElementById('pL').value=profile.link||'';document.getElementById('pNV').innerText=profile.name+(profile.middle?' '+profile.middle:'');document.getElementById('pHV').innerText=profile.handle;document.getElementById('pPV').innerText=(profile.phone||'')+' '+ (profile.email||'');document.getElementById('lT').innerText=profile.link;if(profile.av){document.getElementById('pAv').innerHTML='<img src="'+profile.av+'">'}else{document.getElementById('pAv').innerText=(profile.name||'P')[0].toUpperCase()}if(profile.cover){document.getElementById('cI').src=profile.cover;document.getElementById('cI').style.display='block'}}
+function upAv(e){var f=e.target.files[0];var r=new FileReader();r.onload=function(ev){profile.av=ev.target.result;save();var cur=JSON.parse(localStorage.getItem('PZ_CURRENT')||'{}');cur.av=ev.target.result;localStorage.setItem('PZ_CURRENT',JSON.stringify(cur));loadP();alert('Profile photo saved FULL! No cut!')};r.readAsDataURL(f)}
+function upCover(e){var f=e.target.files[0];var r=new FileReader();r.onload=function(ev){profile.cover=ev.target.result;save();var cur=JSON.parse(localStorage.getItem('PZ_CURRENT')||'{}');cur.cover=ev.target.result;localStorage.setItem('PZ_CURRENT',JSON.stringify(cur));loadP();alert('Cover saved FULL!')};r.readAsDataURL(f)}
+
+checkAuth();renderAll();
+</script>
+</body>
+</html>
