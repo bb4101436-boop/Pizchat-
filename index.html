@@ -1,289 +1,198 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>PizChat - Contact Sync</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
-body{background:#080808;color:#fff;height:100vh;display:flex;flex-direction:column;overflow:hidden}
-#auth{position:fixed;inset:0;background:#080808;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
-#auth.hide{display:none!important}
-.box{background:#151515;border:1px solid #222;width:100%;max-width:380px;border-radius:20px;padding:22px}
-.box h1{color:#FFD600;text-align:center;font-weight:900;font-size:32px}
-.tRow{display:flex;background:#1e1e1e;border-radius:12px;padding:4px;margin-bottom:14px}
-.t{flex:1;padding:11px;text-align:center;border-radius:9px;font-weight:800;cursor:pointer;color:#888}
-.t.on{background:#FFD600;color:#000}
-.box input{width:100%;background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:13px;margin-top:10px;color:#fff;outline:none}
-.btn{background:#FFD600;color:#000;border:none;padding:14px;border-radius:12px;font-weight:900;width:100%;margin-top:14px;cursor:pointer}
-.header{background:#FFD600;color:#000;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
-.bottom{position:fixed;bottom:0;left:0;right:0;background:#0c0c0c;border-top:1px solid #1e1e1e;display:flex;justify-content:space-around;padding:8px 0 14px;z-index:20}
-.nav{flex:1;text-align:center;color:#555;font-size:10px;font-weight:700;cursor:pointer}
-.nav.active{color:#FFD600}
-.nav b{font-size:20px;display:block}
-.tab{flex:1;overflow-y:auto;display:none;padding-bottom:78px}
-.tab.active{display:block}
-.item{display:flex;gap:12px;padding:14px;border-bottom:1px solid #121212;align-items:center;cursor:pointer}
-.av{width:48px;height:48px;border-radius:50%;background:#FFD600;color:#000;display:flex;align-items:center;justify-content:center;font-weight:800;overflow:hidden;flex-shrink:0}
-.av img{width:100%;height:100%;object-fit:cover}
-.card{background:#121212;margin:12px;border-radius:16px;padding:14px;border:1px solid #1e1e1e}
-.card h3{color:#FFD600;font-size:14px}
-.btn2{background:#1e1e1e;color:#fff;border:1px solid #2a2a2a;padding:10px;border-radius:10px;width:100%;margin-top:8px;cursor:pointer}
-input,textarea{width:100%;background:#1a1a1a;border:1px solid #2a2a2a;color:#fff;padding:12px;border-radius:12px;margin-top:8px;outline:none}
-.cover{height:180px;background:#222;position:relative;overflow:hidden;border-radius:0 0 20px 20px;cursor:pointer}
-.cover img{width:100%;height:100%;object-fit:cover;display:block}
-.pWrap{margin-top:-40px;margin-left:16px;display:flex;gap:12px;align-items:end}
-.pAv{width:92px;height:92px;border-radius:50%;border:4px solid #080808;background:#FFD600;color:#000;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:900;overflow:hidden;cursor:pointer}
-.pAv img{width:100%;height:100%;object-fit:cover}
-#chatView{position:fixed;inset:0;background:#080808;z-index:100;display:none;flex-direction:column}
-#chatView.show{display:flex}
-.cHead{background:#FFD600;color:#000;padding:12px;display:flex;gap:10px;align-items:center}
-.msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:#0a0a0a}
-.msg{max-width:78%;padding:10px 12px;border-radius:16px;font-size:14px;word-break:break-word}
-.me{align-self:flex-end;background:#FFD600;color:#000}
-.other{align-self:flex-start;background:#1e1e1e}
-.send{display:flex;gap:8px;padding:10px;background:#111}
-.send input{margin:0;flex:1;background:#1e1e1e}
-.hideFile{display:none}
-.aImg{width:100%;border-radius:12px;margin-top:8px;max-height:280px;object-fit:cover}
-.syncBox{background:#FFD600;color:#000;margin:12px;border-radius:16px;padding:16px;text-align:center}
-.syncBox p{font-size:12px;margin-top:6px;font-weight:600}
-</style>
-</head>
-<body>
+-- Enable necessary extensions
+create extension if not exists "uuid-ossp";
 
-<div id="auth">
-<div class="box">
-<h1>PIZCHAT</h1>
-<p style="color:#777;text-align:center;font-size:12px;margin:8px 0">WhatsApp Style - Contact Sync</p>
-<div class="tRow"><div class="t on" id="tL" onclick="showLogin()">Login</div><div class="t" id="tS" onclick="showSignup()">Sign Up</div></div>
-<div id="loginB"><input id="lE" type="email" placeholder="Email"><input id="lP" type="password" placeholder="Password"><button class="btn" onclick="login()">LOGIN</button></div>
-<div id="signupB" style="display:none"><input id="sN" placeholder="Full Name"><input id="sPh" type="tel" placeholder="Phone - IMPORTANT! Use same number wey dey your contact! e.g 08012345678"><input id="sE" type="email" placeholder="Email"><input id="sPw" type="password" placeholder="Password 6+"><button class="btn" onclick="signup()">CREATE ACCOUNT</button></div>
-<p id="status" style="color:#FFD600;font-size:11px;text-align:center;margin-top:10px"></p>
-</div>
-</div>
+-- 1. PROFILES TABLE
+create table public.profiles (
+  id uuid references auth.users on delete cascade primary key,
+  username text unique not null,
+  full_name text not null,
+  phone_number text unique not null,
+  date_of_birth date not null,
+  avatar_url text,
+  cover_url text,
+  bio text,
+  website text,
+  phone_visibility text default 'contacts' check (phone_visibility in ('everyone', 'contacts', 'nobody')),
+  online_status boolean default true,
+  last_seen timestamp with time zone default timezone('utc'::text, now()),
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
 
-<div class="header"><h1>PIZCHAT</h1><div style="display:flex;gap:12px;align-items:center"><span style="font-size:12px;color:#000;font-weight:700" id="userNameTop"></span><span onclick="logout()" style="cursor:pointer">🚪</span></div></div>
+alter table public.profiles enable row level security;
 
-<div id="tab-chats" class="tab active">
-<div class="syncBox">
-<h3>📱 Sync Your Phone Contacts</h3>
-<p>Like WhatsApp - See only people you added to your phone!</p>
-<button class="btn2" style="background:#000;color:#FFD600;border:none;font-weight:900;margin-top:12px" onclick="syncContacts()">🔄 SYNC MY CONTACTS NOW</button>
-<button class="btn2" style="background:#111;color:#fff;margin-top:8px" onclick="addManualContact()">➕ Add Contact Manually</button>
-<p id="syncStatus" style="margin-top:10px;font-size:11px"></p>
-</div>
+create policy "Public profiles are viewable by everyone" on public.profiles
+  for select using (true);
 
-<div style="padding:10px 14px;background:#111;display:flex;justify-content:space-between;align-items:center"><span style="font-weight:800;font-size:14px">My Private Chats</span><span style="font-size:10px;color:#777" id="chatCount">0 chats</span></div>
-<div id="chatList"></div>
+create policy "Users can update their own profile" on public.profiles
+  for update using (auth.uid() = id);
 
-<div style="padding:10px 14px;background:#111;margin-top:8px;display:flex;justify-content:space-between"><span style="font-weight:800;font-size:14px">My Contacts on PizChat</span><span style="font-size:10px;color:#00ff00" id="contactCount">0 contacts</span></div>
-<div id="userList"><p style="text-align:center;color:#444;padding:20px">Tap "Sync My Contacts" to see your phone contacts wey dey use PizChat<br><br>Like WhatsApp - Strangers no go show!</p></div>
-</div>
+create policy "Users can insert their own profile" on public.profiles
+  for insert with check (auth.uid() = id);
 
-<div id="tab-community" class="tab"><div class="card"><h3>👥 Community (Public)</h3><input id="cN" placeholder="Name"><input id="cD" placeholder="Desc"><button class="btn" onclick="createComm()">Create</button></div><div id="commList"></div></div>
-<div id="tab-advert" class="tab"><div class="card"><h3>🛒 Advert (Public)</h3><input id="aT" placeholder="Product"><input id="aP" placeholder="Price"><textarea id="aD" placeholder="Desc"></textarea><input type="file" id="aF" class="hideFile" accept="image/*" onchange="prevAd(event)"><img id="aPrev" class="aImg" style="display:none"><button class="btn2" onclick="document.getElementById('aF').click()">📷 Photo</button><button class="btn" onclick="postAd()">Post</button></div><div id="adList"></div></div>
-<div id="tab-camera" class="tab"><div style="padding:12px"><div class="card"><h3>📷 Camera</h3><input type="file" accept="image/*" capture="environment" onchange="camSnap(event)"></div></div></div>
+-- Trigger to auto-create profile on signup
+create or function public.handle_new_user()
+returns trigger as $$
+begin
+  insert into public.profiles (id, username, full_name, phone_number, date_of_birth)
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data->>'username', 'user_' || substr(new.id::text, 1, 8)),
+    coalesce(new.raw_user_meta_data->>'full_name', 'New User'),
+    coalesce(new.raw_user_meta_data->>'phone_number', '+0000000000'),
+    coalesce((new.raw_user_meta_data->>'date_of_birth')::date, '2000-01-01'::date)
+  );
+  return new;
+end;
+$$ language plpgsql security definer;
 
-<div id="tab-profile" class="tab">
-<div class="cover" onclick="document.getElementById('cF').click()"><img id="cI" style="display:none"><span>Change cover FULL</span></div>
-<div class="pWrap"><div class="pAv" id="pAv" onclick="document.getElementById('aF2').click()">P</div><div><div id="pNV" style="font-weight:800">User</div><div id="pHV" style="color:#FFD600;font-size:12px">@user</div><div id="pPV" style="color:#888;font-size:10px"></div></div></div>
-<div class="card"><h3>My Saved Contacts</h3><p id="savedContacts" style="color:#999;font-size:11px">0 contacts synced</p><button class="btn2" onclick="clearContacts()">Clear Contacts</button></div>
-<div class="card"><h3>Edit Profile - FULL NO CUT</h3><input id="pN" placeholder="Name"><input id="pH" placeholder="Handle"><textarea id="pB" placeholder="Bio"></textarea><button class="btn" onclick="saveProfile()">Save</button><button class="btn2" onclick="logout()">Logout</button></div>
-<input type="file" id="aF2" class="hideFile" accept="image/*" onchange="upAv(event)"><input type="file" id="cF" class="hideFile" accept="image/*" onchange="upCover(event)">
-</div>
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
 
-<div class="bottom">
-<div class="nav active" onclick="openTab('chats',0)"><b>💬</b>Chats</div>
-<div class="nav" onclick="openTab('community',1)"><b>👥</b>Community</div>
-<div class="nav" onclick="openTab('advert',2)"><b>🛒</b>Advert</div>
-<div class="nav" onclick="openTab('camera',3)"><b>📷</b>Camera</div>
-<div class="nav" onclick="openTab('profile',4)"><b>👤</b>Profile</div>
-</div>
+-- 2. CONVERSATIONS TABLE
+create table public.conversations (
+  id uuid default uuid_generate_v4() primary key,
+  is_group boolean default false,
+  title text,
+  avatar_url text,
+  created_by uuid references public.profiles(id),
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
 
-<div id="chatView"><div class="cHead"><span onclick="closeChat()" style="font-size:26px;cursor:pointer">←</span><div class="av" id="cvAv">A</div><div style="flex:1"><div id="cvName" style="font-weight:800">Name</div><div style="font-size:11px">🔒 Private - Contact Only</div></div></div><div class="msgs" id="msgs"></div><div class="send"><input id="mI" placeholder="Private message..." onkeydown="if(event.key==='Enter')sendMsg()"><button class="btn" style="width:auto;margin:0;padding:10px 16px" onclick="sendMsg()">➤</button></div></div>
+alter table public.conversations enable row level security;
 
-<script type="module">
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abc"
-};
+-- 3. CONVERSATION MEMBERS TABLE
+create table public.conversation_members (
+  id uuid default uuid_generate_v4() primary key,
+  conversation_id uuid references public.conversations(id) on delete cascade not null,
+  user_id uuid references public.profiles(id) on delete cascade not null,
+  is_admin boolean default false,
+  joined_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  unique(conversation_id, user_id)
+);
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, setDoc, getDoc, updateDoc, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+alter table public.conversation_members enable row level security;
 
-let app, auth, db, useFirebase=false, currentUser=null, currentChatId=null, adImgBase64='', myContacts=[];
+create policy "Users can view conversations they belong to" on public.conversations
+  for select using (
+    exists (
+      select 1 from public.conversation_members
+      where conversation_id = conversations.id and user_id = auth.uid()
+    )
+  );
 
-try{ if(firebaseConfig.apiKey!=="YOUR_API_KEY"){ app=initializeApp(firebaseConfig); auth=getAuth(app); db=getFirestore(app); useFirebase=true; } }catch(e){}
+create policy "Users can view conversation memberships" on public.conversation_members
+  for select using (
+    user_id = auth.uid() or exists (
+      select 1 from public.conversation_members cm
+      where cm.conversation_id = conversation_members.conversation_id and cm.user_id = auth.uid()
+    )
+  );
 
-window.showLogin=()=>{document.getElementById('tL').className='t on';document.getElementById('tS').className='t';document.getElementById('loginB').style.display='block';document.getElementById('signupB').style.display='none';}
-window.showSignup=()=>{document.getElementById('tL').className='t';document.getElementById('tS').className='t on';document.getElementById('loginB').style.display='none';document.getElementById('signupB').style.display='block';}
+-- 4. MESSAGES TABLE
+create table public.messages (
+  id uuid default uuid_generate_v4() primary key,
+  conversation_id uuid references public.conversations(id) on delete cascade not null,
+  sender_id uuid references public.profiles(id) on delete set null,
+  content text not null,
+  media_url text,
+  media_type text,
+  reply_to uuid references public.messages(id) on delete set null,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
 
-window.signup=async()=>{
-  const name=document.getElementById('sN').value.trim(), phone=document.getElementById('sPh').value.trim().replace(/\s/g,''), email=document.getElementById('sE').value.trim(), pass=document.getElementById('sPw').value.trim();
-  if(!name||!phone||!email||pass.length<6){alert('Fill all 4! Phone must be same number for your contact!');return;}
-  try{
-    if(useFirebase){
-      const cred=await createUserWithEmailAndPassword(auth,email,pass);
-      await setDoc(doc(db,"users",cred.user.uid),{name,phone,email,handle:'@'+name.split(' ')[0].toLowerCase(),av:'',cover:'',bio:'',created:serverTimestamp()});
-      currentUser={uid:cred.user.uid,name,phone,email};
-    } else {
-      const users=JSON.parse(localStorage.getItem('PZ_USERS')||'[]');
-      users.push({uid:Date.now().toString(),name,phone,email,pass,handle:'@'+name.split(' ')[0].toLowerCase(),av:'',cover:''});
-      localStorage.setItem('PZ_USERS',JSON.stringify(users));
-      localStorage.setItem('PZ_CURRENT',JSON.stringify({uid:Date.now().toString(),name,phone,email}));
-      currentUser={uid:Date.now().toString(),name,phone,email};
-    }
-    document.getElementById('auth').classList.add('hide'); loadAll();
-  }catch(err){alert(err.message);}
-}
+alter table public.messages enable row level security;
 
-window.login=async()=>{
-  const email=document.getElementById('lE').value.trim(), pass=document.getElementById('lP').value.trim();
-  try{
-    if(useFirebase){
-      const cred=await signInWithEmailAndPassword(auth,email,pass);
-      const snap=await getDoc(doc(db,"users",cred.user.uid));
-      currentUser={uid:cred.user.uid,...snap.data()};
-    } else {
-      const users=JSON.parse(localStorage.getItem('PZ_USERS')||'[]');
-      const f=users.find(u=>u.email===email&&u.pass===pass);
-      if(!f) throw new Error('Wrong');
-      localStorage.setItem('PZ_CURRENT',JSON.stringify(f)); currentUser=f;
-    }
-    document.getElementById('auth').classList.add('hide'); loadAll();
-  }catch(err){alert(err.message);}
-}
+create policy "Users can view messages in their conversations" on public.messages
+  for select using (
+    exists (
+      select 1 from public.conversation_members
+      where conversation_id = messages.conversation_id and user_id = auth.uid()
+    )
+  );
 
-window.logout=async()=>{ if(useFirebase) await signOut(auth); localStorage.removeItem('PZ_CURRENT'); location.reload(); }
+create policy "Users can insert messages into their conversations" on public.messages
+  for insert with check (
+    sender_id = auth.uid() and
+    exists (
+      select 1 from public.conversation_members
+      where conversation_id = messages.conversation_id and user_id = auth.uid()
+    )
+  );
 
-function checkAuth(){
-  myContacts=JSON.parse(localStorage.getItem('PZ_MY_CONTACTS')||'[]');
-  if(useFirebase){
-    onAuthStateChanged(auth, async(user)=>{
-      if(user){ const snap=await getDoc(doc(db,"users",user.uid)); currentUser={uid:user.uid,...snap.data()}; document.getElementById('auth').classList.add('hide'); loadAll(); }
-      else document.getElementById('auth').classList.remove('hide');
-    });
-  } else {
-    const cur=localStorage.getItem('PZ_CURRENT');
-    if(cur){ currentUser=JSON.parse(cur); document.getElementById('auth').classList.add('hide'); loadAll(); }
-    else document.getElementById('auth').classList.remove('hide');
-  }
-}
+-- 5. ADVERTS TABLE (Marketplace)
+create table public.adverts (
+  id uuid default uuid_generate_v4() primary key,
+  user_id uuid references public.profiles(id) on delete cascade not null,
+  title text not null,
+  description text not null,
+  price numeric not null,
+  currency text default 'USD',
+  category text not null,
+  media_urls text[] default '{}',
+  location text,
+  status text default 'active' check (status in ('active', 'paused', 'deleted')),
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
 
-window.loadAll=()=>{
-  if(!currentUser) return;
-  document.getElementById('userNameTop').innerText=currentUser.name;
-  document.getElementById('pNV').innerText=currentUser.name;
-  document.getElementById('pHV').innerText=currentUser.handle||'@'+currentUser.name.split(' ')[0].toLowerCase();
-  document.getElementById('pPV').innerText=(currentUser.phone||'')+' • '+(currentUser.email||'');
-  document.getElementById('pAv').innerHTML=currentUser.av?`<img src="${currentUser.av}">`:currentUser.name[0].toUpperCase();
-  if(currentUser.cover){ document.getElementById('cI').src=currentUser.cover; document.getElementById('cI').style.display='block'; }
-  document.getElementById('pN').value=currentUser.name||'';
-  document.getElementById('pH').value=currentUser.handle||'';
-  document.getElementById('savedContacts').innerText=myContacts.length+' contacts synced - '+myContacts.join(', ');
-  listenMyPrivateChats(); listenMyContactsOnly(); listenAdverts();
-}
+alter table public.adverts enable row level security;
 
-// === CONTACT SYNC LIKE WHATSAPP ===
-window.syncContacts=async()=>{
-  const status=document.getElementById('syncStatus');
-  status.innerText='Requesting contacts...';
-  try{
-    if('contacts' in navigator && 'ContactsManager' in window){
-      const props=['name','tel'];
-      const opts={multiple:true};
-      const contacts=await navigator.contacts.select(props,opts);
-      myContacts=contacts.map(c=>c.tel[0].replace(/\s/g,'')).filter(Boolean);
-      localStorage.setItem('PZ_MY_CONTACTS',JSON.stringify(myContacts));
-      status.innerText='✅ Synced '+myContacts.length+' contacts!';
-      listenMyContactsOnly();
-    } else {
-      // Fallback: prompt manual entry
-      const input=prompt('Phone contact API not supported on this browser.\nEnter your contacts phone numbers separated by comma (like WhatsApp):\nExample: 08012345678, 09066218919, 08123456789');
-      if(input){
-        myContacts=input.split(',').map(s=>s.trim().replace(/\s/g,'')).filter(Boolean);
-        localStorage.setItem('PZ_MY_CONTACTS',JSON.stringify(myContacts));
-        status.innerText='✅ Saved '+myContacts.length+' contacts!';
-        listenMyContactsOnly();
-      }
-    }
-  }catch(err){
-    status.innerText='❌ Permission denied or cancelled. Try Add Manually.';
-  }
-}
+create policy "Adverts are viewable by everyone" on public.adverts
+  for select using (status = 'active' or user_id = auth.uid());
 
-window.addManualContact=()=>{
-  const phone=prompt('Enter contact phone number you want to add (like you add for WhatsApp):\nExample: 08012345678');
-  if(!phone) return;
-  const clean=phone.replace(/\s/g,'');
-  myContacts=JSON.parse(localStorage.getItem('PZ_MY_CONTACTS')||'[]');
-  if(!myContacts.includes(clean)){ myContacts.push(clean); localStorage.setItem('PZ_MY_CONTACTS',JSON.stringify(myContacts)); }
-  document.getElementById('syncStatus').innerText='✅ Added '+clean;
-  listenMyContactsOnly();
-  loadAll();
-}
+create policy "Users can insert their own adverts" on public.adverts
+  for insert with check (user_id = auth.uid());
 
-window.clearContacts=()=>{
-  if(confirm('Clear all synced contacts?')){ localStorage.removeItem('PZ_MY_CONTACTS'); myContacts=[]; document.getElementById('savedContacts').innerText='0 contacts'; listenMyContactsOnly(); }
-}
+create policy "Users can update their own adverts" on public.adverts
+  for update using (user_id = auth.uid());
 
-function normalizePhone(p){ return p.replace(/\D/g,'').slice(-10); }
+-- 6. STATUSES TABLE
+create table public.statuses (
+  id uuid default uuid_generate_v4() primary key,
+  user_id uuid references public.profiles(id) on delete cascade not null,
+  media_url text not null,
+  media_type text not null,
+  caption text,
+  expires_at timestamp with time zone default (timezone('utc'::text, now()) + interval '24 hours') not null,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
 
-function listenMyContactsOnly(){
-  const userList=document.getElementById('userList');
-  const contactCount=document.getElementById('contactCount');
-  myContacts=JSON.parse(localStorage.getItem('PZ_MY_CONTACTS')||'[]');
-  contactCount.innerText=myContacts.length+' contacts';
-  
-  if(myContacts.length===0){
-    userList.innerHTML='<p style="text-align:center;color:#555;padding:20px">No contacts synced yet<br><span style="font-size:12px;color:#FFD600">Tap "Sync My Contacts" above - Like WhatsApp, only your phone contacts wey dey use PizChat go show!</span></p>';
-    return;
-  }
+alter table public.statuses enable row level security;
 
-  if(useFirebase){
-    onSnapshot(collection(db,"users"), (snap)=>{
-      userList.innerHTML='';
-      let found=0;
-      snap.forEach(docSnap=>{
-        if(docSnap.id===currentUser.uid) return;
-        const u=docSnap.data();
-        const userPhoneNorm=normalizePhone(u.phone||'');
-        const isMyContact=myContacts.some(c=>normalizePhone(c)===userPhoneNorm);
-        if(isMyContact){
-          found++;
-          userList.innerHTML+=`<div class="item" onclick="startNewPrivateChat('${docSnap.id}','${u.name}')"><div class="av">${u.av?`<img src="${u.av}">`:u.name[0]}</div><div style="flex:1"><div style="font-weight:700">${u.name} <span style="color:#00ff00;font-size:10px">• Your Contact</span></div><div style="color:#999;font-size:12px">${u.phone} • ${u.handle||''}</div></div><button class="btn" style="width:auto;padding:6px 12px;margin:0">Chat</button></div>`;
-        }
-      });
-      if(found===0) userList.innerHTML='<p style="text-align:center;color:#555;padding:20px">None of your contacts dey use PizChat yet<br><span style="font-size:12px">Invite them! Share https://bb4101436-boop.github.io/Pizchat-/</span></p>';
-      contactCount.innerText=found+' of your contacts on PizChat';
-    });
-  } else {
-    const users=JSON.parse(localStorage.getItem('PZ_USERS')||'[]').filter(u=>u.email!==currentUser.email);
-    let html=''; let found=0;
-    users.forEach(u=>{
-      const userPhoneNorm=normalizePhone(u.phone||'');
-      const isMyContact=myContacts.some(c=>normalizePhone(c)===userPhoneNorm);
-      if(isMyContact){
-        found++;
-        html+=`<div class="item" onclick="startNewPrivateChat('${u.uid}','${u.name}')"><div class="av">${u.av?`<img src="${u.av}">`:u.name[0]}</div><div style="flex:1"><div style="font-weight:700">${u.name} <span style="color:#00ff00;font-size:10px">• Your Contact</span></div><div style="color:#999;font-size:12px">${u.phone}</div></div><button class="btn" style="width:auto;padding:6px 12px;margin:0">Chat</button></div>`;
-      }
-    });
-    userList.innerHTML=html||'<p style="text-align:center;color:#555;padding:20px">None of your synced contacts dey use PizChat yet<br>Invite them! Your phone: 09066218919 go show for them if they add you</p>';
-    contactCount.innerText=found+' of your contacts on PizChat';
-  }
-}
+create policy "Statuses are viewable if active" on public.statuses
+  for select using (expires_at > now());
 
-function listenMyPrivateChats(){
-  const chatList=document.getElementById('chatList');
-  const chatCount=document.getElementById('chatCount');
-  if(useFirebase){
-    const q=query(collection(db,"private_chats"), where("participants","array-contains",currentUser.uid), orderBy("lastTime","desc"));
-    onSnapshot(q,(snap)=>{
-      chatList.innerHTML=''; chatCount.innerText=snap.size+' chats'
+create policy "Users can insert their own statuses" on public.statuses
+  for insert with check (user_id = auth.uid());
+
+-- 7. COMMUNITIES & GROUPS
+create table public.communities (
+  id uuid default uuid_generate_v4() primary key,
+  name text not null,
+  description text,
+  avatar_url text,
+  cover_url text,
+  rules text,
+  is_public boolean default true,
+  created_by uuid references public.profiles(id) not null,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+alter table public.communities enable row level security;
+
+create policy "Communities are viewable by everyone" on public.communities for select using (true);
+create policy "Authenticated users can create communities" on public.communities for insert with check (created_by = auth.uid());
+
+create table public.community_members (
+  id uuid default uuid_generate_v4() primary key,
+  community_id uuid references public.communities(id) on delete cascade not null,
+  user_id uuid references public.profiles(id) on delete cascade not null,
+  is_admin boolean default false,
+  joined_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  unique(community_id, user_id)
+);
+
+alter table public.community_members enable row level security;
+create policy "Community members viewable" on public.community_members for select using (true);
+create policy "Users can join public communities" on public.community_members for insert with check (user_id = auth.uid());
