@@ -2,157 +2,297 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>PizChat - Full WhatsApp Clone</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PizChat - Working</title>
 <script src="https://unpkg.com/peerjs@1.5.3/dist/peerjs.min.js"></script>
 <style>
-:root{--pink:#FF2E8A;--blue:#1E90FF;--bg:#E5DDD5;--wa:#075E54}
-*{box-sizing:border-box;margin:0;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif}
-body{background:var(--bg);display:flex;justify-content:center;min-height:100vh}
-.phone{width:100%;max-width:430px;min-height:100vh;background:#fff;position:relative;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 0 30px rgba(0,0,0,.15)}
-.header{height:60px;background:linear-gradient(90deg,var(--pink),var(--blue));color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:relative;z-index:10}
-.auth{position:fixed;inset:0;background:#fff;z-index:600;display:flex;align-items:center;justify-content:center;padding:20px}
+*{box-sizing:border-box;margin:0;font-family:sans-serif}
+body{display:flex;justify-content:center;background:#E5DDD5;min-height:100vh}
+.phone{width:100%;max-width:430px;background:#fff;min-height:100vh;position:relative;display:flex;flex-direction:column}
+.auth{position:fixed;inset:0;background:#fff;z-index:999;display:flex;align-items:center;justify-content:center;padding:20px}
 .auth.hide{display:none}
-.auth-box{width:100%;max-width:380px;background:#fff;border-radius:20px;padding:22px;box-shadow:0 10px 40px rgba(0,0,0,.12)}
-.logo{width:72px;height:72px;background:linear-gradient(135deg,var(--pink),var(--blue));border-radius:18px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:32px;font-weight:800;margin:0 auto 12px}
-.input{width:100%;padding:13px 14px;border:1.5px solid #e7e7e7;border-radius:12px;margin:7px 0;font-size:15px;outline:none}
-.input:focus{border-color:var(--pink)}
-.btn{width:100%;padding:14px;background:linear-gradient(90deg,var(--pink),var(--blue));border:none;color:#fff;border-radius:12px;font-weight:700;margin-top:10px;cursor:pointer}
-.btn-sec{background:#f2f2f2;color:#333}
-.pfp{width:96px;height:96px;border-radius:50%;background:#f2f2f2;margin:10px auto;display:flex;align-items:center;justify-content:center;overflow:hidden;border:3px solid var(--pink);cursor:pointer}
-.pfp img{width:100%;height:100%;object-fit:cover}
-.cover{width:100%;height:110px;border-radius:12px;background:#eee;margin:8px 0;display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px dashed #ccc;cursor:pointer}
-.cover img{width:100%;height:100%;object-fit:cover}
-.stories{display:flex;gap:12px;padding:10px 12px;overflow-x:auto;background:#fff;border-bottom:1px solid #f0f0f0}
-.s{width:60px;text-align:center;font-size:11px;flex-shrink:0}
-.s-ring{width:56px;height:56px;border-radius:50%;padding:3px;background:linear-gradient(45deg,var(--pink),var(--blue))}
-.s-ring img{width:100%;height:100%;border-radius:50%;border:2px solid #fff;object-fit:cover}
-.list{flex:1;overflow-y:auto;background:#fff}
-.row{display:flex;gap:12px;padding:12px 16px;background:#fff;border-bottom:1px solid #f6f6f6;align-items:center;cursor:pointer}
-.row img{width:50px;height:50px;border-radius:50%;object-fit:cover}
-.row .meta{flex:1}
-.row small{color:#777}
-.bottom{height:70px;display:flex;justify-content:space-around;align-items:center;background:#fff;border-top:1px solid #eee;position:sticky;bottom:0}
-.nav{font-size:11px;text-align:center;color:#888;cursor:pointer}
-.nav.active{color:var(--pink)}
-.nav.cam{width:62px;height:62px;background:linear-gradient(135deg,var(--pink),var(--blue));border-radius:50%;margin-top:-28px;color:#fff;font-size:26px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(255,46,138,.4)}
-.plus{position:fixed;bottom:90px;right:18px;width:56px;height:56px;background:var(--pink);border-radius:50%;color:#fff;font-size:28px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.25);cursor:pointer;z-index:20}
-.chat-view{position:absolute;inset:0;background:var(--bg);display:none;flex-direction:column;z-index:30}
-.chat-view.show{display:flex}
-.msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background-image:url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');background-size:300px}
-.bub{max-width:76%;padding:8px 12px;border-radius:12px;font-size:14px;position:relative;word-break:break-word}
-.bub.me{background:#DCF8C6;align-self:flex-end;border-top-right-radius:2px}
-.bub.other{background:#fff;align-self:flex-start;border-top-left-radius:2px}
-.input-bar{display:flex;gap:8px;padding:8px;background:#f0f0f0;align-items:center}
-.input-bar input{flex:1;padding:12px 16px;border-radius:24px;border:none;outline:none}
-.send{width:44px;height:44px;border-radius:50%;background:var(--pink);color:#fff;border:none;font-size:18px;cursor:pointer}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}
+.box{width:100%;max-width:380px;background:#fff;border-radius:16px;padding:20px;box-shadow:0 5px 20px rgba(0,0,0,.1)}
+input{width:100%;padding:13px;border:1.5px solid #ddd;border-radius:10px;margin:6px 0;outline:none;font-size:15px}
+input:focus{border-color:#FF2E8A}
+button{width:100%;padding:13px;background:#FF2E8A;color:#fff;border:none;border-radius:10px;font-weight:bold;margin-top:8px;cursor:pointer}
+button.sec{background:#eee;color:#333}
+.header{height:60px;background:linear-gradient(90deg,#FF2E8A,#1E90FF);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 15px}
+.list{flex:1;overflow:auto;background:#fff}
+.row{display:flex;gap:10px;padding:12px 15px;border-bottom:1px solid #f1f1f1;align-items:center}
+.row img{width:48px;height:48px;border-radius:50%;object-fit:cover}
+.stories{display:flex;gap:10px;padding:10px;overflow:auto;border-bottom:1px solid #eee;background:#fff}
+.story{width:60px;text-align:center;font-size:11px;flex-shrink:0}
+.story div{width:56px;height:56px;border-radius:50%;background:linear-gradient(45deg,#FF2E8A,#1E90FF);padding:2px}
+.story img{width:100%;height:100%;border-radius:50%;border:2px solid #fff;object-fit:cover}
+.bottom{height:70px;display:flex;justify-content:space-around;align-items:center;border-top:1px solid #eee;background:#fff}
+.bottom div{font-size:11px;text-align:center;color:#888;cursor:pointer}
+.bottom div.active{color:#FF2E8A}
+.bottom div.cam{width:60px;height:60px;background:linear-gradient(135deg,#FF2E8A,#1E90FF);border-radius:50%;margin-top:-30px;color:#fff;font-size:28px;display:flex;align-items:center;justify-content:center}
+.plus{position:fixed;bottom:85px;right:15px;width:54px;height:54px;background:#FF2E8A;border-radius:50%;color:#fff;font-size:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10}
+.chatview{position:absolute;inset:0;background:#E5DDD5;display:none;flex-direction:column;z-index:20}
+.chatview.show{display:flex}
+.msgs{flex:1;overflow:auto;padding:10px;display:flex;flex-direction:column;gap:6px}
+.bub{max-width:75%;padding:8px 12px;border-radius:10px;font-size:14px}
+.bub.me{background:#DCF8C6;align-self:flex-end}
+.bub.other{background:#fff;align-self:flex-start}
+.bar{display:flex;gap:6px;padding:8px;background:#f0f0f0}
+.bar input{flex:1;margin:0;border-radius:20px;border:none}
+.bar button{width:44px;border-radius:50%;margin:0}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:50;padding:15px}
 .modal.show{display:flex}
-.box{background:#fff;width:100%;max-width:380px;border-radius:18px;padding:18px;max-height:90vh;overflow-y:auto}
-.call-screen{position:fixed;inset:0;background:#0f0f0f;display:none;flex-direction:column;z-index:500;color:#fff}
-.call-screen.show{display:flex}
-#remoteVideo{width:100%;height:100%;object-fit:cover;background:#000}
-#localVideo{width:110px;height:150px;position:absolute;bottom:100px;right:12px;border-radius:12px;border:2px solid #fff;object-fit:cover;background:#222}
-.controls{height:100px;display:flex;justify-content:space-around;align-items:center;background:rgba(0,0,0,.5)}
-.ctrl{width:56px;height:56px;border-radius:50%;border:none;font-size:22px;cursor:pointer}
-.ctrl.end{background:#ff3b30;color:#fff}
-.ctrl.mute{background:#333;color:#fff}
-.set-screen{position:fixed;inset:0;background:#f5f5f7;z-index:400;display:none;flex-direction:column}
-.set-screen.show{display:flex}
-.set-head{height:56px;background:linear-gradient(90deg,var(--pink),var(--blue));color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
-.set-item{display:flex;justify-content:space-between;padding:16px;background:#fff;border-bottom:1px solid #f0f0f0;cursor:pointer}
+.call{position:fixed;inset:0;background:#000;display:none;flex-direction:column;z-index:100;color:#fff}
+.call.show{display:flex}
+#remote{width:100%;height:100%;object-fit:cover;background:#000}
+#local{width:100px;height:140px;position:absolute;bottom:100px;right:10px;border-radius:10px;border:2px solid #fff;object-fit:cover}
+.pfp{width:90px;height:90px;border-radius:50%;background:#eee;margin:8px auto;display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid #FF2E8A;cursor:pointer}
+.pfp img{width:100%;height:100%;object-fit:cover}
 </style>
 </head>
 <body>
-<!-- AUTH -->
-<div class="auth" id="authScreen">
-  <div class="auth-box" id="loginBox">
-    <div class="logo">P</div>
-    <h3 style="text-align:center">PizChat Login</h3>
-    <p style="text-align:center;color:#888;font-size:12px;margin:6px 0 10px">Permanent login - stays like WhatsApp</p>
-    <input class="input" id="lEmail" placeholder="Email">
-    <input class="input" id="lPhone" placeholder="Phone +234...">
-    <input class="input" id="lPass" type="password" placeholder="Password">
-    <button class="btn" onclick="doLogin()">LOGIN</button>
-    <p style="text-align:center;margin-top:12px;font-size:14px">No account? <b style="color:var(--pink);cursor:pointer" onclick="showReg()">Register</b></p>
+<!-- LOGIN / REGISTER - WORKING LIKE WHATSAPP -->
+<div class="auth" id="auth">
+  <div class="box" id="loginBox">
+    <h2 style="text-align:center">PizChat</h2>
+    <p style="text-align:center;font-size:12px;color:#888;margin:5px 0 10px">WhatsApp-like permanent login</p>
+    <input id="LEmail" placeholder="Email">
+    <input id="LPass" type="password" placeholder="Password">
+    <button onclick="login()">LOGIN</button>
+    <p style="text-align:center;margin-top:10px;font-size:14px">No account? <span style="color:#FF2E8A;font-weight:bold;cursor:pointer" onclick="showR()">Create account</span></p>
+    <p style="font-size:11px;color:#aaa;text-align:center;margin-top:8px" id="loginMsg"></p>
   </div>
-  <div class="auth-box" id="regBox" style="display:none">
-    <div class="logo">P</div>
-    <h3 style="text-align:center">Create Account</h3>
-    <input class="input" id="rName" placeholder="Full Name">
-    <input class="input" id="rEmail" placeholder="Email">
-    <input class="input" id="rPhone" placeholder="Phone Number">
-    <input class="input" id="rPass" type="password" placeholder="Password min 6">
-    <input class="input" id="rPass2" type="password" placeholder="Confirm Password">
-    <small>Profile Picture</small>
-    <div class="pfp" onclick="document.getElementById('rPfpFile').click()"><img id="rPfpPrev" style="display:none"><span id="rPfpTxt">📷</span></div>
-    <input type="file" id="rPfpFile" accept="image/*" hidden onchange="preview(this,'rPfpPrev','rPfpTxt','pfp')">
-    <small>Cover Picture</small>
-    <div class="cover" onclick="document.getElementById('rCoverFile').click()"><img id="rCoverPrev" style="display:none"><span id="rCoverTxt">📷 Add Cover</span></div>
-    <input type="file" id="rCoverFile" accept="image/*" hidden onchange="preview(this,'rCoverPrev','rCoverTxt','cover')">
-    <button class="btn" onclick="doRegister()">REGISTER - Permanent Account</button>
-    <p style="text-align:center;margin-top:10px;font-size:14px">Have account? <b style="color:var(--pink);cursor:pointer" onclick="showLogin()">Login</b></p>
+  <div class="box" id="regBox" style="display:none">
+    <h2 style="text-align:center">Create Account</h2>
+    <input id="RName" placeholder="Full Name">
+    <input id="RPhone" placeholder="Phone e.g +234801...">
+    <input id="REmail" placeholder="Email">
+    <input id="RPass" type="password" placeholder="Password (6+ chars)">
+    <input id="RPass2" type="password" placeholder="Confirm Password">
+    <small>Profile Photo - Tap to upload</small>
+    <div class="pfp" onclick="document.getElementById('RPfp').click()"><span id="RPfpT">📷</span><img id="RPfpI" style="display:none"></div>
+    <input type="file" id="RPfp" accept="image/*" hidden>
+    <button onclick="register()">REGISTER</button>
+    <p style="text-align:center;margin-top:10px;font-size:14px">Have account? <span style="color:#FF2E8A;font-weight:bold;cursor:pointer" onclick="showL()">Login</span></p>
+    <p style="font-size:11px;color:red;text-align:center" id="regMsg"></p>
   </div>
 </div>
 
-<div class="phone" id="phone">
-  <div class="header"><b id="appTitle">PizChat</b><div style="display:flex;gap:10px;align-items:center"><span id="myPeerId" style="font-size:9px;background:rgba(255,255,255,.25);padding:4px 8px;border-radius:20px">ID:...</span><span onclick="openSet()" style="width:32px;height:32px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">⚙️</span><span onclick="openAdmin()" style="cursor:pointer">👑</span></div></div>
+<div class="phone">
+  <div class="header"><b id="hName">PizChat</b><div style="display:flex;gap:10px"><span id="peerId" style="font-size:9px;background:rgba(255,255,255,.2);padding:4px 8px;border-radius:10px"></span><span onclick="openSettings()" style="cursor:pointer">⚙️</span></div></div>
   <div class="stories" id="stories"></div>
   <div class="list" id="mainList"></div>
   <div class="plus" onclick="openContacts()">+</div>
   <div class="bottom">
-    <div class="nav active" id="navChats" onclick="switchTab('chats')">💬<br>Chats</div>
-    <div class="nav" onclick="document.getElementById('advertM').classList.add('show')">⬆️<br>Upload</div>
-    <div class="nav cam" onclick="document.getElementById('cameraM').classList.add('show')">📷</div>
-    <div class="nav" id="navCalls" onclick="switchTab('calls')">📞<br>Calls</div>
-    <div class="nav" id="navAd" onclick="switchTab('adverts')">🛍️<br>Advert</div>
+    <div class="active" onclick="tab('chats')">💬<br>Chats</div>
+    <div onclick="openModal('adM')">⬆️<br>Upload</div>
+    <div class="cam" onclick="openModal('camM')">📷</div>
+    <div onclick="tab('calls')">📞<br>Calls</div>
+    <div onclick="tab('adverts')">🛍️<br>Advert</div>
   </div>
-  <div class="chat-view" id="chatView">
-    <div class="header"><span onclick="closeChat()" style="cursor:pointer">←</span> <b id="chatName">Name</b><span><button onclick="startVoice()" style="background:#fff;color:#333;border:none;border-radius:50%;width:36px;height:36px">📞</button> <button onclick="startVideo()" style="background:#fff;color:#333;border:none;border-radius:50%;width:36px;height:36px;margin-left:6px">📹</button></span></div>
+
+  <div class="chatview" id="chatView">
+    <div class="header"><span onclick="closeChat()" style="cursor:pointer">←</span> <b id="cName">Name</b> <span><button onclick="doVoice()" style="width:36px;height:36px;border-radius:50%;border:none">📞</button> <button onclick="doVideo()" style="width:36px;height:36px;border-radius:50%;border:none;margin-left:5px">📹</button></span></div>
     <div class="msgs" id="msgs"></div>
-    <div class="input-bar"><button onclick="alert('Voice note: hold to record - working with mic permission')" style="border:none;background:none;font-size:20px">🎤</button><input id="msgInput" placeholder="Type a message"><button class="send" onclick="sendMsg()">➤</button></div>
+    <div class="bar"><input id="msgInput" placeholder="Type message"><button onclick="sendMsg()">➤</button></div>
   </div>
 </div>
 
-<div class="call-screen" id="callScreen"><div style="padding:16px;text-align:center"><h3 id="callStatus">Calling...</h3><p id="callName2">User</p></div><div style="flex:1;position:relative"><video id="remoteVideo" autoplay playsinline></video><video id="localVideo" autoplay muted playsinline></video></div><div class="controls"><button class="ctrl mute" onclick="toggleMute()">🔇</button><button class="ctrl end" onclick="endCall()">✕</button><button class="ctrl mute" onclick="toggleVideo()">📷</button></div></div>
+<div class="modal" id="contactsM"><div class="box"><h3>Contacts - Tap to Chat</h3><div id="contacts"></div><button class="sec" onclick="closeModal('contactsM')">Close</button></div></div>
+<div class="modal" id="adM"><div class="box"><h3>Post Advert</h3><input id="adTitle" placeholder="What are you selling?"><input id="adPrice" type="number" placeholder="Price"><input id="adDesc" placeholder="Description"><input id="adImg" type="file" accept="image/*"><button onclick="postAd()">Post</button><button class="sec" onclick="closeModal('adM')">Cancel</button></div></div>
+<div class="modal" id="camM"><div class="box"><h3>Camera</h3><input id="camFile" type="file" accept="image/*"><button onclick="postStory()">Post Story (24h)</button><button class="sec" onclick="closeModal('camM')">Close</button></div></div>
+<div class="modal" id="setM"><div class="box"><h3>Settings</h3><img id="setImg" style="width:80px;height:80px;border-radius:50%;display:block;margin:10px auto"><p id="setName" style="text-align:center;font-weight:bold"></p><p id="setEmail" style="text-align:center;font-size:13px;color:#777"></p><p id="setPhone" style="text-align:center;font-size:13px;color:#777"></p><button onclick="logout()" style="background:red">LOGOUT</button><button class="sec" onclick="closeModal('setM')">Close</button></div></div>
 
-<div class="modal" id="contactsM"><div class="box"><h3>Contacts - Like WhatsApp</h3><div id="contactsList"></div><button class="btn btn-sec" onclick="closeM('contactsM')">Close</button></div></div>
-<div class="modal" id="advertM"><div class="box"><h3>Post Advert - Big Box</h3><input class="input" id="adTitle" placeholder="What are you selling?"><input class="input" id="adPrice" type="number" placeholder="Price ₦"><textarea class="input" id="adDesc" placeholder="Description"></textarea><input class="input" id="adImgFile" type="file" accept="image/*"><button class="btn" onclick="postAd()">Post Advert - All Users Will See</button><button class="btn btn-sec" onclick="closeM('advertM')">Cancel</button></div></div>
-<div class="modal" id="cameraM"><div class="box"><h3>Camera</h3><input class="input" type="file" accept="image/*,video/*" capture="environment" id="camFile"><button class="btn" onclick="postStory()">Post to Story (24h)</button><button class="btn" style="background:var(--blue)" onclick="closeM('cameraM');document.getElementById('advertM').classList.add('show')">Post to Advert</button><button class="btn btn-sec" onclick="closeM('cameraM')">Close</button></div></div>
-
-<div class="set-screen" id="setScreen"><div class="set-head"><span onclick="closeSet()">← Back</span><b>Settings - iPhone Top Right Style</b><span></span></div><div style="background:#fff;padding:20px;text-align:center"><img id="sPfp" style="width:80px;height:80px;border-radius:50%;border:3px solid var(--pink)"><div style="height:70px;margin:10px 0;border-radius:12px;overflow:hidden"><img id="sCover" style="width:100%;height:100%;object-fit:cover"></div><h3 id="sName"></h3><p id="sEmail" style="color:#777;font-size:13px"></p><p id="sPhone" style="color:#777;font-size:13px"></p></div><div style="margin-top:10px"><div class="set-item"><span>🔒 Privacy - Last seen, Profile photo</span><span>›</span></div><div class="set-item"><span>💬 Chats - Wallpaper, Backup</span><span>›</span></div><div class="set-item"><span>🔔 Notifications</span><span>›</span></div><div class="set-item"><span>💾 Storage and Data</span><span>›</span></div><div class="set-item" onclick="doLogout()" style="color:red"><span>🚪 Log Out</span><span>›</span></div></div></div>
+<div class="call" id="callScreen"><div style="padding:15px;text-align:center"><h3 id="callStat">Calling...</h3><p id="callName">User</p></div><div style="flex:1;position:relative"><video id="remote" autoplay playsinline></video><video id="local" autoplay muted playsinline></video></div><div style="height:90px;display:flex;justify-content:space-around;align-items:center;background:rgba(0,0,0,.5)"><button onclick="endCall()" style="background:red;width:60px;height:60px;border-radius:50%">✕</button></div></div>
 
 <script>
-let db=JSON.parse(localStorage.getItem('pizchat_final')||'{"users":[{"id":"u1","name":"Mum","photo":"https://i.pravatar.cc/100?img=5"},{"id":"u2","name":"David - Lagos","photo":"https://i.pravatar.cc/100?img=8"}],"chats":[],"stories":[],"adverts":[],"calls":[],"messages":{}}');
-let allUsers=JSON.parse(localStorage.getItem('pizchat_all_users')||'[]');
-let curUser=JSON.parse(localStorage.getItem('pizchat_user')||'null');
-let curChat=null, peer, localStream, curCall, tempPfp, tempCover, isMuted=false, isVideoOn=true;
-const save=()=>localStorage.setItem('pizchat_final',JSON.stringify(db));
-const saveUsers=()=>localStorage.setItem('pizchat_all_users',JSON.stringify(allUsers));
+// ===== WORKING DATABASE =====
+let users = JSON.parse(localStorage.getItem('PZ_USERS')||'[]');
+let currentUser = JSON.parse(localStorage.getItem('PZ_CURRENT')||'null');
+let chats = JSON.parse(localStorage.getItem('PZ_CHATS')||'[]');
+let messages = JSON.parse(localStorage.getItem('PZ_MSGS')||'{}');
+let stories = JSON.parse(localStorage.getItem('PZ_STORIES')||'[]');
+let adverts = JSON.parse(localStorage.getItem('PZ_ADS')||'[]');
+let calls = JSON.parse(localStorage.getItem('PZ_CALLS')||'[]');
+let tempImg = null;
+let curChatId = null;
+let peer, localStream, curCall;
 
-function preview(input, prevId, txtId, type){
-  let r=new FileReader();
-  r.onload=e=>{
-    document.getElementById(prevId).src=e.target.result;
-    document.getElementById(prevId).style.display='block';
-    document.getElementById(txtId).style.display='none';
-    if(type=='pfp') tempPfp=e.target.result; else tempCover=e.target.result;
+// Image preview for register
+document.getElementById('RPfp').addEventListener('change', function(e){
+  let reader = new FileReader();
+  reader.onload = function(ev){
+    tempImg = ev.target.result;
+    document.getElementById('RPfpI').src = tempImg;
+    document.getElementById('RPfpI').style.display='block';
+    document.getElementById('RPfpT').style.display='none';
   };
-  if(input.files[0]) r.readAsDataURL(input.files[0]);
+  if(e.target.files[0]) reader.readAsDataURL(e.target.files[0]);
+});
+
+function showR(){ document.getElementById('loginBox').style.display='none'; document.getElementById('regBox').style.display='block'; }
+function showL(){ document.getElementById('regBox').style.display='none'; document.getElementById('loginBox').style.display='block'; }
+
+function register(){
+  let name=document.getElementById('RName').value.trim();
+  let phone=document.getElementById('RPhone').value.trim();
+  let email=document.getElementById('REmail').value.trim();
+  let pass=document.getElementById('RPass').value;
+  let pass2=document.getElementById('RPass2').value;
+  let msg=document.getElementById('regMsg');
+  if(!name||!phone||!email||!pass){ msg.innerText='Fill all fields'; return; }
+  if(pass.length<6){ msg.innerText='Password min 6 chars'; return; }
+  if(pass!==pass2){ msg.innerText='Passwords not match'; return; }
+  if(users.find(u=>u.email===email)){ msg.innerText='Email already exists, login'; return; }
+  let newUser={id:Date.now().toString(), name:name, phone:phone, email:email, pass:pass, img: tempImg || 'https://i.pravatar.cc/150?u='+email, created:Date.now()};
+  users.push(newUser);
+  localStorage.setItem('PZ_USERS', JSON.stringify(users));
+  localStorage.setItem('PZ_CURRENT', JSON.stringify(newUser));
+  currentUser=newUser;
+  document.getElementById('auth').classList.add('hide');
+  initApp();
+  alert('Account created! Welcome '+name);
 }
-function showReg(){document.getElementById('loginBox').style.display='none';document.getElementById('regBox').style.display='block'}
-function showLogin(){document.getElementById('regBox').style.display='none';document.getElementById('loginBox').style.display='block'}
-function checkAuth(){
-  if(curUser){
-    document.getElementById('authScreen').classList.add('hide');
-    document.getElementById('sPfp').src=curUser.profilePic;
-    document.getElementById('sCover').src=curUser.coverPic;
-    document.getElementById('sName').innerText=curUser.name;
-    document.getElementById('sEmail').innerText=curUser.email;
-    document.getElementById('sPhone').innerText=curUser.phone;
+
+function login(){
+  let email=document.getElementById('LEmail').value.trim();
+  let pass=document.getElementById('LPass').value;
+  let msg=document.getElementById('loginMsg');
+  if(!email||!pass){ msg.innerText='Enter email and password'; return; }
+  let found=users.find(u=>u.email===email && u.pass===pass);
+  if(!found){ msg.innerText='Wrong email or password. Register first.'; return; }
+  localStorage.setItem('PZ_CURRENT', JSON.stringify(found));
+  currentUser=found;
+  document.getElementById('auth').classList.add('hide');
+  initApp();
+}
+
+function logout(){
+  if(confirm('Logout? Your account stays, you can login again.')){
+    localStorage.removeItem('PZ_CURRENT');
+    location.reload();
   }
 }
-function doRegister(){
-  let name=document.getElementById('rName').value, email=document.getElementById('rEmail').value, phone=document.getElementById('rPhone').value, pass=document.getElementById('rPass').value, pass2=document.getElementById('rPass2').value;
-  if(!name||!email||!phone||!pass){alert('Fill all');return}
-  if(pass!==
+
+function checkAuth(){
+  if(currentUser){
+    document.getElementById('auth').classList.add('hide');
+    initApp();
+  }
+}
+
+function initApp(){
+  document.getElementById('hName').innerText='PizChat - '+currentUser.name.split(' ')[0];
+  document.getElementById('setImg').src=currentUser.img;
+  document.getElementById('setName').innerText=currentUser.name;
+  document.getElementById('setEmail').innerText=currentUser.email;
+  document.getElementById('setPhone').innerText=currentUser.phone;
+  // PeerJS
+  try{
+    peer=new Peer(currentUser.id);
+    peer.on('open', id=>{ document.getElementById('peerId').innerText='ID:'+id.slice(0,6); });
+    peer.on('call', async call=>{
+      if(confirm('Incoming call from '+call.peer+' - Answer?')){
+        localStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+        document.getElementById('local').srcObject=localStream;
+        call.answer(localStream);
+        openCall(call.peer,'video');
+        call.on('stream', s=>document.getElementById('remote').srcObject=s);
+        curCall=call;
+      } else call.close();
+    });
+  }catch(e){ console.log('Peer error',e); }
+  render();
+}
+
+function render(){
+  // Stories
+  document.getElementById('stories').innerHTML='<div class="story" onclick="openModal(\'camM\')"><div><img src="'+currentUser.img+'"></div>Add Story</div>'+stories.map(s=>`<div class="story"><div><img src="${s.img}"></div>${s.user}</div>`).join('');
+  // Chats
+  document.getElementById('mainList').innerHTML=chats.filter(c=>c.owner===currentUser.id).map(c=>`
+    <div class="row" onclick="openChat('${c.id}')">
+      <img src="${c.img}"><div style="flex:1"><b>${c.name}</b><br><small>${c.last||'Tap to chat'}</small></div><small>${c.time||''}</small>
+    </div>
+  `).join('') || '<p style="padding:20px;color:#888">Tap + to add contact and start chatting</p>';
+  // Contacts
+  let demo=[{id:'d1',name:'Mum',img:'https://i.pravatar.cc/100?img=5'},{id:'d2',name:'David Lagos',img:'https://i.pravatar.cc/100?img=8'}];
+  let all=[...demo, ...users.filter(u=>u.id!==currentUser.id).map(u=>({id:u.id,name:u.name,img:u.img}))];
+  document.getElementById('contacts').innerHTML=all.map(u=>`<div class="row" onclick="startChat('${u.id}','${u.name}','${u.img}')"><img src="${u.img}"><b>${u.name}</b></div>`).join('');
+}
+
+function tab(t){
+  if(t==='calls'){
+    document.getElementById('mainList').innerHTML=calls.filter(c=>c.owner===currentUser.id).map(c=>`<div class="row"><img src="https://i.pravatar.cc/100?img=7"><div style="flex:1"><b>${c.name}</b><br><small>${c.type} - ${c.time}</small></div></div>`).join('')||'<p style="padding:20px">No calls yet</p>';
+  } else if(t==='adverts'){
+    document.getElementById('mainList').innerHTML=adverts.map(a=>`<div style="margin:10px;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 5px rgba(0,0,0,.1)"><img src="${a.img}" style="width:100%;height:160px;object-fit:cover"><div style="padding:10px"><b>${a.title}</b> - ₦${a.price}<br><small>${a.desc}</small></div></div>`).join('')+'<button onclick="openModal(\'adM\')" style="margin:10px">+ Post Advert</button>'||'<p style="padding:20px">No adverts</p>';
+  } else render();
+}
+
+function openContacts(){ openModal('contactsM'); }
+function openModal(id){ document.getElementById(id).classList.add('show'); }
+function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+function openSettings(){ openModal('setM'); }
+
+function startChat(id,name,img){
+  let existing=chats.find(c=>c.peer===id && c.owner===currentUser.id);
+  if(existing){ closeModal('contactsM'); openChat(existing.id); return; }
+  let newChat={id:Date.now().toString(), owner:currentUser.id, peer:id, name:name, img:img, last:'', time:'now'};
+  chats.unshift(newChat); localStorage.setItem('PZ_CHATS', JSON.stringify(chats));
+  closeModal('contactsM'); render(); openChat(newChat.id);
+}
+
+function openChat(id){
+  curChatId=id;
+  let c=chats.find(x=>x.id===id);
+  document.getElementById('cName').innerText=c.name;
+  document.getElementById('chatView').classList.add('show');
+  let msgs=messages[id]||[];
+  document.getElementById('msgs').innerHTML=msgs.map(m=>`<div class="bub ${m.me?'me':'other'}">${m.text}<br><small style="font-size:10px">${m.time}</small></div>`).join('');
+  setTimeout(()=>{ document.getElementById('msgs').scrollTop=99999; },100);
+}
+function closeChat(){ document.getElementById('chatView').classList.remove('show'); }
+
+function sendMsg(){
+  let inp=document.getElementById('msgInput');
+  let txt=inp.value.trim(); if(!txt) return;
+  if(!messages[curChatId]) messages[curChatId]=[];
+  messages[curChatId].push({text:txt, me:true, time:new Date().toLocaleTimeString().slice(0,5)});
+  localStorage.setItem('PZ_MSGS', JSON.stringify(messages));
+  let c=chats.find(x=>x.id===curChatId); c.last=txt;
+  localStorage.setItem('PZ_CHATS', JSON.stringify(chats));
+  inp.value=''; openChat(curChatId); render();
+}
+
+async function doVideo(){ doCall('video'); }
+async function doVoice(){ doCall('voice'); }
+async function doCall(type){
+  let c=chats.find(x=>x.id===curChatId);
+  try{
+    let cons=type==='video'?{video:true,audio:true}:{video:false,audio:true};
+    localStream=await navigator.mediaDevices.getUserMedia(cons);
+    document.getElementById('local').srcObject=localStream;
+    openCall(c.name, type);
+    let call=peer.call(c.peer, localStream);
+    call.on('stream', s=>document.getElementById('remote').srcObject=s);
+    curCall=call;
+    calls.unshift({owner:currentUser.id, name:c.name, type:type, time:new Date().toLocaleString(), peer:c.peer});
+    localStorage.setItem('PZ_CALLS', JSON.stringify(calls));
+  }catch(e){ alert('Allow camera/mic: '+e.message); }
+}
+function openCall(name,type){ document.getElementById('callScreen').classList.add('show'); document.getElementById('callName').innerText=name; document.getElementById('callStat').innerText=type==='video'?'Video Call':'Voice Call'; }
+function endCall(){ if(curCall) curCall.close(); if(localStream) localStream.getTracks().forEach(t=>t.stop()); document.getElementById('callScreen').classList.remove('show'); document.getElementById('remote').srcObject=null; }
+
+function postAd(){
+  let t=document.getElementById('adTitle').value, p=document.getElementById('adPrice').value, d=document.getElementById('adDesc').value;
+  let file=document.getElementById('adImg').files[0];
+  let save=(img)=>{ adverts.push({title:t,price:p,desc:d,img:img,by:currentUser.name}); localStorage.setItem('PZ_ADS', JSON.stringify(adverts)); closeModal('adM'); tab('adverts'); alert('Advert posted!'); };
+  if(file){ let r=new FileReader(); r.onload=e=>save(e.target.result); r.readAsDataURL(file); } else save('https://picsum.photos/400/300');
+}
+function postStory(){
+  let file=document.getElementById('camFile').files[0];
+  if(!file){ alert('Choose image'); return; }
+  let r=new FileReader(); r.onload=e=>{ stories.push({img:e.target.result,user:currentUser.name}); localStorage.setItem('PZ_STORIES', JSON.stringify(stories)); closeModal('camM'); render(); alert('Story posted!'); }; r.readAsDataURL(file);
+}
+
+checkAuth();
+</script>
+</body>
+</html>
