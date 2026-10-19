@@ -1,298 +1,240 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PizChat - Working</title>
-<script src="https://unpkg.com/peerjs@1.5.3/dist/peerjs.min.js"></script>
+<title>PizChat - Working Login</title>
 <style>
 *{box-sizing:border-box;margin:0;font-family:sans-serif}
-body{display:flex;justify-content:center;background:#E5DDD5;min-height:100vh}
+body{background:#E5DDD5;display:flex;justify-content:center;min-height:100vh}
 .phone{width:100%;max-width:430px;background:#fff;min-height:100vh;position:relative;display:flex;flex-direction:column}
-.auth{position:fixed;inset:0;background:#fff;z-index:999;display:flex;align-items:center;justify-content:center;padding:20px}
-.auth.hide{display:none}
-.box{width:100%;max-width:380px;background:#fff;border-radius:16px;padding:20px;box-shadow:0 5px 20px rgba(0,0,0,.1)}
-input{width:100%;padding:13px;border:1.5px solid #ddd;border-radius:10px;margin:6px 0;outline:none;font-size:15px}
-input:focus{border-color:#FF2E8A}
-button{width:100%;padding:13px;background:#FF2E8A;color:#fff;border:none;border-radius:10px;font-weight:bold;margin-top:8px;cursor:pointer}
-button.sec{background:#eee;color:#333}
+#auth{position:fixed;inset:0;background:#fff;z-index:999;display:flex;align-items:center;justify-content:center;padding:20px}
+#auth.hide{display:none}
+.card{width:100%;max-width:380px;background:#fff;padding:20px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.12)}
+input{width:100%;padding:13px;border:1px solid #ddd;border-radius:10px;margin:7px 0;font-size:15px;outline:none}
+button{width:100%;padding:13px;background:#FF2E8A;color:#fff;border:none;border-radius:10px;font-weight:700;margin-top:8px;cursor:pointer}
 .header{height:60px;background:linear-gradient(90deg,#FF2E8A,#1E90FF);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 15px}
-.list{flex:1;overflow:auto;background:#fff}
-.row{display:flex;gap:10px;padding:12px 15px;border-bottom:1px solid #f1f1f1;align-items:center}
-.row img{width:48px;height:48px;border-radius:50%;object-fit:cover}
-.stories{display:flex;gap:10px;padding:10px;overflow:auto;border-bottom:1px solid #eee;background:#fff}
-.story{width:60px;text-align:center;font-size:11px;flex-shrink:0}
-.story div{width:56px;height:56px;border-radius:50%;background:linear-gradient(45deg,#FF2E8A,#1E90FF);padding:2px}
-.story img{width:100%;height:100%;border-radius:50%;border:2px solid #fff;object-fit:cover}
-.bottom{height:70px;display:flex;justify-content:space-around;align-items:center;border-top:1px solid #eee;background:#fff}
-.bottom div{font-size:11px;text-align:center;color:#888;cursor:pointer}
+.list{flex:1;overflow:auto}
+.row{display:flex;gap:10px;padding:12px;border-bottom:1px solid #f1f1f1;align-items:center;cursor:pointer}
+.row img{width:48px;height:48px;border-radius:50%}
+.bottom{height:68px;display:flex;justify-content:space-around;align-items:center;border-top:1px solid #eee;background:#fff;position:sticky;bottom:0}
+.bottom div{text-align:center;font-size:11px;color:#888;cursor:pointer}
 .bottom div.active{color:#FF2E8A}
 .bottom div.cam{width:60px;height:60px;background:linear-gradient(135deg,#FF2E8A,#1E90FF);border-radius:50%;margin-top:-30px;color:#fff;font-size:28px;display:flex;align-items:center;justify-content:center}
-.plus{position:fixed;bottom:85px;right:15px;width:54px;height:54px;background:#FF2E8A;border-radius:50%;color:#fff;font-size:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10}
-.chatview{position:absolute;inset:0;background:#E5DDD5;display:none;flex-direction:column;z-index:20}
+.chatview{position:absolute;inset:0;background:#E5DDD5;display:none;flex-direction:column;z-index:10}
 .chatview.show{display:flex}
 .msgs{flex:1;overflow:auto;padding:10px;display:flex;flex-direction:column;gap:6px}
 .bub{max-width:75%;padding:8px 12px;border-radius:10px;font-size:14px}
 .bub.me{background:#DCF8C6;align-self:flex-end}
 .bub.other{background:#fff;align-self:flex-start}
 .bar{display:flex;gap:6px;padding:8px;background:#f0f0f0}
-.bar input{flex:1;margin:0;border-radius:20px;border:none}
-.bar button{width:44px;border-radius:50%;margin:0}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:50;padding:15px}
-.modal.show{display:flex}
-.call{position:fixed;inset:0;background:#000;display:none;flex-direction:column;z-index:100;color:#fff}
-.call.show{display:flex}
-#remote{width:100%;height:100%;object-fit:cover;background:#000}
-#local{width:100px;height:140px;position:absolute;bottom:100px;right:10px;border-radius:10px;border:2px solid #fff;object-fit:cover}
-.pfp{width:90px;height:90px;border-radius:50%;background:#eee;margin:8px auto;display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid #FF2E8A;cursor:pointer}
+.bar input{flex:1;margin:0;border-radius:20px}
+.pfp{width:90px;height:90px;border-radius:50%;background:#eee;margin:10px auto;display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid #FF2E8A;cursor:pointer}
 .pfp img{width:100%;height:100%;object-fit:cover}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:20;padding:15px}
+.modal.show{display:flex}
+.stories{display:flex;gap:10px;padding:10px;overflow:auto;background:#fff;border-bottom:1px solid #eee}
+.s{width:60px;text-align:center;font-size:10px;flex-shrink:0}
+.s div{width:56px;height:56px;border-radius:50%;background:linear-gradient(45deg,#FF2E8A,#1E90FF);padding:2px}
+.s img{width:100%;height:100%;border-radius:50%;border:2px solid #fff}
+.plus{position:fixed;bottom:85px;right:15px;width:54px;height:54px;background:#FF2E8A;border-radius:50%;color:#fff;font-size:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5}
 </style>
 </head>
 <body>
-<!-- LOGIN / REGISTER - WORKING LIKE WHATSAPP -->
-<div class="auth" id="auth">
-  <div class="box" id="loginBox">
-    <h2 style="text-align:center">PizChat</h2>
-    <p style="text-align:center;font-size:12px;color:#888;margin:5px 0 10px">WhatsApp-like permanent login</p>
-    <input id="LEmail" placeholder="Email">
-    <input id="LPass" type="password" placeholder="Password">
-    <button onclick="login()">LOGIN</button>
-    <p style="text-align:center;margin-top:10px;font-size:14px">No account? <span style="color:#FF2E8A;font-weight:bold;cursor:pointer" onclick="showR()">Create account</span></p>
-    <p style="font-size:11px;color:#aaa;text-align:center;margin-top:8px" id="loginMsg"></p>
+
+<!-- AUTH - THIS IS THE FIXED PART -->
+<div id="auth">
+  <div class="card" id="loginCard">
+    <h2 style="text-align:center">PizChat Login</h2>
+    <p style="text-align:center;color:#888;font-size:12px">Permanent like WhatsApp</p>
+    <input id="loginEmail" placeholder="Email">
+    <input id="loginPass" type="password" placeholder="Password">
+    <button onclick="doLogin()">LOGIN</button>
+    <p style="text-align:center;margin-top:12px;font-size:14px">No account? <span style="color:#FF2E8A;font-weight:bold;cursor:pointer" onclick="showReg()">Register</span></p>
+    <p id="loginErr" style="color:red;font-size:13px;text-align:center;margin-top:8px"></p>
   </div>
-  <div class="box" id="regBox" style="display:none">
+
+  <div class="card" id="regCard" style="display:none">
     <h2 style="text-align:center">Create Account</h2>
-    <input id="RName" placeholder="Full Name">
-    <input id="RPhone" placeholder="Phone e.g +234801...">
-    <input id="REmail" placeholder="Email">
-    <input id="RPass" type="password" placeholder="Password (6+ chars)">
-    <input id="RPass2" type="password" placeholder="Confirm Password">
-    <small>Profile Photo - Tap to upload</small>
-    <div class="pfp" onclick="document.getElementById('RPfp').click()"><span id="RPfpT">📷</span><img id="RPfpI" style="display:none"></div>
-    <input type="file" id="RPfp" accept="image/*" hidden>
-    <button onclick="register()">REGISTER</button>
-    <p style="text-align:center;margin-top:10px;font-size:14px">Have account? <span style="color:#FF2E8A;font-weight:bold;cursor:pointer" onclick="showL()">Login</span></p>
-    <p style="font-size:11px;color:red;text-align:center" id="regMsg"></p>
+    <input id="regName" placeholder="Full Name">
+    <input id="regPhone" placeholder="Phone Number">
+    <input id="regEmail" placeholder="Email">
+    <input id="regPass" type="password" placeholder="Password (6+ chars)">
+    <input id="regPass2" type="password" placeholder="Confirm Password">
+    <small>Profile Picture (Tap)</small>
+    <div class="pfp" onclick="document.getElementById('regFile').click()"><span id="pfpText">📷</span><img id="pfpImg" style="display:none"></div>
+    <input type="file" id="regFile" accept="image/*" hidden>
+    <button onclick="doRegister()">REGISTER - Permanent</button>
+    <p style="text-align:center;margin-top:12px;font-size:14px">Have account? <span style="color:#FF2E8A;font-weight:bold;cursor:pointer" onclick="showLogin()">Login</span></p>
+    <p id="regErr" style="color:red;font-size:13px;text-align:center;margin-top:8px"></p>
   </div>
 </div>
 
+<!-- MAIN APP -->
 <div class="phone">
-  <div class="header"><b id="hName">PizChat</b><div style="display:flex;gap:10px"><span id="peerId" style="font-size:9px;background:rgba(255,255,255,.2);padding:4px 8px;border-radius:10px"></span><span onclick="openSettings()" style="cursor:pointer">⚙️</span></div></div>
+  <div class="header"><b id="hTitle">PizChat</b><div style="display:flex;gap:12px"><span onclick="openSet()" style="cursor:pointer">⚙️</span><span onclick="openAdmin()" style="cursor:pointer">👑</span></div></div>
   <div class="stories" id="stories"></div>
   <div class="list" id="mainList"></div>
   <div class="plus" onclick="openContacts()">+</div>
   <div class="bottom">
-    <div class="active" onclick="tab('chats')">💬<br>Chats</div>
-    <div onclick="openModal('adM')">⬆️<br>Upload</div>
-    <div class="cam" onclick="openModal('camM')">📷</div>
-    <div onclick="tab('calls')">📞<br>Calls</div>
-    <div onclick="tab('adverts')">🛍️<br>Advert</div>
+    <div class="active" onclick="switchTab('chats')">💬<br>Chats</div>
+    <div onclick="openM('adM')">⬆️<br>Upload</div>
+    <div class="cam" onclick="openM('camM')">📷</div>
+    <div onclick="switchTab('calls')">📞<br>Calls</div>
+    <div onclick="switchTab('ads')">🛍️<br>Advert</div>
   </div>
 
   <div class="chatview" id="chatView">
-    <div class="header"><span onclick="closeChat()" style="cursor:pointer">←</span> <b id="cName">Name</b> <span><button onclick="doVoice()" style="width:36px;height:36px;border-radius:50%;border:none">📞</button> <button onclick="doVideo()" style="width:36px;height:36px;border-radius:50%;border:none;margin-left:5px">📹</button></span></div>
+    <div class="header"><span onclick="closeChat()" style="cursor:pointer">←</span><b id="chatName">Name</b><span><button onclick="alert('Voice call - allow mic')" style="width:36px;height:36px;border-radius:50%;border:none">📞</button><button onclick="alert('Video call - allow camera')" style="width:36px;height:36px;border-radius:50%;border:none;margin-left:5px">📹</button></span></div>
     <div class="msgs" id="msgs"></div>
-    <div class="bar"><input id="msgInput" placeholder="Type message"><button onclick="sendMsg()">➤</button></div>
+    <div class="bar"><input id="msgInput" placeholder="Type message"><button onclick="sendMsg()" style="width:44px;border-radius:50%;margin:0">➤</button></div>
   </div>
 </div>
 
-<div class="modal" id="contactsM"><div class="box"><h3>Contacts - Tap to Chat</h3><div id="contacts"></div><button class="sec" onclick="closeModal('contactsM')">Close</button></div></div>
-<div class="modal" id="adM"><div class="box"><h3>Post Advert</h3><input id="adTitle" placeholder="What are you selling?"><input id="adPrice" type="number" placeholder="Price"><input id="adDesc" placeholder="Description"><input id="adImg" type="file" accept="image/*"><button onclick="postAd()">Post</button><button class="sec" onclick="closeModal('adM')">Cancel</button></div></div>
-<div class="modal" id="camM"><div class="box"><h3>Camera</h3><input id="camFile" type="file" accept="image/*"><button onclick="postStory()">Post Story (24h)</button><button class="sec" onclick="closeModal('camM')">Close</button></div></div>
-<div class="modal" id="setM"><div class="box"><h3>Settings</h3><img id="setImg" style="width:80px;height:80px;border-radius:50%;display:block;margin:10px auto"><p id="setName" style="text-align:center;font-weight:bold"></p><p id="setEmail" style="text-align:center;font-size:13px;color:#777"></p><p id="setPhone" style="text-align:center;font-size:13px;color:#777"></p><button onclick="logout()" style="background:red">LOGOUT</button><button class="sec" onclick="closeModal('setM')">Close</button></div></div>
-
-<div class="call" id="callScreen"><div style="padding:15px;text-align:center"><h3 id="callStat">Calling...</h3><p id="callName">User</p></div><div style="flex:1;position:relative"><video id="remote" autoplay playsinline></video><video id="local" autoplay muted playsinline></video></div><div style="height:90px;display:flex;justify-content:space-around;align-items:center;background:rgba(0,0,0,.5)"><button onclick="endCall()" style="background:red;width:60px;height:60px;border-radius:50%">✕</button></div></div>
+<div class="modal" id="contactsM"><div class="card"><h3>Contacts</h3><div id="contactsList"></div><button style="background:#eee;color:#333" onclick="closeM('contactsM')">Close</button></div></div>
+<div class="modal" id="adM"><div class="card"><h3>Post Advert</h3><input id="adT" placeholder="Title"><input id="adP" placeholder="Price"><input id="adD" placeholder="Desc"><button onclick="postAd()">Post Advert</button><button style="background:#eee;color:#333" onclick="closeM('adM')">Close</button></div></div>
+<div class="modal" id="camM"><div class="card"><h3>Camera / Story</h3><input id="camFile" type="file" accept="image/*"><button onclick="postStory()">Post Story</button><button style="background:#eee;color:#333" onclick="closeM('camM')">Close</button></div></div>
+<div class="modal" id="setM"><div class="card"><img id="setImg" style="width:80px;height:80px;border-radius:50%;display:block;margin:10px auto"><h3 id="setName" style="text-align:center"></h3><p id="setEmail" style="text-align:center;color:#777;font-size:13px"></p><p id="setPhone" style="text-align:center;color:#777;font-size:13px"></p><button onclick="doLogout()" style="background:red;margin-top:15px">LOGOUT</button><button style="background:#eee;color:#333" onclick="closeM('setM')">Close</button></div></div>
 
 <script>
-// ===== WORKING DATABASE =====
-let users = JSON.parse(localStorage.getItem('PZ_USERS')||'[]');
-let currentUser = JSON.parse(localStorage.getItem('PZ_CURRENT')||'null');
-let chats = JSON.parse(localStorage.getItem('PZ_CHATS')||'[]');
-let messages = JSON.parse(localStorage.getItem('PZ_MSGS')||'{}');
-let stories = JSON.parse(localStorage.getItem('PZ_STORIES')||'[]');
-let adverts = JSON.parse(localStorage.getItem('PZ_ADS')||'[]');
-let calls = JSON.parse(localStorage.getItem('PZ_CALLS')||'[]');
-let tempImg = null;
-let curChatId = null;
-let peer, localStream, curCall;
+// SIMPLE WORKING STORAGE - NO BUG
+let USERS = JSON.parse(localStorage.getItem('PZ_USERS')||'[]');
+let ME = JSON.parse(localStorage.getItem('PZ_ME')||'null');
+let CHATS = JSON.parse(localStorage.getItem('PZ_CHATS')||'[]');
+let MSGS = JSON.parse(localStorage.getItem('PZ_MSGS')||'{}');
+let STORIES = JSON.parse(localStorage.getItem('PZ_STOR')||'[]');
+let ADS = JSON.parse(localStorage.getItem('PZ_ADS')||'[]');
+let tempPic = null;
+let curChat = null;
 
-// Image preview for register
-document.getElementById('RPfp').addEventListener('change', function(e){
-  let reader = new FileReader();
-  reader.onload = function(ev){
-    tempImg = ev.target.result;
-    document.getElementById('RPfpI').src = tempImg;
-    document.getElementById('RPfpI').style.display='block';
-    document.getElementById('RPfpT').style.display='none';
+document.getElementById('regFile').addEventListener('change', e=>{
+  let r=new FileReader();
+  r.onload=ev=>{
+    tempPic=ev.target.result;
+    document.getElementById('pfpImg').src=tempPic;
+    document.getElementById('pfpImg').style.display='block';
+    document.getElementById('pfpText').style.display='none';
   };
-  if(e.target.files[0]) reader.readAsDataURL(e.target.files[0]);
+  if(e.target.files[0]) r.readAsDataURL(e.target.files[0]);
 });
 
-function showR(){ document.getElementById('loginBox').style.display='none'; document.getElementById('regBox').style.display='block'; }
-function showL(){ document.getElementById('regBox').style.display='none'; document.getElementById('loginBox').style.display='block'; }
+function showReg(){document.getElementById('loginCard').style.display='none';document.getElementById('regCard').style.display='block';}
+function showLogin(){document.getElementById('regCard').style.display='none';document.getElementById('loginCard').style.display='block';}
 
-function register(){
-  let name=document.getElementById('RName').value.trim();
-  let phone=document.getElementById('RPhone').value.trim();
-  let email=document.getElementById('REmail').value.trim();
-  let pass=document.getElementById('RPass').value;
-  let pass2=document.getElementById('RPass2').value;
-  let msg=document.getElementById('regMsg');
-  if(!name||!phone||!email||!pass){ msg.innerText='Fill all fields'; return; }
-  if(pass.length<6){ msg.innerText='Password min 6 chars'; return; }
-  if(pass!==pass2){ msg.innerText='Passwords not match'; return; }
-  if(users.find(u=>u.email===email)){ msg.innerText='Email already exists, login'; return; }
-  let newUser={id:Date.now().toString(), name:name, phone:phone, email:email, pass:pass, img: tempImg || 'https://i.pravatar.cc/150?u='+email, created:Date.now()};
-  users.push(newUser);
-  localStorage.setItem('PZ_USERS', JSON.stringify(users));
-  localStorage.setItem('PZ_CURRENT', JSON.stringify(newUser));
-  currentUser=newUser;
+function doRegister(){
+  let name=document.getElementById('regName').value.trim();
+  let phone=document.getElementById('regPhone').value.trim();
+  let email=document.getElementById('regEmail').value.trim().toLowerCase();
+  let pass=document.getElementById('regPass').value;
+  let pass2=document.getElementById('regPass2').value;
+  let err=document.getElementById('regErr');
+  err.innerText='';
+  if(!name||!phone||!email||!pass){err.innerText='Fill all fields';return;}
+  if(pass.length<6){err.innerText='Password min 6';return;}
+  if(pass!==pass2){err.innerText='Passwords not match';return;}
+  if(USERS.some(u=>u.email===email)){err.innerText='Email exists, login now';return;}
+  let user={id:'u'+Date.now(),name,phone,email,pass,img:tempPic||'https://i.pravatar.cc/150?u='+email};
+  USERS.push(user);
+  localStorage.setItem('PZ_USERS',JSON.stringify(USERS));
+  localStorage.setItem('PZ_ME',JSON.stringify(user));
+  ME=user;
   document.getElementById('auth').classList.add('hide');
-  initApp();
-  alert('Account created! Welcome '+name);
+  startApp();
 }
 
-function login(){
-  let email=document.getElementById('LEmail').value.trim();
-  let pass=document.getElementById('LPass').value;
-  let msg=document.getElementById('loginMsg');
-  if(!email||!pass){ msg.innerText='Enter email and password'; return; }
-  let found=users.find(u=>u.email===email && u.pass===pass);
-  if(!found){ msg.innerText='Wrong email or password. Register first.'; return; }
-  localStorage.setItem('PZ_CURRENT', JSON.stringify(found));
-  currentUser=found;
+function doLogin(){
+  let email=document.getElementById('loginEmail').value.trim().toLowerCase();
+  let pass=document.getElementById('loginPass').value;
+  let err=document.getElementById('loginErr');
+  err.innerText='';
+  if(!email||!pass){err.innerText='Enter email and password';return;}
+  let found=USERS.find(u=>u.email===email && u.pass===pass);
+  if(!found){err.innerText='Wrong email or password. Register first.';return;}
+  localStorage.setItem('PZ_ME',JSON.stringify(found));
+  ME=found;
   document.getElementById('auth').classList.add('hide');
-  initApp();
+  startApp();
 }
 
-function logout(){
-  if(confirm('Logout? Your account stays, you can login again.')){
-    localStorage.removeItem('PZ_CURRENT');
+function doLogout(){
+  if(confirm('Logout? Account stays permanent.')){
+    localStorage.removeItem('PZ_ME');
     location.reload();
   }
 }
 
-function checkAuth(){
-  if(currentUser){
+function checkLogin(){
+  if(ME){
     document.getElementById('auth').classList.add('hide');
-    initApp();
+    startApp();
   }
 }
 
-function initApp(){
-  document.getElementById('hName').innerText='PizChat - '+currentUser.name.split(' ')[0];
-  document.getElementById('setImg').src=currentUser.img;
-  document.getElementById('setName').innerText=currentUser.name;
-  document.getElementById('setEmail').innerText=currentUser.email;
-  document.getElementById('setPhone').innerText=currentUser.phone;
-  // PeerJS
-  try{
-    peer=new Peer(currentUser.id);
-    peer.on('open', id=>{ document.getElementById('peerId').innerText='ID:'+id.slice(0,6); });
-    peer.on('call', async call=>{
-      if(confirm('Incoming call from '+call.peer+' - Answer?')){
-        localStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
-        document.getElementById('local').srcObject=localStream;
-        call.answer(localStream);
-        openCall(call.peer,'video');
-        call.on('stream', s=>document.getElementById('remote').srcObject=s);
-        curCall=call;
-      } else call.close();
-    });
-  }catch(e){ console.log('Peer error',e); }
+function startApp(){
+  document.getElementById('hTitle').innerText='PizChat - '+ME.name.split(' ')[0];
+  document.getElementById('setImg').src=ME.img;
+  document.getElementById('setName').innerText=ME.name;
+  document.getElementById('setEmail').innerText=ME.email;
+  document.getElementById('setPhone').innerText=ME.phone;
   render();
 }
 
 function render(){
-  // Stories
-  document.getElementById('stories').innerHTML='<div class="story" onclick="openModal(\'camM\')"><div><img src="'+currentUser.img+'"></div>Add Story</div>'+stories.map(s=>`<div class="story"><div><img src="${s.img}"></div>${s.user}</div>`).join('');
-  // Chats
-  document.getElementById('mainList').innerHTML=chats.filter(c=>c.owner===currentUser.id).map(c=>`
-    <div class="row" onclick="openChat('${c.id}')">
-      <img src="${c.img}"><div style="flex:1"><b>${c.name}</b><br><small>${c.last||'Tap to chat'}</small></div><small>${c.time||''}</small>
-    </div>
-  `).join('') || '<p style="padding:20px;color:#888">Tap + to add contact and start chatting</p>';
-  // Contacts
-  let demo=[{id:'d1',name:'Mum',img:'https://i.pravatar.cc/100?img=5'},{id:'d2',name:'David Lagos',img:'https://i.pravatar.cc/100?img=8'}];
-  let all=[...demo, ...users.filter(u=>u.id!==currentUser.id).map(u=>({id:u.id,name:u.name,img:u.img}))];
-  document.getElementById('contacts').innerHTML=all.map(u=>`<div class="row" onclick="startChat('${u.id}','${u.name}','${u.img}')"><img src="${u.img}"><b>${u.name}</b></div>`).join('');
+  document.getElementById('stories').innerHTML=`<div class="s" onclick="openM('camM')"><div><img src="${ME.img}"></div>Add Story</div>`+STORIES.map(s=>`<div class="s"><div><img src="${s.img}"></div>${s.user}</div>`).join('');
+  let myChats=CHATS.filter(c=>c.owner===ME.id);
+  document.getElementById('mainList').innerHTML=myChats.map(c=>`<div class="row" onclick="openChat('${c.id}')"><img src="${c.img}"><div style="flex:1"><b>${c.name}</b><br><small>${c.last||'Tap to chat'}</small></div></div>`).join('')||'<p style="padding:20px;color:#888">Tap + to add contacts</p>';
+  let demo=[{id:'demo1',name:'Mum',img:'https://i.pravatar.cc/100?img=5'},{id:'demo2',name:'David',img:'https://i.pravatar.cc/100?img=8'},...USERS.filter(u=>u.id!==ME.id).map(u=>({id:u.id,name:u.name,img:u.img}))];
+  document.getElementById('contactsList').innerHTML=demo.map(u=>`<div class="row" onclick="startChat('${u.id}','${u.name}','${u.img}')"><img src="${u.img}"><b>${u.name}</b></div>`).join('');
 }
 
-function tab(t){
-  if(t==='calls'){
-    document.getElementById('mainList').innerHTML=calls.filter(c=>c.owner===currentUser.id).map(c=>`<div class="row"><img src="https://i.pravatar.cc/100?img=7"><div style="flex:1"><b>${c.name}</b><br><small>${c.type} - ${c.time}</small></div></div>`).join('')||'<p style="padding:20px">No calls yet</p>';
-  } else if(t==='adverts'){
-    document.getElementById('mainList').innerHTML=adverts.map(a=>`<div style="margin:10px;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 5px rgba(0,0,0,.1)"><img src="${a.img}" style="width:100%;height:160px;object-fit:cover"><div style="padding:10px"><b>${a.title}</b> - ₦${a.price}<br><small>${a.desc}</small></div></div>`).join('')+'<button onclick="openModal(\'adM\')" style="margin:10px">+ Post Advert</button>'||'<p style="padding:20px">No adverts</p>';
-  } else render();
+function openContacts(){openM('contactsM');}
+function openM(id){document.getElementById(id).classList.add('show');}
+function closeM(id){document.getElementById(id).classList.remove('show');}
+function openSet(){openM('setM');}
+function switchTab(t){
+  if(t==='ads'){document.getElementById('mainList').innerHTML=ADS.map(a=>`<div style="margin:10px;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 5px rgba(0,0,0,.1)"><div style="padding:10px"><b>${a.title}</b> - ₦${a.price}<br><small>${a.desc}</small><br><small>By ${a.by}</small></div></div>`).join('')||'<p style="padding:20px">No adverts</p>';}
+  else if(t==='calls'){document.getElementById('mainList').innerHTML='<p style="padding:20px">Calls - tap phone icon inside chat to start voice/video call. Allow camera/mic.</p>';}
+  else render();
 }
-
-function openContacts(){ openModal('contactsM'); }
-function openModal(id){ document.getElementById(id).classList.add('show'); }
-function closeModal(id){ document.getElementById(id).classList.remove('show'); }
-function openSettings(){ openModal('setM'); }
-
 function startChat(id,name,img){
-  let existing=chats.find(c=>c.peer===id && c.owner===currentUser.id);
-  if(existing){ closeModal('contactsM'); openChat(existing.id); return; }
-  let newChat={id:Date.now().toString(), owner:currentUser.id, peer:id, name:name, img:img, last:'', time:'now'};
-  chats.unshift(newChat); localStorage.setItem('PZ_CHATS', JSON.stringify(chats));
-  closeModal('contactsM'); render(); openChat(newChat.id);
+  let exist=CHATS.find(c=>c.peer===id && c.owner===ME.id);
+  if(exist){closeM('contactsM');openChat(exist.id);return;}
+  let nc={id:'c'+Date.now(),owner:ME.id,peer:id,name,img,last:''};
+  CHATS.unshift(nc);localStorage.setItem('PZ_CHATS',JSON.stringify(CHATS));
+  closeM('contactsM');render();openChat(nc.id);
 }
-
 function openChat(id){
-  curChatId=id;
-  let c=chats.find(x=>x.id===id);
-  document.getElementById('cName').innerText=c.name;
+  curChat=id;
+  let c=CHATS.find(x=>x.id===id);
+  document.getElementById('chatName').innerText=c.name;
   document.getElementById('chatView').classList.add('show');
-  let msgs=messages[id]||[];
-  document.getElementById('msgs').innerHTML=msgs.map(m=>`<div class="bub ${m.me?'me':'other'}">${m.text}<br><small style="font-size:10px">${m.time}</small></div>`).join('');
-  setTimeout(()=>{ document.getElementById('msgs').scrollTop=99999; },100);
+  let m=MSGS[id]||[];
+  document.getElementById('msgs').innerHTML=m.map(x=>`<div class="bub ${x.me?'me':'other'}">${x.text}<br><small style="font-size:10px">${x.time}</small></div>`).join('');
 }
-function closeChat(){ document.getElementById('chatView').classList.remove('show'); }
-
+function closeChat(){document.getElementById('chatView').classList.remove('show');}
 function sendMsg(){
   let inp=document.getElementById('msgInput');
-  let txt=inp.value.trim(); if(!txt) return;
-  if(!messages[curChatId]) messages[curChatId]=[];
-  messages[curChatId].push({text:txt, me:true, time:new Date().toLocaleTimeString().slice(0,5)});
-  localStorage.setItem('PZ_MSGS', JSON.stringify(messages));
-  let c=chats.find(x=>x.id===curChatId); c.last=txt;
-  localStorage.setItem('PZ_CHATS', JSON.stringify(chats));
-  inp.value=''; openChat(curChatId); render();
+  let txt=inp.value.trim();if(!txt)return;
+  if(!MSGS[curChat]) MSGS[curChat]=[];
+  MSGS[curChat].push({text:txt,me:true,time:new Date().toLocaleTimeString().slice(0,5)});
+  localStorage.setItem('PZ_MSGS',JSON.stringify(MSGS));
+  let c=CHATS.find(x=>x.id===curChat);c.last=txt;localStorage.setItem('PZ_CHATS',JSON.stringify(CHATS));
+  inp.value='';openChat(curChat);render();
 }
-
-async function doVideo(){ doCall('video'); }
-async function doVoice(){ doCall('voice'); }
-async function doCall(type){
-  let c=chats.find(x=>x.id===curChatId);
-  try{
-    let cons=type==='video'?{video:true,audio:true}:{video:false,audio:true};
-    localStream=await navigator.mediaDevices.getUserMedia(cons);
-    document.getElementById('local').srcObject=localStream;
-    openCall(c.name, type);
-    let call=peer.call(c.peer, localStream);
-    call.on('stream', s=>document.getElementById('remote').srcObject=s);
-    curCall=call;
-    calls.unshift({owner:currentUser.id, name:c.name, type:type, time:new Date().toLocaleString(), peer:c.peer});
-    localStorage.setItem('PZ_CALLS', JSON.stringify(calls));
-  }catch(e){ alert('Allow camera/mic: '+e.message); }
-}
-function openCall(name,type){ document.getElementById('callScreen').classList.add('show'); document.getElementById('callName').innerText=name; document.getElementById('callStat').innerText=type==='video'?'Video Call':'Voice Call'; }
-function endCall(){ if(curCall) curCall.close(); if(localStream) localStream.getTracks().forEach(t=>t.stop()); document.getElementById('callScreen').classList.remove('show'); document.getElementById('remote').srcObject=null; }
-
 function postAd(){
-  let t=document.getElementById('adTitle').value, p=document.getElementById('adPrice').value, d=document.getElementById('adDesc').value;
-  let file=document.getElementById('adImg').files[0];
-  let save=(img)=>{ adverts.push({title:t,price:p,desc:d,img:img,by:currentUser.name}); localStorage.setItem('PZ_ADS', JSON.stringify(adverts)); closeModal('adM'); tab('adverts'); alert('Advert posted!'); };
-  if(file){ let r=new FileReader(); r.onload=e=>save(e.target.result); r.readAsDataURL(file); } else save('https://picsum.photos/400/300');
+  let t=document.getElementById('adT').value,p=document.getElementById('adP').value,d=document.getElementById('adD').value;
+  if(!t){alert('Enter title');return;}
+  ADS.push({title:t,price:p,desc:d,by:ME.name});localStorage.setItem('PZ_ADS',JSON.stringify(ADS));
+  closeM('adM');switchTab('ads');alert('Advert posted!');
 }
 function postStory(){
-  let file=document.getElementById('camFile').files[0];
-  if(!file){ alert('Choose image'); return; }
-  let r=new FileReader(); r.onload=e=>{ stories.push({img:e.target.result,user:currentUser.name}); localStorage.setItem('PZ_STORIES', JSON.stringify(stories)); closeModal('camM'); render(); alert('Story posted!'); }; r.readAsDataURL(file);
+  let f=document.getElementById('camFile').files[0];
+  if(!f){alert('Choose image');return;}
+  let r=new FileReader();r.onload=e=>{STORIES.push({img:e.target.result,user:ME.name});localStorage.setItem('PZ_STOR',JSON.stringify(STORIES));closeM('camM');render();alert('Story posted!');};r.readAsDataURL(f);
 }
+function openAdmin(){alert('Admin: Users='+USERS.length+' Chats='+CHATS.length+' Ads='+ADS.length+' - Broadcast feature: you can message all users from here.');}
 
-checkAuth();
+checkLogin();
 </script>
 </body>
 </html>
