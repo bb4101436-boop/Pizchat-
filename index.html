@@ -1,142 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>PIZCAMERA</title>
-<link rel="icon" href="data:image/svg+xml,<svg>📸</svg>">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#000;color:#fff;font-family:system-ui;overflow:hidden}
-#video{width:100vw;height:100vh;object-fit:cover;filter:var(--filter)}
-.top{position:fixed;top:0;width:100%;display:flex;justify-content:space-between;padding:12px;z-index:10;background:linear-gradient(#0009,transparent)}
-.bottom{position:fixed;bottom:0;width:100%;background:#000c;padding:10px;z-index:10}
-.filters{display:flex;gap:8px;overflow-x:auto;padding:8px 0}
-.filters button{padding:8px 14px;border-radius:20px;border:1px solid #333;background:#111;color:#fff;white-space:nowrap}
-.filters button.active{background:#1a73e8;border-color:#2df4a0}
-.controls{display:flex;align-items:center;justify-content:space-around;padding:10px 0}
-#shutter{width:75px;height:75px;border-radius:50%;background:#fff;border:4px solid #2df4a0;font-size:30px}
-.icon-btn{background:#222;border:none;color:#fff;padding:10px 14px;border-radius:50%}
-input[type=range]{width:100%}
-#canvas{display:none}
-</style>
-</head>
-<body>
-<video id="video" autoplay playsinline></video>
-<canvas id="canvas"></canvas>
-
-<div class="top">
-  <button class="icon-btn" id="flash">⚡</button>
-  <button class="icon-btn" id="timer">⏱️ OFF</button>
-  <button class="icon-btn" id="grid">▦</button>
-  <button class="icon-btn" id="flip">🔄</button>
-</div>
-
-<div class="bottom">
-  <input type="range" id="zoom" min="1" max="3" step="0.1" value="1">
-  <div class="filters" id="filters">
-    <button data-f="none" class="active">Normal</button>
-    <button data-f="grayscale(100%)">B&W</button>
-    <button data-f="sepia(100%)">Sepia</button>
-    <button data-f="contrast(130%) saturate(130%)">Vintage</button>
-    <button data-f="contrast(120%) brightness(110%) hue-rotate(200deg)">PIZ Blue</button>
-    <button data-f="contrast(120%) brightness(110%) hue-rotate(90deg)">PIZ Green</button>
-    <button data-f="contrast(140%) saturate(0) brightness(90%)">Cinematic</button>
-    <button data-f="blur(1px) brightness(110%)">Beauty</button>
-  </div>
-  <div class="controls">
-    <button class="icon-btn" id="gallery">🖼️</button>
-    <button id="shutter">📸</button>
-    <button class="icon-btn" id="videoBtn">🎥</button>
-  </div>
-</div>
-
-<script>
-const video=document.getElementById('video');
-const canvas=document.getElementById('canvas');
-let stream, facing='environment', torch=false, recording=false, mediaRecorder, chunks=[];
-let currentFilter='none', timerMode=0, gridOn=false;
-
-async function startCam(){
- if(stream) stream.getTracks().forEach(t=>t.stop());
- stream=await navigator.mediaDevices.getUserMedia({
-   video:{facingMode:facing, width:{ideal:1920}, height:{ideal:1080}},
-   audio:true
- });
- video.srcObject=stream;
- video.style.transform = facing==='user'?'scaleX(-1)':'none';
+{
+  "name": "PIZCAMERA",
+  "short_name": "PIZCAMERA",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#1a73e8",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
-startCam();
-
-// Filters
-document.getElementById('filters').onclick=e=>{
- if(e.target.tagName!=='BUTTON') return;
- document.querySelectorAll('.filters button').forEach(b=>b.classList.remove('active'));
- e.target.classList.add('active');
- currentFilter=e.target.dataset.f;
- document.documentElement.style.setProperty('--filter', currentFilter);
-}
-
-// Flip
-document.getElementById('flip').onclick=()=>{ facing=facing==='environment'?'user':'environment'; startCam(); }
-
-// Flash Torch
-document.getElementById('flash').onclick=async()=>{
- const track=stream.getVideoTracks()[0];
- try{
-   torch=!torch;
-   await track.applyConstraints({advanced:[{torch:torch}]});
-   document.getElementById('flash').style.background=torch?'#2df4a0':'#222';
- }catch{ alert('Flash not supported on this device'); }
-}
-
-// Timer
-document.getElementById('timer').onclick=function(){
- timerMode=(timerMode+1)%3; 
- const labels=['OFF','3s','5s']; 
- this.textContent='⏱️ '+labels[timerMode];
-}
-
-// Zoom
-document.getElementById('zoom').oninput=e=>{
- const track=stream.getVideoTracks()[0];
- const zoom=parseFloat(e.target.value);
- track.applyConstraints({advanced:[{zoom:zoom}]}).catch(()=>{ video.style.transform=`scale(${zoom})` });
-}
-
-// Take Photo
-document.getElementById('shutter').onclick=()=>{
- const delay=[0,3000,5000][timerMode];
- setTimeout(()=>{
-   canvas.width=video.videoWidth;
-   canvas.height=video.videoHeight;
-   const ctx=canvas.getContext('2d');
-   if(facing==='user'){ ctx.translate(canvas.width,0); ctx.scale(-1,1); }
-   ctx.filter=currentFilter;
-   ctx.drawImage(video,0,0);
-   // Watermark
-   ctx.filter='none'; ctx.fillStyle='#fff'; ctx.font='bold 28px Arial';
-   ctx.fillText('Shot on PIZCAMERA',20,canvas.height-20);
-   const url=canvas.toDataURL('image/jpeg',0.9);
-   const a=document.createElement('a'); a.href=url; a.download=`PIZCAMERA_${Date.now()}.jpg`; a.click();
- },delay);
-}
-
-// Video Recording
-document.getElementById('videoBtn').onclick=function(){
- if(!recording){
-   chunks=[]; mediaRecorder=new MediaRecorder(stream);
-   mediaRecorder.ondataavailable=e=>chunks.push(e.data);
-   mediaRecorder.onstop=()=>{
-     const blob=new Blob(chunks,{type:'video/webm'});
-     const url=URL.createObjectURL(blob);
-     const a=document.createElement('a'); a.href=url; a.download=`PIZCAMERA_${Date.now()}.webm`; a.click();
-   }
-   mediaRecorder.start(); recording=true; this.textContent='⏹️'; this.style.background='#ff0000';
- } else {
-   mediaRecorder.stop(); recording=false; this.textContent='🎥'; this.style.background='#222';
- }
-}
-</script>
-</body>
-</html>
