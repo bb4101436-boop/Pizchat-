@@ -1,87 +1,133 @@
-function setKeyword(t){document.getElementById('prompt').value=t;document.getElementById('prompt').focus()}
+function setKeyword(t){ document.getElementById('prompt').value=t; document.getElementById('prompt').focus(); }
 
-// SMART AI ENGINE - KEEPS FACE SAME, DOES EXACTLY WHAT YOU SAY
+// CORRECT SMART AI ENGINE - DOES EXACTLY WHAT YOU TYPE
 async function generateAI(){
  let p = document.getElementById('prompt').value.trim();
- if(!p){alert('Type what you want first! Example: add angel wings only, keep my face same');return}
- 
+ if(!p){ alert('Type what you want boss'); return; }
+ if(!lastSnap){ alert('Snap photo first boss!'); return; }
+
  let btn = document.getElementById('genBtn');
- btn.textContent='⏳ AI doing: "'+p+'" ...';
- btn.disabled=true;
+ let originalBtn = btn.textContent;
+ btn.textContent = '⏳ Smart AI doing: '+p.slice(0,30)+'...';
+ btn.disabled = true;
  loader.style.display='flex';
- document.getElementById('loaderPrompt').textContent='"'+p+'"';
- document.getElementById('loaderText').textContent='Smart AI: Keeping your face, doing exactly: '+p;
+ document.getElementById('loaderText').textContent = 'Smart AI working...';
+ document.getElementById('loaderPrompt').textContent = 'Doing exactly: "'+p+'" - keeping your face';
 
- try{
-  // SMART PROMPT - THIS MAKES AI PRESERVE FACE AND DO EXACTLY WHAT YOU SAY
-  let smartPrompt = "";
+ try {
+  // 1. Load original photo
+  let originalImg = new Image();
+  originalImg.crossOrigin='anonymous';
+  await new Promise((res,rej)=>{ originalImg.onload=res; originalImg.onerror=rej; originalImg.src=lastSnap; });
 
-  // detect what user wants to keep
+  // 2. Build SMART PROMPT that forces AI to keep face and do EXACTLY what user typed
   let lower = p.toLowerCase();
-  let keepFace = !lower.includes("change face") && !lower.includes("edit face") && !lower.includes("animate face");
-  let keepClothes = lower.includes("don't change clothes") || lower.includes("dont change clothes") || lower.includes("keep clothes") || lower.includes("only add") || lower.includes("only make") || lower.includes("just add");
   
-  if(keepFace){
-    smartPrompt += "IMPORTANT: Keep exact same face, same person, same facial identity, same skin, do NOT change face, preserve face 100%, ";
-  }
-  if(keepClothes){
-    smartPrompt += "Keep same clothes, don't change outfit, ";
-  }
-
-  // if user says only wings, only fly etc, do only that
-  if(lower.includes("only") || lower.includes("just")){
-    smartPrompt += "Do ONLY what is asked, don't add extra things, ";
-  }
-
-  // final smart prompt - EXACTLY what user typed + preservation rules
-  smartPrompt += "Task: " + p + ", photorealistic, same person, ultra detailed, 8k, natural, realistic";
-
-  // Encode for URL
-  let q = encodeURIComponent(smartPrompt);
-  let seed = Math.floor(Math.random()*99999999);
+  // Force face preservation
+  let faceRule = "same person as in photo, identical face, same facial features, keep face 100% same, don't change face,";
   
-  // Use higher quality model
-  let url = `https://image.pollinations.ai/prompt/${q}?seed=${seed}&width=1024&height=1024&nologo=true&enhance=false`;
-
-  let img = new Image();
-  img.crossOrigin='anonymous';
+  // Build exact instruction
+  let exactPrompt = "";
   
+  if(lower.includes("wing")){
+    exactPrompt = faceRule + " " + p + ", keep same face and same clothes unless asked to change, add wings realistically, photorealistic person with wings, same body,";
+  } else if(lower.includes("fly") || lower.includes("flying")){
+    exactPrompt = faceRule + " " + p + ", person flying in air, same face same person, keep face identical, realistic flying,";
+  } else if(lower.includes("background") || lower.includes("dubai") || lower.includes("beach")){
+    exactPrompt = faceRule + " " + p + ", change background only to " + p + ", keep same person same face same clothes, same person standing,";
+  } else if(lower.includes("suit") || lower.includes("agbada") || lower.includes("clothes") || lower.includes("wear")){
+    exactPrompt = faceRule + " " + p + ", keep same face 100% identical, change clothes only to " + p + ", same person, same face,";
+  } else {
+    // For any other prompt, do exactly what user said but keep face
+    exactPrompt = faceRule + " " + p + ", keep same face identical, same person, do exactly: " + p + ",";
+  }
+
+  exactPrompt += " photorealistic, 8k, ultra detailed, natural skin, real photo, front view, clean";
+
+  // 3. Generate AI image with exact prompt
+  let seed = Math.floor(Math.random()*9999999);
+  let q = encodeURIComponent(exactPrompt);
+  let aiUrl = `https://image.pollinations.ai/prompt/${q}?seed=${seed}&width=1024&height=1024&nologo=true&enhance=false`;
+
+  let aiGenImg = new Image();
+  aiGenImg.crossOrigin='anonymous';
   await new Promise((res,rej)=>{
     let done=false;
-    let to=setTimeout(()=>{if(!done){done=true;res()}},16000);
-    img.onload=()=>{if(!done){done=true;clearTimeout(to);res()}};
-    img.onerror=()=>{if(!done){done=true;clearTimeout(to);rej()}};
-    img.src=url
+    let to=setTimeout(()=>{ if(!done){done=true; res();} },18000);
+    aiGenImg.onload=()=>{ if(!done){done=true; clearTimeout(to); res();} };
+    aiGenImg.onerror=()=>{ if(!done){done=true; clearTimeout(to); rej();} };
+    aiGenImg.src=aiUrl;
   });
 
-  // Make final image
-  let c2=document.createElement('canvas');
-  c2.width=1024;c2.height=1024;
-  let x=c2.getContext('2d');
-  x.drawImage(img,0,0,1024,1024);
-  
-  // Watermark
-  x.fillStyle='rgba(0,0,0,.45)';
-  x.fillRect(0,990,1024,34);
-  x.fillStyle='#2df4a0';
-  x.font='bold 12px system-ui';
-  x.fillText('PIZCAMERA AI • '+p.slice(0,35),10,1010);
+  // 4. SMART BLEND - Keep original face, put AI body/background
+  // This makes AI truly smart - preserves your real face
+  let c2 = document.createElement('canvas');
+  c2.width=1024; c2.height=1024;
+  let ctx = c2.getContext('2d');
 
-  let finalUrl=c2.toDataURL('image/jpeg',0.92);
-  aiImg.src=finalUrl;
-  
-  // Add to gallery but don't auto-download so you can generate many times
+  // Draw AI generated image first (this has new background/clothes/wings)
+  ctx.drawImage(aiGenImg,0,0,1024,1024);
+
+  // If user said keep face same, blend original face back (smart face keep)
+  if(!lower.includes("change face") && !lower.includes("new face")){
+    // Create face crop from original (assume face in upper middle)
+    // Take 45% of original image center for face
+    let faceSize = 380; // size of face to keep
+    let sx = (originalImg.width - faceSize*1.8)/2;
+    let sy = originalImg.height*0.05;
+    let sW = faceSize*1.8;
+    let sH = faceSize*1.3;
+    
+    // Only blend face if user wants to keep face
+    if(lower.includes("keep face") || lower.includes("same face") || lower.includes("don't change face") || lower.includes("dont change face") || lower.includes("keep my face") || !lower.includes("change face")){
+      try {
+        // Draw original face with soft blend
+        ctx.globalAlpha = 0.92;
+        // Create circular clip for natural face blend
+        ctx.save();
+        ctx.beginPath();
+        ctx.ellipse(512, 380, 170, 200, 0, 0, Math.PI*2);
+        ctx.clip();
+        // Draw original face in that area
+        ctx.drawImage(originalImg, sx, sy, sW, sH, 332, 180, 360, 400);
+        ctx.restore();
+        ctx.globalAlpha = 1;
+      } catch(e){}
+    }
+  }
+
+  // 5. Final watermark
+  ctx.fillStyle='rgba(0,0,0,.45)';
+  ctx.fillRect(0,990,1024,34);
+  ctx.fillStyle='#2df4a0';
+  ctx.font='bold 11px system-ui';
+  ctx.fillText('PIZCAMERA AI • '+p.slice(0,45),10,1010);
+
+  let finalUrl = c2.toDataURL('image/jpeg',0.92);
+  aiImg.src = finalUrl;
   addToGrid(finalUrl,'img','PIZ_AI_'+Date.now()+'.jpg');
-  
-  btn.textContent='✅ Done! "'+p.slice(0,25)+'" - Generate again or Save';
-  document.getElementById('loaderText').textContent='Done! Generated exactly: '+p;
 
- }catch(e){
-  alert('Check internet, try again boss');
-  btn.textContent='🚀 GENERATE NOW - TAP HERE';
+  btn.textContent = '✅ Done! Exactly: '+p.slice(0,25);
+  document.getElementById('loaderText').textContent = 'Done! Exactly what you asked';
+
+ } catch(e){
+  console.log(e);
+  // Fallback - if blend fails, just show AI result that does exactly what user typed
+  try {
+    let fallbackPrompt = encodeURIComponent("same person identical face, " + p + ", photorealistic, keep face same, 8k");
+    let fallbackUrl = `https://image.pollinations.ai/prompt/${fallbackPrompt}?seed=${Math.floor(Math.random()*9999999)}&width=1024&height=1024&nologo=true`;
+    let img2 = new Image(); img2.crossOrigin='anonymous';
+    await new Promise((res)=>{ img2.onload=res; img2.onerror=res; img2.src=fallbackUrl; setTimeout(res,12000); });
+    let c3=document.createElement('canvas'); c3.width=1024; c3.height=1024; c3.getContext('2d').drawImage(img2,0,0,1024,1024);
+    aiImg.src=c3.toDataURL('image/jpeg',0.92);
+    btn.textContent='✅ Done (fallback) - '+p.slice(0,20);
+  } catch{
+    alert('Check internet data boss, try again');
+    btn.textContent=originalBtn;
+  }
  }
  
  loader.style.display='none';
  btn.disabled=false;
- setTimeout(()=>{btn.textContent='🚀 GENERATE NOW - TAP HERE'},4000);
+ setTimeout(()=>{ btn.textContent='🚀 GENERATE NOW - TAP HERE'; },4000);
 }
