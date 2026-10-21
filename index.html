@@ -1,133 +1,93 @@
-function setKeyword(t){ document.getElementById('prompt').value=t; document.getElementById('prompt').focus(); }
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>PizCamera AI</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+body{background:#000;height:100vh;overflow:hidden;color:#fff}
+#video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:contrast(1.08) saturate(1.15) brightness(1.03)}
+#top{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:12px;z-index:20}
+.topBtn{width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center}
+#logo{padding:6px 14px;border-radius:20px;background:rgba(0,0,0,.6);border:1px solid #2df4a0;font-weight:900;font-size:11px;color:#fff}
+#timerBox{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:20;display:none}
+#timerBox span{background:#ff2a2a;color:#fff;padding:6px 16px;border-radius:20px;font-weight:900;font-size:13px}
+#zoomText{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.7);color:#fff;padding:8px 16px;border-radius:20px;display:none;z-index:20;font-weight:700}
+#bottom{position:fixed;bottom:0;left:0;right:0;padding-bottom:20px;background:linear-gradient(transparent,#000 95%);z-index:20}
+#filters{display:flex;gap:8px;overflow-x:auto;padding:0 12px 12px}
+#filters::-webkit-scrollbar{display:none}
+#filters button{flex:0 0 auto;padding:7px 14px;border-radius:20px;background:#1a1a1a;color:#fff;border:1px solid #333;font-size:11px}
+#filters button.active{background:#2df4a0;color:#000;font-weight:800}
+#controls{display:flex;justify-content:space-evenly;align-items:center;padding:0 10px}
+.cBtn{width:54px;height:54px;border-radius:16px;background:#222;border:2px solid #fff3;color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.cBtn img{width:100%;height:100%;object-fit:cover}
+#shutter{width:74px;height:74px;border-radius:50%;background:#fff;border:4px solid #2df4a0}
+#recBtn{width:54px;height:54px;border-radius:50%;background:#ff2a2a;border:3px solid #fff;color:#fff;font-weight:900;font-size:10px}
+#recBtn.on{animation:pulse 1s infinite;background:#fff;color:red}
+@keyframes pulse{50%{transform:scale(1.1)}}
+#aiBtnMain{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#2df4a0,#1a73e8);border:3px solid #fff;color:#000;font-weight:900;font-size:12px;display:flex;align-items:center;justify-content:center}
+.view{position:fixed;inset:0;background:#000;z-index:100;display:none;flex-direction:column}
+#grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;overflow:auto;background:#000;flex:1}
+#aiPreview{flex:1;background:#080808;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+#aiPreview img{max-width:100%;max-height:100%;object-fit:contain}
+#aiLoader{position:absolute;inset:0;background:rgba(0,0,0,.92);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:5;color:#fff}
+.spinner{width:48px;height:48px;border:4px solid #333;border-top-color:#2df4a0;border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+canvas{display:none}
+</style>
+</head>
+<body>
+<video id="video" autoplay playsinline muted></video>
 
-// CORRECT SMART AI ENGINE - DOES EXACTLY WHAT YOU TYPE
-async function generateAI(){
- let p = document.getElementById('prompt').value.trim();
- if(!p){ alert('Type what you want boss'); return; }
- if(!lastSnap){ alert('Snap photo first boss!'); return; }
+<div id="top">
+<div style="display:flex;gap:8px;align-items:center"><button class="topBtn" onclick="toggleFlash()">⚡</button><div id="logo">PIZCAMERA AI</div></div>
+<div style="display:flex;gap:8px"><button class="topBtn" onclick="flipCamera()">🔄</button><button class="topBtn" onclick="settingsView.style.display='flex'">⚙️</button></div>
+</div>
 
- let btn = document.getElementById('genBtn');
- let originalBtn = btn.textContent;
- btn.textContent = '⏳ Smart AI doing: '+p.slice(0,30)+'...';
- btn.disabled = true;
- loader.style.display='flex';
- document.getElementById('loaderText').textContent = 'Smart AI working...';
- document.getElementById('loaderPrompt').textContent = 'Doing exactly: "'+p+'" - keeping your face';
+<div id="timerBox"><span id="timeText">● 00:00:00</span></div>
+<div id="zoomText">1.0x</div>
 
- try {
-  // 1. Load original photo
-  let originalImg = new Image();
-  originalImg.crossOrigin='anonymous';
-  await new Promise((res,rej)=>{ originalImg.onload=res; originalImg.onerror=rej; originalImg.src=lastSnap; });
+<div id="bottom">
+<div id="filters">
+<button class="active" onclick="setFilter('contrast(1.08) saturate(1.15) brightness(1.03)',this)">✨ CLEAN</button>
+<button onclick="setFilter('contrast(1.12) saturate(1.25) brightness(1.05)',this)">🔥 VIVID</button>
+<button onclick="setFilter('contrast(1.06) brightness(1.08) saturate(1.1)',this)">💎 CRYSTAL</button>
+<button onclick="setFilter('saturate(1.3) contrast(1.1)',this)">🌈 HOT</button>
+<button onclick="setFilter('saturate(1.2) hue-rotate(200deg) contrast(1.1)',this)">💙 BLUE</button>
+<button onclick="setFilter('saturate(1.2) hue-rotate(80deg) contrast(1.1)',this)">💚 GREEN</button>
+<button onclick="setFilter('none',this)">ORIGINAL</button>
+<button onclick="setFilter('saturate(0) contrast(1.2)',this)">B&W</button>
+</div>
+<div id="controls">
+<button class="cBtn" id="galleryBtn" onclick="openGallery()">🖼️</button>
+<button id="shutter" onclick="takePhoto()"></button>
+<button id="aiBtnMain" onclick="openAI()">AI ✨</button>
+<button id="recBtn" onclick="toggleRec()">REC</button>
+</div>
+</div>
 
-  // 2. Build SMART PROMPT that forces AI to keep face and do EXACTLY what user typed
-  let lower = p.toLowerCase();
-  
-  // Force face preservation
-  let faceRule = "same person as in photo, identical face, same facial features, keep face 100% same, don't change face,";
-  
-  // Build exact instruction
-  let exactPrompt = "";
-  
-  if(lower.includes("wing")){
-    exactPrompt = faceRule + " " + p + ", keep same face and same clothes unless asked to change, add wings realistically, photorealistic person with wings, same body,";
-  } else if(lower.includes("fly") || lower.includes("flying")){
-    exactPrompt = faceRule + " " + p + ", person flying in air, same face same person, keep face identical, realistic flying,";
-  } else if(lower.includes("background") || lower.includes("dubai") || lower.includes("beach")){
-    exactPrompt = faceRule + " " + p + ", change background only to " + p + ", keep same person same face same clothes, same person standing,";
-  } else if(lower.includes("suit") || lower.includes("agbada") || lower.includes("clothes") || lower.includes("wear")){
-    exactPrompt = faceRule + " " + p + ", keep same face 100% identical, change clothes only to " + p + ", same person, same face,";
-  } else {
-    // For any other prompt, do exactly what user said but keep face
-    exactPrompt = faceRule + " " + p + ", keep same face identical, same person, do exactly: " + p + ",";
-  }
+<div id="settingsView" class="view">
+<div style="padding:14px;display:flex;justify-content:space-between;background:#111"><b>⚙️ Settings</b><button onclick="settingsView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">Close ✕</button></div>
+<div style="padding:20px;display:flex;justify-content:space-between;border-bottom:1px solid #222"><span>Watermark</span><select id="wmSel" style="background:#222;color:#fff;padding:8px;border-radius:10px;border:none"><option value="on">ON</option><option value="off">OFF</option></select></div>
+<div style="padding:20px;display:flex;justify-content:space-between"><span>Timer</span><select id="timerSel" style="background:#222;color:#fff;padding:8px;border-radius:10px;border:none"><option value="0">Off</option><option value="3">3s</option><option value="5">5s</option></select></div>
+</div>
 
-  exactPrompt += " photorealistic, 8k, ultra detailed, natural skin, real photo, front view, clean";
+<div id="galleryView" class="view">
+<div style="padding:12px;display:flex;justify-content:space-between;background:#111"><span style="font-weight:700">📸 Your Shots</span><button onclick="galleryView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">Close ✕</button></div>
+<div id="grid"></div>
+</div>
 
-  // 3. Generate AI image with exact prompt
-  let seed = Math.floor(Math.random()*9999999);
-  let q = encodeURIComponent(exactPrompt);
-  let aiUrl = `https://image.pollinations.ai/prompt/${q}?seed=${seed}&width=1024&height=1024&nologo=true&enhance=false`;
+<div id="fullView" class="view">
+<div style="padding:12px;display:flex;justify-content:space-between;background:#111"><button onclick="fullView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">← Back</button><span id="fullName"></span><button onclick="fullView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#222;color:#fff;border:none">✕</button></div>
+<img id="fullImg" style="flex:1;object-fit:contain;background:#000;display:none">
+<video id="fullVideo" style="flex:1;width:100%;background:#000;display:none" controls playsinline></video>
+<div style="padding:12px;display:flex;gap:10px;justify-content:center;background:#111">
+<button onclick="openAIEditor()" style="padding:12px 20px;border-radius:20px;background:linear-gradient(90deg,#2df4a0,#1a73e8);border:none;font-weight:800">✨ Edit with AI</button>
+<button onclick="downloadFull()" style="padding:12px 20px;border-radius:20px;background:#fff;border:none;font-weight:700">💾 Save</button>
+</div>
+</div>
 
-  let aiGenImg = new Image();
-  aiGenImg.crossOrigin='anonymous';
-  await new Promise((res,rej)=>{
-    let done=false;
-    let to=setTimeout(()=>{ if(!done){done=true; res();} },18000);
-    aiGenImg.onload=()=>{ if(!done){done=true; clearTimeout(to); res();} };
-    aiGenImg.onerror=()=>{ if(!done){done=true; clearTimeout(to); rej();} };
-    aiGenImg.src=aiUrl;
-  });
-
-  // 4. SMART BLEND - Keep original face, put AI body/background
-  // This makes AI truly smart - preserves your real face
-  let c2 = document.createElement('canvas');
-  c2.width=1024; c2.height=1024;
-  let ctx = c2.getContext('2d');
-
-  // Draw AI generated image first (this has new background/clothes/wings)
-  ctx.drawImage(aiGenImg,0,0,1024,1024);
-
-  // If user said keep face same, blend original face back (smart face keep)
-  if(!lower.includes("change face") && !lower.includes("new face")){
-    // Create face crop from original (assume face in upper middle)
-    // Take 45% of original image center for face
-    let faceSize = 380; // size of face to keep
-    let sx = (originalImg.width - faceSize*1.8)/2;
-    let sy = originalImg.height*0.05;
-    let sW = faceSize*1.8;
-    let sH = faceSize*1.3;
-    
-    // Only blend face if user wants to keep face
-    if(lower.includes("keep face") || lower.includes("same face") || lower.includes("don't change face") || lower.includes("dont change face") || lower.includes("keep my face") || !lower.includes("change face")){
-      try {
-        // Draw original face with soft blend
-        ctx.globalAlpha = 0.92;
-        // Create circular clip for natural face blend
-        ctx.save();
-        ctx.beginPath();
-        ctx.ellipse(512, 380, 170, 200, 0, 0, Math.PI*2);
-        ctx.clip();
-        // Draw original face in that area
-        ctx.drawImage(originalImg, sx, sy, sW, sH, 332, 180, 360, 400);
-        ctx.restore();
-        ctx.globalAlpha = 1;
-      } catch(e){}
-    }
-  }
-
-  // 5. Final watermark
-  ctx.fillStyle='rgba(0,0,0,.45)';
-  ctx.fillRect(0,990,1024,34);
-  ctx.fillStyle='#2df4a0';
-  ctx.font='bold 11px system-ui';
-  ctx.fillText('PIZCAMERA AI • '+p.slice(0,45),10,1010);
-
-  let finalUrl = c2.toDataURL('image/jpeg',0.92);
-  aiImg.src = finalUrl;
-  addToGrid(finalUrl,'img','PIZ_AI_'+Date.now()+'.jpg');
-
-  btn.textContent = '✅ Done! Exactly: '+p.slice(0,25);
-  document.getElementById('loaderText').textContent = 'Done! Exactly what you asked';
-
- } catch(e){
-  console.log(e);
-  // Fallback - if blend fails, just show AI result that does exactly what user typed
-  try {
-    let fallbackPrompt = encodeURIComponent("same person identical face, " + p + ", photorealistic, keep face same, 8k");
-    let fallbackUrl = `https://image.pollinations.ai/prompt/${fallbackPrompt}?seed=${Math.floor(Math.random()*9999999)}&width=1024&height=1024&nologo=true`;
-    let img2 = new Image(); img2.crossOrigin='anonymous';
-    await new Promise((res)=>{ img2.onload=res; img2.onerror=res; img2.src=fallbackUrl; setTimeout(res,12000); });
-    let c3=document.createElement('canvas'); c3.width=1024; c3.height=1024; c3.getContext('2d').drawImage(img2,0,0,1024,1024);
-    aiImg.src=c3.toDataURL('image/jpeg',0.92);
-    btn.textContent='✅ Done (fallback) - '+p.slice(0,20);
-  } catch{
-    alert('Check internet data boss, try again');
-    btn.textContent=originalBtn;
-  }
- }
- 
- loader.style.display='none';
- btn.disabled=false;
- setTimeout(()=>{ btn.textContent='🚀 GENERATE NOW - TAP HERE'; },4000);
-}
+<div id="aiView" class="view" style="z-index:200">
+<div style="padding:12px;display:flex;justify-content:space-between;align-items:center;background:#111;border-bottom:1px solid #222">
+<button onclick="aiView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#fff;border:none;font-weight:700
