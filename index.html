@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PizCamera AI HD Clear</title>
+<title>PizCamera ULTRA SMOOTH HD</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#000;color:#fff;font-family:Arial;height:100vh;overflow:hidden}
-#video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:#111;image-rendering:high-quality}
+#video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:#111;transform:translateZ(0);-webkit-transform:translateZ(0)}
 #top{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;justify-content:space-between;padding:12px}
 .topBtn{width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,.7);border:1px solid #444;color:#fff;font-size:18px}
 #logo{background:rgba(0,0,0,.6);border:1px solid #2df4a0;padding:6px 14px;border-radius:20px;font-weight:900;font-size:11px}
@@ -19,36 +19,4 @@ body{background:#000;color:#fff;font-family:Arial;height:100vh;overflow:hidden}
 .ctrl{width:54px;height:54px;border-radius:16px;background:#222;border:2px solid rgba(255,255,255,.2);color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .ctrl img{width:100%;height:100%;object-fit:cover}
 #shutter{width:72px;height:72px;border-radius:50%;background:#fff;border:4px solid #2df4a0}
-#rec{width:54px;height:54px;border-radius:50%;background:#ff2a2a;border:3px solid #fff;color:#fff;font-weight:900;font-size:10px}
-#aiMain{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#2df4a0,#1a73e8);border:3px solid #fff;color:#000;font-weight:900;font-size:11px}
-.view{position:fixed;inset:0;background:#000;z-index:100;display:none;flex-direction:column}
-#grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;flex:1;overflow:auto;background:#000}
-#aiPreview{flex:1;background:#080808;display:flex;align-items:center;justify-content:center}
-#aiPreview img{max-width:100%;max-height:100%;object-fit:contain}
-#timer{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:30;display:none;background:#ff2a2a;color:#fff;padding:6px 14px;border-radius:20px;font-weight:900}
-#start{position:fixed;inset:0;z-index:200;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
-#start button{padding:18px 36px;border-radius:30px;background:#2df4a0;color:#000;font-weight:900;border:none;font-size:18px}
-canvas{display:none}
-</style>
-</head>
-<body>
-<video id="video" autoplay playsinline muted></video>
-<div id="start"><div style="font-size:50px">📸</div><div style="font-weight:900;font-size:22px">PIZCAMERA AI HD CLEAR</div><button onclick="startCam()">START CAMERA HD</button><div style="color:#888;font-size:11px">HD 1920x1080 • Crystal Clear</div></div>
-<div id="top"><div style="display:flex;gap:8px;align-items:center"><button class="topBtn" onclick="toggleFlash()">⚡</button><div id="logo">PIZCAMERA HD CLEAR</div></div><div style="display:flex;gap:8px"><button class="topBtn" onclick="flipCam()">🔄</button><button class="topBtn" onclick="openView('settingsView')">⚙️</button></div></div>
-<div id="timer">● 00:00:00</div>
-<div id="bottom"><div id="filters">
-<button class="active" onclick="setFilter('contrast(1.12) saturate(1.18) brightness(1.04)',this)">✨ CLEAR HD</button>
-<button onclick="setFilter('contrast(1.18) saturate(1.32) brightness(1.06)',this)">🔥 VIVID HD</button>
-<button onclick="setFilter('contrast(1.15) saturate(1.20) brightness(1.08) sharpen(0.5)',this)">💎 CRYSTAL CLEAR</button>
-<button onclick="setFilter('saturate(0) contrast(1.2) brightness(1.05)',this)">B&W HD</button>
-<button onclick="setFilter('none',this)">ORIGINAL</button>
-</div>
-<div id="controls">
-<button class="ctrl" id="gBtn" onclick="openView('galleryView')">🖼️</button>
-<button id="shutter" onclick="snapPhoto()"></button>
-<button id="aiMain" onclick="openAI()">AI ✨</button>
-<button id="rec" onclick="toggleRec()">REC</button>
-</div></div>
-<div id="settingsView" class="view"><div style="padding:12px;display:flex;justify-content:space-between;background:#111"><b>HD Settings</b><button onclick="closeView('settingsView')" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">Close</button></div><div style="padding:20px;color:#2df4a0">✅ HD 1920x1080 ON<br>✅ Crystal Clear Filter ON<br>✅ Sharpness Boost ON<br>✅ Bottom Working</div></div>
-<div id="galleryView" class="view"><div style="padding:12px;display:flex;justify-content:space-between;background:#111"><b>Gallery HD</b><button onclick="closeView('galleryView')" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">Close</button></div><div id="grid"></div></div>
-<div id="aiView" class="view" style="z-index:200"><div style="padding:12px;display:flex;justify-content:space-between;background:#111"><button onclick="closeView
+#rec{width:54px;height:54
