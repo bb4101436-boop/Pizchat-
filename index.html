@@ -3,89 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>PizCamera AI - HD FINAL</title>
+<title>PizCamera AI - ULTRA SMOOTH HD</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#000;color:#fff;font-family:system-ui;height:100vh;overflow:hidden}
-#video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:#111;filter:contrast(1.08) saturate(1.15) brightness(1.03)}
+#video{
+ position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:#0a0a0a;
+ filter:contrast(1.06) saturate(1.18) brightness(1.04) sharpen(0);
+ transform:translateZ(0); will-change:transform; backface-visibility:hidden;
+}
 #top{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;justify-content:space-between;padding:12px}
-.topBtn{width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:18px}
-#logo{background:rgba(0,0,0,.6);border:1px solid #2df4a0;padding:6px 14px;border-radius:20px;font-weight:900;font-size:11px}
-#bottom{position:fixed;bottom:0;left:0;right:0;z-index:30;padding-bottom:18px;background:linear-gradient(transparent,#000 90%)}
+.topBtn{width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:18px;backdrop-filter:blur(10px)}
+#logo{background:rgba(0,0,0,.5);border:1px solid #2df4a0;padding:6px 14px;border-radius:20px;font-weight:900;font-size:11px;backdrop-filter:blur(10px)}
+#bottom{position:fixed;bottom:0;left:0;right:0;z-index:30;padding-bottom:18px;background:linear-gradient(transparent,#000 85%)}
 #filters{display:flex;gap:8px;overflow-x:auto;padding:0 12px 12px} #filters::-webkit-scrollbar{display:none}
-#filters button{flex:0 0 auto;padding:7px 14px;border-radius:20px;background:#1a1a1a;color:#fff;border:1px solid #333;font-size:11px}
-#filters button.active{background:#2df4a0;color:#000;font-weight:800}
-#controls{display:flex;justify-content:space-evenly;align-items:center}
-.ctrl{width:54px;height:54px;border-radius:16px;background:#222;border:2px solid rgba(255,255,255,.2);color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.ctrl img{width:100%;height:100%;object-fit:cover}
-#shutter{width:72px;height:72px;border-radius:50%;background:#fff;border:4px solid #2df4a0}
-#shutter:active{transform:scale(0.92)}
-#rec{width:54px;height:54px;border-radius:50%;background:#ff2a2a;border:3px solid #fff;color:#fff;font-weight:900;font-size:10px}
-#rec.on{background:#fff;color:red;animation:pulse 1s infinite} @keyframes pulse{50%{transform:scale(1.1)}}
-#aiMain{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#2df4a0,#1a73e8);border:3px solid #fff;color:#000;font-weight:900;font-size:11px}
-.view{position:fixed;inset:0;background:#000;z-index:100;display:none;flex-direction:column}
-#grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;flex:1;overflow:auto;background:#000}
-#aiPreview{flex:1;background:#080808;display:flex;align-items:center;justify-content:center;position:relative}
-#aiPreview img{max-width:100%;max-height:100%;object-fit:contain}
-#timer{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:30;display:none;background:#ff2a2a;color:#fff;padding:6px 14px;border-radius:20px;font-weight:900;font-size:13px}
-#zoom{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:30;display:none;background:rgba(0,0,0,.7);padding:8px 14px;border-radius:20px;font-weight:700}
-#start{position:fixed;inset:0;z-index:200;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
-#start button{padding:18px 36px;border-radius:30px;background:#2df4a0;color:#000;font-weight:900;border:none;font-size:18px}
-canvas{display:none}
-@keyframes spin{to{transform:rotate(360deg)}}
-</style>
-</head>
-<body>
-<video id="video" autoplay playsinline muted></video>
-
-<div id="start">
-<div style="font-size:50px">📸</div>
-<div style="font-weight:900;font-size:22px">PIZCAMERA AI HD</div>
-<div style="color:#888;font-size:13px">High Quality Camera</div>
-<button onclick="startCam()">START CAMERA - TAP HERE</button>
-</div>
-
-<div id="top">
-<div style="display:flex;gap:8px;align-items:center"><button class="topBtn" onclick="toggleFlash()">⚡</button><div id="logo">PIZCAMERA AI HD</div></div>
-<div style="display:flex;gap:8px"><button class="topBtn" onclick="flipCam()">🔄</button><button class="topBtn" onclick="openView('settingsView')">⚙️</button></div>
-</div>
-
-<div id="timer">● 00:00:00</div>
-<div id="zoom">1.0x</div>
-
-<div id="bottom">
-<div id="filters">
-<button class="active" onclick="setFilter('contrast(1.08) saturate(1.15) brightness(1.03)',this)">✨ CLEAN HD</button>
-<button onclick="setFilter('contrast(1.15) saturate(1.30) brightness(1.05)',this)">🔥 VIVID HD</button>
-<button onclick="setFilter('contrast(1.10) brightness(1.08) saturate(1.15)',this)">💎 CRYSTAL HD</button>
-<button onclick="setFilter('saturate(1.4) contrast(1.15)',this)">🌈 HOT</button>
-<button onclick="setFilter('saturate(0) contrast(1.2)',this)">B&W</button>
-<button onclick="setFilter('none',this)">ORIGINAL</button>
-</div>
-<div id="controls">
-<button class="ctrl" id="gBtn" onclick="openView('galleryView')">🖼️</button>
-<button id="shutter" onclick="snapPhoto()"></button>
-<button id="aiMain" onclick="openAI()">AI ✨</button>
-<button id="rec" onclick="toggleRec()">REC</button>
-</div>
-</div>
-
-<div id="settingsView" class="view">
-<div style="padding:12px;display:flex;justify-content:space-between;background:#111"><b>Settings HD</b><button onclick="closeView('settingsView')" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">Close</button></div>
-<div style="padding:20px;color:#2df4a0;font-size:14px">✅ HD Quality: 1920x1080 • Filters HD • Video with Hours • All Bottom Working</div>
-</div>
-
-<div id="galleryView" class="view">
-<div style="padding:12px;display:flex;justify-content:space-between;background:#111"><b>Gallery HD</b><button onclick="closeView('galleryView')" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">Close</button></div>
-<div id="grid"></div>
-</div>
-
-<div id="fullView" class="view">
-<div style="padding:12px;display:flex;justify-content:space-between;background:#111"><button onclick="closeView('fullView')" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">Back</button><button onclick="closeView('fullView')" style="padding:8px 14px;border-radius:20px;background:#222;color:#fff;border:none">✕</button></div>
-<img id="fullImg" style="flex:1;object-fit:contain;background:#000;display:none">
-<video id="fullVideo" style="flex:1;background:#000;display:none" controls playsinline></video>
-<div style="padding:12px;display:flex;gap:10px;justify-content:center;background:#111"><button onclick="editWithAI()" style="padding:12px 18px;border-radius:20px;background:linear-gradient(90deg,#2df4a0,#1a73e8);border:none;font-weight:800">✨ Edit with AI</button><button onclick="saveFull()" style="padding:12px 18px;border-radius:20px;background:#fff;border:none;font-weight:700">Save HD</button></div>
-</div>
-
-<div id="aiView" class="view" style="z-index:200">
-<div style="padding:12px;display:flex;justify-content:space-between;background:#111;border-bottom:1px solid #222"><button onclick="closeView('aiView')" style="padding:8px 14px;border
+#filters button{flex:0 0 auto;padding:7px 14px;border-radius:20px;background:rgba(26,26,26,.9);color:#fff;border:1px solid #333;font-size:11px;backdrop-filter:blur(10px)}
+#filters button.active{background:#2df4a0;color:#000;font-weight:800;box-shadow:
