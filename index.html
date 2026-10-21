@@ -1,69 +1,10 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PizCamera - ONE CODE FIX ALL</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#000;color:#fff;font-family:Arial;height:100vh;overflow:hidden}
-#video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:#111}
-#top{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;justify-content:space-between;padding:12px}
-.topBtn{width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,.7);border:1px solid #444;color:#fff;font-size:18px}
-#logo{background:rgba(0,0,0,.6);border:1px solid #2df4a0;padding:6px 14px;border-radius:20px;font-weight:900;font-size:11px}
-#bottom{position:fixed;bottom:0;left:0;right:0;z-index:30;padding-bottom:18px;background:linear-gradient(transparent,#000 90%)}
-#filters{display:flex;gap:8px;overflow-x:auto;padding:0 12px 12px}
-#filters button{flex:0 0 auto;padding:7px 14px;border-radius:20px;background:#1a1a1a;color:#fff;border:1px solid #333;font-size:11px}
-#filters button.active{background:#2df4a0;color:#000;font-weight:800}
-#controls{display:flex;justify-content:space-evenly;align-items:center}
-.ctrl{width:54px;height:54px;border-radius:16px;background:#222;border:2px solid rgba(255,255,255,.2);color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.ctrl img{width:100%;height:100%;object-fit:cover}
-#shutter{width:72px;height:72px;border-radius:50%;background:#fff;border:4px solid #2df4a0}
-#rec{width:54px;height:54px;border-radius:50%;background:#ff2a2a;border:3px solid #fff;color:#fff;font-weight:900;font-size:10px}
-#aiMain{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#2df4a0,#1a73e8);border:3px solid #fff;color:#000;font-weight:900;font-size:11px}
-.view{position:fixed;inset:0;background:#000;z-index:100;display:none;flex-direction:column}
-#grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;flex:1;overflow:auto;background:#000}
-#aiPreview{flex:1;background:#080808;display:flex;align-items:center;justify-content:center}
-#aiPreview img{max-width:100%;max-height:100%;object-fit:contain}
-#timer{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:30;display:none;background:#ff2a2a;color:#fff;padding:6px 14px;border-radius:20px;font-weight:900}
-#start{position:fixed;inset:0;z-index:200;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
-#start button{padding:18px 36px;border-radius:30px;background:#2df4a0;color:#000;font-weight:900;border:none;font-size:18px}
-.setRow{padding:13px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #111}
-.setRow span{color:#aaa;font-size:13px}
-.setRow select,.setRow input{ background:#1e1e1e;color:#fff;border:1px solid #333;border-radius:8px;padding:5px}
-.switch{width:44px;height:26px;background:#333;border-radius:20px;position:relative;cursor:pointer}
-.switch.on{background:#2df4a0}
-.switch i{position:absolute;top:3px;left:3px;width:20px;height:20px;background:#fff;border-radius:50%;transition:.2s;display:block}
-.switch.on i{transform:translateX(18px)}
-canvas{display:none}
-</style>
-</head>
-<body>
-<video id="video" autoplay playsinline muted></video>
-<div id="start"><div style="font-size:50px">📸</div><div style="font-weight:900;font-size:22px">PIZCAMERA</div><div style="color:#888;font-size:12px">Camera auto opens clean HD</div><button onclick="startCam()">START CAMERA</button></div>
-<div id="top"><div style="display:flex;gap:8px;align-items:center"><button class="topBtn" onclick="toggleTorch()">⚡</button><div id="logo">PIZCAMERA CLEAN</div></div><div style="display:flex;gap:8px"><button class="topBtn" onclick="flipCam()">🔄</button><button class="topBtn" onclick="openSettings()">⚙️</button></div></div>
-<div id="timer">● 00:00:00</div>
-<div id="bottom"><div id="filters">
-<button class="active" onclick="setFilter('none',this)">ORIGINAL CLEAN</button>
-<button onclick="setFilter('contrast(1.06) saturate(1.10) brightness(1.04)',this)">✨ CLEAN HD</button>
-<button onclick="setFilter('contrast(1.12) saturate(1.18)',this)">🔥 VIVID</button>
-</div>
-<div id="controls">
-<button class="ctrl" id="gBtn" onclick="openView('galleryView')">🖼️</button>
-<button id="shutter" onclick="photoFlow()"></button>
-<button id="aiMain" onclick="openAI()">AI ✨</button>
-<button id="rec" onclick="toggleRec()">REC</button>
-</div></div>
-
-<!-- SETTINGS - INSIDE ICON ONLY - HAS 1 TO 4 -->
-<div id="settingsView" class="view">
-<div style="padding:12px;display:flex;justify-content:space-between;background:#111"><b>Camera Settings</b><button onclick="closeView('settingsView')" style="padding:8px 14px;border-radius:20px;background:#fff;border:none;font-weight:700">Close</button></div>
-<div style="flex:1;overflow:auto">
-<div style="padding:10px 14px;color:#2df4a0;font-weight:800;font-size:11px">1. QUALITY & CAPTURE</div>
-<div class="setRow"><span>📸 Photo Quality</span><select id="pQ"><option value="0.92">Standard 92%</option><option value="0.95" selected>High 95%</option><option value="1.0">Ultra 100%</option></select></div>
-<div class="setRow"><span>⏱️ Countdown</span><select id="cT"><option value="0">Off</option><option value="3">3s</option><option value="5">5s</option><option value="10">10s</option></select></div>
-<div class="setRow"><span>🤳 Selfie Mirroring</span><div class="switch on" id="mS" onclick="this.classList.toggle('on'); applyMirror()"><i></i></div></div>
-<div class="setRow"><span>🔲 Framing Grid</span><div class="switch" id="gS" onclick="toggleGrid()"><i></i></div></div>
-
-<div style="padding:10px 14px;color:#2df4a0;font-weight:800;font-size:11px">2. LIGHT & FOCUS</div>
-<div class="setRow"><span>⚡ Flash Torch</span
+<head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Piz</title></head>
+<body style="margin:0;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;font-family:Arial">
+<div style="font-size:60px">📸</div>
+<h1 style="color:#2df4a0">PIZCAMERA OPENED!</h1>
+<p>If you see this, GT Hub is working</p>
+<button onclick="location.reload()" style="padding:16px 32px;border-radius:30px;background:#2df4a0;color:#000;font-weight:900;border:none;margin-top:20px">RELOAD</button>
+</body>
+</html>
