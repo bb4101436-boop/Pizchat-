@@ -2,21 +2,65 @@
 <html>
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PizCamera ULTRA SMOOTH HD</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>PizCamera FINAL FIXED</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#000;color:#fff;font-family:Arial;height:100vh;overflow:hidden}
-#video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:#111;transform:translateZ(0);-webkit-transform:translateZ(0)}
-#top{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;justify-content:space-between;padding:12px}
-.topBtn{width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,.7);border:1px solid #444;color:#fff;font-size:18px}
-#logo{background:rgba(0,0,0,.6);border:1px solid #2df4a0;padding:6px 14px;border-radius:20px;font-weight:900;font-size:11px}
-#bottom{position:fixed;bottom:0;left:0;right:0;z-index:30;padding-bottom:18px;background:linear-gradient(transparent,#000 90%)}
-#filters{display:flex;gap:8px;overflow-x:auto;padding:0 12px 12px}
-#filters button{flex:0 0 auto;padding:7px 14px;border-radius:20px;background:#1a1a1a;color:#fff;border:1px solid #333;font-size:11px}
-#filters button.active{background:#2df4a0;color:#000;font-weight:800}
-#controls{display:flex;justify-content:space-evenly;align-items:center}
-.ctrl{width:54px;height:54px;border-radius:16px;background:#222;border:2px solid rgba(255,255,255,.2);color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:system-ui,Arial}
+#video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:#000;z-index:1}
+#top{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:12px env(safe-area-inset-top) 12px 12px;background:linear-gradient(rgba(0,0,0,.6),transparent)}
+.topBtn{width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.25);color:#fff;font-size:18px;backdrop-filter:blur(10px)}
+#logo{padding:7px 14px;border-radius:20px;background:rgba(0,0,0,.55);border:1px solid #2df4a0;font-weight:900;font-size:11px;letter-spacing:.5px;backdrop-filter:blur(10px)}
+#bottom{position:fixed;bottom:0;left:0;right:0;z-index:10;padding:0 0 calc(16px + env(safe-area-inset-bottom)) 0;background:linear-gradient(transparent,rgba(0,0,0,.95) 70%)}
+#filters{display:flex;gap:8px;overflow-x:auto;padding:8px 12px 12px;scrollbar-width:none}
+#filters::-webkit-scrollbar{display:none}
+#filters button{flex:0 0 auto;padding:8px 16px;border-radius:20px;background:rgba(30,30,30,.9);color:#fff;border:1px solid rgba(255,255,255,.15);font-size:12px;font-weight:600}
+#filters button.active{background:#2df4a0;color:#000;border-color:#2df4a0;font-weight:900}
+#controls{display:flex;justify-content:space-evenly;align-items:center;padding:4px 12px}
+.ctrl{width:56px;height:56px;border-radius:16px;background:rgba(40,40,40,.9);border:2px solid rgba(255,255,255,.2);color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .ctrl img{width:100%;height:100%;object-fit:cover}
-#shutter{width:72px;height:72px;border-radius:50%;background:#fff;border:4px solid #2df4a0}
-#rec{width:54px;height:54
+#shutter{width:76px;height:76px;border-radius:50%;background:#fff;border:4px solid #2df4a0;box-shadow:0 0 0 4px rgba(45,244,160,.2)}
+#rec{width:58px;height:58px;border-radius:50%;background:#ff2a2a;border:3px solid #fff;color:#fff;font-weight:900;font-size:11px;letter-spacing:.5px}
+#aiMain{width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#2df4a0,#1a73e8);border:3px solid #fff;color:#000;font-weight:900;font-size:11px}
+#msg{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:20;background:rgba(0,0,0,.85);border:1px solid #2df4a0;color:#fff;padding:20px;border-radius:20px;text-align:center;display:none;min-width:260px}
+#msg button{margin-top:12px;padding:12px 24px;border-radius:25px;background:#2df4a0;color:#000;border:none;font-weight:900;width:100%}
+.view{position:fixed;inset:0;background:#000;z-index:100;display:none;flex-direction:column}
+#grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;flex:1;overflow:auto;background:#000}
+#aiPreview{flex:1;background:#0a0a0a;display:flex;align-items:center;justify-content:center}
+#aiPreview img{max-width:100%;max-height:100%;object-fit:contain}
+#timer{position:fixed;top:72px;left:50%;transform:translateX(-50%);z-index:10;display:none;background:#ff2a2a;color:#fff;padding:6px 14px;border-radius:20px;font-weight:900;font-size:13px}
+canvas{display:none}
+</style>
+</head>
+<body>
+<video id="video" autoplay playsinline muted></video>
+
+<div id="msg">
+<div style="font-weight:900;color:#2df4a0;margin-bottom:6px">PIZCAMERA</div>
+<div id="msgText" style="font-size:13px;color:#ccc">Starting HD camera...</div>
+<button id="msgBtn" onclick="startCam()">TAP TO START CAMERA</button>
+</div>
+
+<div id="top">
+<div style="display:flex;gap:8px;align-items:center"><button class="topBtn" onclick="location.reload()">⚡</button><div id="logo">PIZCAMERA • HD CLEAR</div></div>
+<div style="display:flex;gap:8px"><button class="topBtn" onclick="flipCam()">🔄</button><button class="topBtn" onclick="openView('settingsView')">⚙️</button></div>
+</div>
+
+<div id="timer">● 00:00:00</div>
+
+<div id="bottom">
+<div id="filters">
+<button class="active" onclick="setFilter('none',this)">ORIGINAL CLEAN</button>
+<button onclick="setFilter('contrast(1.06) saturate(1.10) brightness(1.04)',this)">✨ CLEAN HD</button>
+<button onclick="setFilter('contrast(1.12) saturate(1.18) brightness(1.05)',this)">🔥 VIVID HD</button>
+<button onclick="setFilter('saturate(0) contrast(1.15)',this)">B&W</button>
+</div>
+<div id="controls">
+<button class="ctrl" id="gBtn" onclick="openView('galleryView')">🖼️</button>
+<button id="shutter" onclick="snapPhoto()"></button>
+<button id="aiMain" onclick="openAI()">AI ✨</button>
+<button id="rec" onclick="toggleRec()">REC</button>
+</div>
+</div>
+
+<div id="galleryView" class
