@@ -23,9 +23,9 @@ body{background:#000;color:#fff;font-family:Arial;height:100vh;overflow:hidden}
 #aiMain{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#2df4a0,#1a73e8);border:3px solid #fff;color:#000;font-weight:900;font-size:11px}
 .view{position:fixed;inset:0;background:#000;z-index:100;display:none;flex-direction:column}
 #grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;flex:1;overflow:auto;background:#000}
-#aiPreview{flex:1;background:#080808;display:flex;align-items:center;justify-content:center;position:relative}
+#aiPreview{flex:1;background:#080808;display:flex;align-items:center;justify-content:center}
 #aiPreview img{max-width:100%;max-height:100%;object-fit:contain}
-#timer{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:30;display:none;background:#ff2a2a;color:#fff;padding:6px 14px;border-radius:20px;font-weight:900;font-size:13px}
+#timer{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:30;display:none;background:#ff2a2a;color:#fff;padding:6px 14px;border-radius:20px;font-weight:900}
 #start{position:fixed;inset:0;z-index:200;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
 #start button{padding:18px 36px;border-radius:30px;background:#2df4a0;color:#000;font-weight:900;border:none;font-size:18px}
 canvas{display:none}
@@ -33,45 +33,59 @@ canvas{display:none}
 </head>
 <body>
 <video id="video" autoplay playsinline muted></video>
-
-<div id="start">
-<div style="font-size:50px">📸</div>
-<div style="font-weight:900;font-size:22px">PIZCAMERA AI HD</div>
-<button onclick="startCam()">START CAMERA</button>
-</div>
-
-<div id="top">
-<div style="display:flex;gap:8px;align-items:center"><button class="topBtn" onclick="toggleFlash()">⚡</button><div id="logo">PIZCAMERA AI HD</div></div>
-<div style="display:flex;gap:8px"><button class="topBtn" onclick="flipCam()">🔄</button><button class="topBtn" onclick="openView('settingsView')">⚙️</button></div>
-</div>
-
+<div id="start"><div style="font-size:50px">📸</div><div style="font-weight:900;font-size:22px">PIZCAMERA AI</div><button onclick="startCam()">START CAMERA</button></div>
+<div id="top"><div style="display:flex;gap:8px;align-items:center"><button class="topBtn" onclick="toggleFlash()">⚡</button><div id="logo">PIZCAMERA AI HD</div></div><div style="display:flex;gap:8px"><button class="topBtn" onclick="flipCam()">🔄</button><button class="topBtn" onclick="openView('settingsView')">⚙️</button></div></div>
 <div id="timer">● 00:00:00</div>
-
-<div id="bottom">
-<div id="filters">
+<div id="bottom"><div id="filters">
 <button class="active" onclick="setFilter('contrast(1.08) saturate(1.15) brightness(1.03)',this)">✨ CLEAN HD</button>
 <button onclick="setFilter('contrast(1.15) saturate(1.30) brightness(1.05)',this)">🔥 VIVID HD</button>
-<button onclick="setFilter('contrast(1.10) brightness(1.08) saturate(1.15)',this)">💎 CRYSTAL HD</button>
-<button onclick="setFilter('saturate(1.4) contrast(1.15)',this)">🌈 HOT</button>
 <button onclick="setFilter('saturate(0) contrast(1.2)',this)">B&W</button>
+<button onclick="setFilter('none',this)">ORIGINAL</button>
 </div>
 <div id="controls">
 <button class="ctrl" id="gBtn" onclick="openView('galleryView')">🖼️</button>
 <button id="shutter" onclick="snapPhoto()"></button>
 <button id="aiMain" onclick="openAI()">AI ✨</button>
 <button id="rec" onclick="toggleRec()">REC</button>
-</div>
-</div>
-
-<div id="settingsView" class="view">
-<div style="padding:12px;display:flex;justify-content:space-between;background:#111"><b>Settings</b><button onclick="closeView('settingsView')" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">Close</button></div>
-<div style="padding:20px;color:#2df4a0">HD Quality • All Bottom Working</div>
-</div>
-
-<div id="galleryView" class="view">
-<div style="padding:12px;display:flex;justify-content:space-between;background:#111"><b>Gallery</b><button onclick="closeView('galleryView')" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">Close</button></div>
-<div id="grid"></div>
-</div>
-
-<div id="fullView" class="view">
-<div style="padding:12px;display:flex;justify-content:space-between;background:#111"><button onclick="closeView('fullView')" style
+</div></div>
+<div id="settingsView" class="view"><div style="padding:12px;display:flex;justify-content:space-between;background:#111"><b>Settings</b><button onclick="closeView('settingsView')" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">Close</button></div><div style="padding:20px;color:#2df4a0">HD Quality • Bottom Working</div></div>
+<div id="galleryView" class="view"><div style="padding:12px;display:flex;justify-content:space-between;background:#111"><b>Gallery</b><button onclick="closeView('galleryView')" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">Close</button></div><div id="grid"></div></div>
+<div id="aiView" class="view" style="z-index:200"><div style="padding:12px;display:flex;justify-content:space-between;background:#111"><button onclick="closeView('aiView')" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">Back</button><span style="color:#2df4a0;font-weight:900">PIZ AI</span><button onclick="saveAI()" style="padding:8px 14px;border-radius:20px;background:#2df4a0;border:none;font-weight:800">Save</button></div><div style="padding:12px;background:#111"><input id="prompt" placeholder="add wings only keep face same" style="width:100%;padding:14px;border-radius:12px;background:#1e1e1e;color:#fff;border:1px solid #333;margin-bottom:8px"><button id="genBtn" onclick="generateAI()" style="width:100%;padding:14px;border-radius:12px;background:linear-gradient(90deg,#2df4a0,#1a73e8);border:none;font-weight:900">🚀 GENERATE NOW</button></div><div id="aiPreview"><img id="aiImg"></div></div>
+<canvas id="canvas"></canvas>
+<script>
+let stream,facing='environment',rec,chunks=[],isRec=false,sec=0,tid=null,lastSnap=null;
+const video=document.getElementById('video'),grid=document.getElementById('grid');
+async function startCam(){
+ try{if(stream)stream.getTracks().forEach(t=>t.stop());stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true});video.srcObject=stream;await video.play();video.style.filter='contrast(1.08) saturate(1.15) brightness(1.03)';document.getElementById('start').style.display='none';}catch(e){alert('Allow camera + open via https link');}
+}
+function setFilter(f,b){video.style.filter=f;document.querySelectorAll('#filters button').forEach(x=>x.classList.remove('active'));if(b)b.classList.add('active');}
+function flipCam(){facing=facing==='environment'?'user':'environment';startCam();}
+function toggleFlash(){}
+function openView(id){document.getElementById(id).style.display='flex';}
+function closeView(id){document.getElementById(id).style.display='none';}
+function addGrid(url,type){
+ let el=document.createElement(type==='img'?'img':'video');el.src=url;el.style.width='100%';el.style.aspectRatio='1';el.style.objectFit='cover';el.style.background='#111';grid.prepend(el);document.getElementById('gBtn').innerHTML='<img src="'+url+'" style="width:100%;height:100%;object-fit:cover">';if(type==='img')lastSnap=url;
+}
+function openAI(){if(!lastSnap){alert('Snap photo first with white shutter');return;}openView('aiView');document.getElementById('aiImg').src=lastSnap;}
+function saveAI(){let src=document.getElementById('aiImg').src;if(!src)return;let a=document.createElement('a');a.href=src;a.download='PIZ_AI_'+Date.now()+'.jpg';a.click();addGrid(src,'img');}
+function snapPhoto(){
+ let c=document.getElementById('canvas');c.width=video.videoWidth||1280;c.height=video.videoHeight||720;let ctx=c.getContext('2d');ctx.filter=video.style.filter||'contrast(1.08) saturate(1.15)';if(facing==='user'){ctx.translate(c.width,0);ctx.scale(-1,1);}ctx.drawImage(video,0,0,c.width,c.height);c.toBlob(b=>{let url=URL.createObjectURL(b);addGrid(url,'img');let a=document.createElement('a');a.href=url;a.download='PIZ_'+Date.now()+'.jpg';a.click();},'image/jpeg',0.92);
+}
+function fmt(s){let h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(sc).padStart(2,'0');}
+function toggleRec(){
+ let timer=document.getElementById('timer'),btn=document.getElementById('rec');
+ if(!isRec){chunks=[];sec=0;try{rec=new MediaRecorder(stream);}catch{rec=new MediaRecorder(stream);}rec.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data);};rec.onstop=()=>{let blob=new Blob(chunks,{type:'video/webm'});let url=URL.createObjectURL(blob);addGrid(url,'video');let a=document.createElement('a');a.href=url;a.download='PIZ_'+Date.now()+'.webm';a.click();};rec.start(200);timer.style.display='block';tid=setInterval(()=>{sec++;timer.textContent='● '+fmt(sec);},1000);isRec=true;btn.textContent='STOP';}else{clearInterval(tid);timer.style.display='none';rec.stop();isRec=false;btn.textContent='REC';}
+}
+async function generateAI(){
+ let p=document.getElementById('prompt').value.trim();if(!p){alert('Type what you want');return;}if(!lastSnap){alert('Snap first');return;}
+ let btn=document.getElementById('genBtn');btn.textContent='Generating...';btn.disabled=true;
+ try{
+  let q=encodeURIComponent('same face keep face same, '+p+', photorealistic 8k');let url='https://image.pollinations.ai/prompt/'+q+'?seed='+Math.floor(Math.random()*999999)+'&width=1024&height=1024&nologo=true';
+  let img=new Image();img.crossOrigin='anonymous';await new Promise((res,rej)=>{let t=setTimeout(res,15000);img.onload=()=>{clearTimeout(t);res();};img.onerror=()=>{clearTimeout(t);rej();};img.src=url;});
+  document.getElementById('aiImg').src=img.src;addGrid(img.src,'img');btn.textContent='Done';
+ }catch(e){alert('Check internet');}
+ btn.disabled=false;setTimeout(()=>btn.textContent='🚀 GENERATE NOW',2000);
+}
+</script>
+</body>
+</html>
