@@ -1,10 +1,53 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Piz</title></head>
-<body style="margin:0;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;font-family:Arial">
-<div style="font-size:60px">📸</div>
-<h1 style="color:#2df4a0">PIZCAMERA OPENED!</h1>
-<p>If you see this, GT Hub is working</p>
-<button onclick="location.reload()" style="padding:16px 32px;border-radius:30px;background:#2df4a0;color:#000;font-weight:900;border:none;margin-top:20px">RELOAD</button>
-</body>
-</html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>PizCamera</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}body{background:#000;color:#fff;font-family:Arial;height:100vh;overflow:hidden}
+#v{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:#111}
+#top{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;padding:10px}
+.tb{width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.7);border:1px solid #444;color:#fff}
+#logo{background:rgba(0,0,0,.6);border:1px solid #2df4a0;padding:5px 12px;border-radius:20px;font-weight:900;font-size:11px}
+#btm{position:fixed;bottom:0;left:0;right:0;z-index:20;padding-bottom:16px;background:linear-gradient(transparent,#000)}
+#fs{display:flex;gap:7px;overflow-x:auto;padding:0 10px 10px}
+#fs button{flex:0 0 auto;padding:6px 12px;border-radius:20px;background:#1a1a1a;color:#fff;border:1px solid #333;font-size:11px}
+#fs button.on{background:#2df4a0;color:#000;font-weight:800}
+#ct{display:flex;justify-content:space-evenly;align-items:center}
+.c{width:52px;height:52px;border-radius:14px;background:#222;border:2px solid rgba(255,255,255,.2);color:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.c img{width:100%;height:100%;object-fit:cover}
+#sh{width:70px;height:70px;border-radius:50%;background:#fff;border:4px solid #2df4a0}
+#re{width:52px;height:52px;border-radius:50%;background:#ff2a2a;border:3px solid #fff;color:#fff;font-weight:900;font-size:10px}
+#ai{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#2df4a0,#1a73e8);border:3px solid #fff;color:#000;font-weight:900;font-size:11px}
+.view{position:fixed;inset:0;background:#000;z-index:50;display:none;flex-direction:column}
+#gr{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;flex:1;overflow:auto;background:#000}
+#st{position:fixed;inset:0;background:#000;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+#st button{padding:16px 32px;border-radius:30px;background:#2df4a0;color:#000;font-weight:900;border:none;font-size:18px}
+canvas{display:none}
+.setRow{padding:12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #111}
+</style>
+</head>
+<body>
+<video id="v" autoplay playsinline muted></video>
+
+<div id="st">
+<div style="font-size:40px">📸</div>
+<div style="font-weight:900">PIZCAMERA</div>
+<button onclick="start()">START CAMERA</button>
+<div id="err" style="color:#ff5555;font-size:11px;padding:0 20px;text-align:center"></div>
+</div>
+
+<div id="top">
+<div style="display:flex;gap:6px;align-items:center"><button class="tb" onclick="torch()">⚡</button><div id="logo">PIZCAMERA</div></div>
+<div style="display:flex;gap:6px"><button class="tb" onclick="flip()">🔄</button><button class="tb" onclick="openV('setV')">⚙️</button></div>
+</div>
+
+<div id="btm">
+<div id="fs">
+<button class="on" onclick="filt('none',this)">ORIGINAL</button>
+<button onclick="filt('contrast(1.06) saturate(1.1) brightness(1.04)',this)">✨ CLEAN HD</button>
+<button onclick="filt('contrast(1.12) saturate(1.18)',this)">🔥 VIVID</button>
+</div>
+<div id="ct">
+<button class="c" id="gB" onclick="openV('galV
