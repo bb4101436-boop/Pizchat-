@@ -4,43 +4,45 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 <title>PizCamera AI</title>
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#000">
 <link id="manifestLink" rel="manifest">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
-body{background:#000;height:100vh;overflow:hidden}
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}body{background:#000;height:100vh;overflow:hidden}
 #video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:contrast(1.08) saturate(1.15) brightness(1.03);transform-origin:center}
-#top{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 12px;z-index:10}
-.topLeft,.topRight{display:flex;gap:8px;align-items:center}
-.topBtn{width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.7);border:1px solid #ffffff30;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center}
-#logo{color:#fff;font-weight:900;padding:6px 14px;border-radius:20px;border:1px solid #2df4a0;background:rgba(0,0,0,.6);font-size:11px;letter-spacing:1px}
+#top{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:12px;z-index:10}
+.topBtn{width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.7);border:1px solid #fff3;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center}
+#logo{color:#fff;font-weight:900;padding:6px 14px;border-radius:20px;border:1px solid #2df4a0;background:rgba(0,0,0,.6);font-size:11px}
 #timerBox{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:20;display:none}
 #timerBox span{background:#ff2a2a;color:#fff;padding:6px 16px;border-radius:20px;font-weight:900;font-size:13px}
-#bottom{position:fixed;bottom:0;left:0;right:0;padding-bottom:20px;background:linear-gradient(transparent,#000 90%);z-index:10}
+#bottom{position:fixed;bottom:0;left:0;right:0;padding-bottom:22px;background:linear-gradient(transparent,#000 95%);z-index:20}
 #filters{display:flex;gap:8px;overflow-x:auto;padding:0 12px 12px}#filters::-webkit-scrollbar{display:none}
 #filters button{flex:0 0 auto;padding:7px 14px;border-radius:20px;background:#1a1a1a;color:#fff;border:1px solid #333;font-size:11px}
 #filters button.active{background:#2df4a0;color:#000;font-weight:800}
-#controls{max-width:430px;margin:0 auto;display:flex;justify-content:space-around;align-items:center;padding:0 8px}
-.ctrlBtn{width:52px;height:52px;border-radius:16px;background:#222;border:2px solid #ffffff22;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;overflow:hidden}
-.ctrlBtn img{width:100%;height:100%;object-fit:cover}
-#shutter{width:72px;height:72px;border-radius:50%;background:#fff;border:4px solid #2df4a0}#shutter:active{transform:scale(.9)}
-#recBtn{width:56px;height:56px;border-radius:50%;background:#ff2a2a;border:3px solid #fff;color:#fff;font-weight:900;font-size:10px}
-#recBtn.on{background:#fff;color:red;animation:pulse 1s infinite}@keyframes pulse{50%{transform:scale(1.08)}}
-#aiBtn{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#2df4a0,#1a73e8);border:3px solid #fff;color:#000;font-weight:900;font-size:11px}
+#controls{display:flex;justify-content:space-evenly;align-items:center;padding:0 10px}
+.cBtn{width:54px;height:54px;border-radius:16px;background:#222;border:2px solid #fff3;color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.cBtn img{width:100%;height:100%;object-fit:cover}
+#shutter{width:74px;height:74px;border-radius:50%;background:#fff;border:4px solid #2df4a0}
+#recBtn{width:54px;height:54px;border-radius:50%;background:#ff2a2a;border:3px solid #fff;color:#fff;font-weight:900;font-size:10px}
+#recBtn.on{animation:pulse 1s infinite;background:#fff;color:red}@keyframes pulse{50%{transform:scale(1.08)}}
+#aiBtnMain{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#2df4a0,#1a73e8);border:3px solid #fff;color:#000;font-weight:900;font-size:12px;display:flex;align-items:center;justify-content:center}
 #zoomText{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.7);color:#fff;padding:8px 16px;border-radius:20px;display:none;z-index:20;font-weight:700}
 .view{position:fixed;inset:0;background:#000;z-index:100;display:none;flex-direction:column}
-#grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;padding:2px;overflow:auto}
+#grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;overflow:auto}
 #aiPreview{flex:1;background:#0a0a0a;display:flex;align-items:center;justify-content:center;position:relative}
 #aiPreview img{max-width:100%;max-height:100%;object-fit:contain}
-#aiLoader{position:absolute;inset:0;background:rgba(0,0,0,.88);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#fff}
+#aiLoader{position:absolute;inset:0;background:rgba(0,0,0,.9);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#fff}
 .spinner{width:48px;height:48px;border:4px solid #333;border-top-color:#2df4a0;border-radius:50%;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
-#aiTools{padding:12px;background:#111;display:flex;flex-direction:column;gap:10px}
+#aiTools{padding:12px;background:#111;display:flex;flex-direction:column;gap:10px;max-height:52vh;overflow:auto}
 .aiRow{display:flex;gap:8px;overflow-x:auto}.aiRow::-webkit-scrollbar{display:none}
-.aiRow button{flex:0 0 auto;padding:8px 14px;border-radius:20px;border:1px solid #333;background:#222;color:#fff;font-size:12px}
-#promptRow{display:flex;gap:8px}
-#prompt{flex:1;padding:14px;border-radius:14px;border:1px solid #333;background:#1c1c1c;color:#fff;outline:none}
-#voiceBtn{width:52px;border-radius:14px;border:1px solid #2df4a0;background:#1a1a1a;color:#2df4a0;font-size:20px}
-#genBtn{padding:15px;border-radius:14px;background:linear-gradient(90deg,#2df4a0,#1a73e8);border:none;font-weight:900;font-size:15px}
+.aiRow button{flex:0 0 auto;padding:8px 14px;border-radius:20px;background:#222;color:#fff;border:1px solid #333;font-size:12px}
+#promptWrap{display:flex;gap:8px}
+#prompt{flex:1;padding:14px;border-radius:14px;background:#1c1c1c;color:#fff;border:1px solid #333;outline:none}
+#prompt:focus{border-color:#2df4a0}
+#voiceBtn{width:54px;border-radius:14px;background:#1c1c1c;border:1px solid #333;color:#2df4a0;font-size:22px}
+#voiceBtn.listening{background:#ff2a2a;color:#fff;animation:pulse 1s infinite}
+#genBtn{display:none;padding:16px;border-radius:14px;background:linear-gradient(90deg,#2df4a0,#1a73e8);border:none;font-weight:900;font-size:16px;box-shadow:0 0 20px #2df4a055;animation:pop .3s ease}
+#genBtn.show{display:block}
+@keyframes pop{0%{transform:scale(.8);opacity:0}100%{transform:scale(1);opacity:1}}
 canvas{display:none}
 </style>
 </head>
@@ -48,14 +50,8 @@ canvas{display:none}
 <video id="video" autoplay playsinline muted></video>
 
 <div id="top">
-<div class="topLeft">
-<button class="topBtn" id="flashBtn">⚡</button>
-<div id="logo">PIZCAMERA AI</div>
-</div>
-<div class="topRight">
-<button class="topBtn" id="flipBtn" title="Flip Camera">🔄</button>
-<button class="topBtn" id="settingsBtn">⚙️</button>
-</div>
+<div style="display:flex;gap:8px;align-items:center"><button class="topBtn" onclick="toggleFlash()">⚡</button><div id="logo">PIZCAMERA AI</div></div>
+<div style="display:flex;gap:8px"><button class="topBtn" onclick="flipCamera()">🔄</button><button class="topBtn" onclick="openSettings()">⚙️</button></div>
 </div>
 
 <div id="timerBox"><span id="timeText">● 00:00:00</span></div>
@@ -73,122 +69,114 @@ canvas{display:none}
 <button onclick="setF('saturate(0) contrast(1.2)',this)">B&W</button>
 </div>
 <div id="controls">
-<button class="ctrlBtn" id="gallery">🖼️</button>
-<button id="shutter"></button>
-<button id="aiBtn">AI ✨</button>
-<button id="recBtn">REC</button>
+<button class="cBtn" id="galleryBtn" onclick="openGallery()">🖼️</button>
+<button id="shutter" onclick="takePhoto()"></button>
+<button id="aiBtnMain" onclick="openAI()">AI ✨</button>
+<button id="recBtn" onclick="toggleRec()">REC</button>
 </div>
 </div>
 
-<div id="settingsView" class="view">
-<div style="padding:14px;display:flex;justify-content:space-between;background:#111"><b style="color:#fff">⚙️ Settings</b><button onclick="settingsView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#fff;border:none;font-weight:bold">Close ✕</button></div>
-<div style="padding:16px 20px;color:#fff;display:flex;justify-content:space-between;border-bottom:1px solid #222"><span>Watermark</span><select id="wmSel" style="padding:6px 12px;border-radius:10px;background:#222;color:#fff;border:none"><option value="on">ON</option><option value="off">OFF</option></select></div>
-<div style="padding:16px 20px;color:#fff;display:flex;justify-content:space-between"><span>Timer</span><select id="timerSel" style="padding:6px 12px;border-radius:10px;background:#222;color:#fff;border:none"><option value="0">Off</option><option value="3">3s</option><option value="5">5s</option></select></div>
-</div>
+<div id="settingsView" class="view"><div style="padding:14px;display:flex;justify-content:space-between;background:#111"><b style="color:#fff">⚙️ Settings</b><button onclick="settingsView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">Close ✕</button></div><div style="padding:16px 20px;color:#fff;display:flex;justify-content:space-between;border-bottom:1px solid #222"><span>Watermark</span><select id="wmSel"><option value="on">ON</option><option value="off">OFF</option></select></div><div style="padding:16px 20px;color:#fff;display:flex;justify-content:space-between"><span>Timer</span><select id="timerSel"><option value="0">Off</option><option value="3">3s</option><option value="5">5s</option></select></div></div>
 
-<div id="galleryView" class="view"><div style="padding:12px;display:flex;justify-content:space-between;background:#111"><span style="color:#fff;font-weight:700">📸 Your Shots - Tap for full screen</span><button onclick="galleryView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#fff;border:none;font-weight:bold">Close ✕</button></div><div id="grid"></div></div>
+<div id="galleryView" class="view"><div style="padding:12px;display:flex;justify-content:space-between;background:#111"><span style="color:#fff;font-weight:700">📸 Your shots</span><button onclick="galleryView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">Close ✕</button></div><div id="grid"></div></div>
 
-<div id="fullView" class="view"><div style="padding:12px;display:flex;justify-content:space-between;background:#111"><button onclick="fullView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">← Back</button><span style="color:#fff" id="fullName"></span><button onclick="fullView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#222;color:#fff;border:none">✕</button></div><img id="fullImg" style="flex:1;object-fit:contain;background:#000;display:none"><video id="fullVideo" style="flex:1;width:100%;background:#000;display:none" controls playsinline></video><div style="padding:12px;display:flex;gap:10px;justify-content:center;background:#111"><button onclick="openAIEditor()" style="padding:12px 20px;border-radius:20px;background:linear-gradient(90deg,#2df4a0,#1a73e8);border:none;font-weight:800">✨ Edit with AI</button><button onclick="downloadFull()" style="padding:12px 20px;border-radius:20px;background:#fff;border:none;font-weight:700">💾 Save</button></div></div>
+<div id="fullView" class="view"><div style="padding:12px;display:flex;justify-content:space-between;background:#111"><button onclick="fullView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">← Back</button><span id="fullName" style="color:#fff"></span><button onclick="fullView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#222;color:#fff;border:none">✕</button></div><img id="fullImg" style="flex:1;object-fit:contain;background:#000;display:none"><video id="fullVideo" style="flex:1;width:100%;background:#000;display:none" controls playsinline></video><div style="padding:12px;display:flex;gap:10px;justify-content:center;background:#111"><button onclick="openAIEditor()" style="padding:12px 20px;border-radius:20px;background:linear-gradient(90deg,#2df4a0,#1a73e8);border:none;font-weight:800">✨ Edit with AI</button><button onclick="downloadFull()" style="padding:12px 20px;border-radius:20px;background:#fff;border:none">💾 Save</button></div></div>
 
 <div id="aiView" class="view" style="z-index:200">
-<div style="padding:12px;display:flex;justify-content:space-between;background:#111"><button onclick="aiView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#fff;border:none;font-weight:700">← Camera</button><span style="color:#2df4a0;font-weight:900">✨ PIZ AI</span><button onclick="downloadAI()" style="padding:8px 14px;border-radius:20px;background:#2df4a0;border:none;font-weight:bold">💾 Save</button></div>
-<div id="aiPreview"><img id="aiImg"><div id="aiLoader"><div class="spinner"></div><div id="loaderText" style="font-weight:700">Generating...</div><div id="loaderPrompt" style="font-size:12px;color:#aaa;text-align:center;padding:0 20px"></div></div></div>
+<div style="padding:12px;display:flex;justify-content:space-between;background:#111"><button onclick="aiView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#fff;border:none;font-weight:700">← Back</button><span style="color:#2df4a0;font-weight:900">✨ PIZ AI STUDIO</span><button onclick="downloadAI()" style="padding:8px 14px;border-radius:20px;background:#2df4a0;border:none;font-weight:bold">💾 Save</button></div>
+<div id="aiPreview"><img id="aiImg"><div id="aiLoader"><div class="spinner"></div><div id="loaderText" style="font-weight:700">Generating your idea...</div><div id="loaderPrompt" style="font-size:12px;color:#aaa;padding:0 20px;text-align:center"></div></div></div>
 <div id="aiTools">
-<div id="promptRow"><input id="prompt" placeholder="Type anything or tap mic 🎤: flying, dancing, swimming, suit, beach..."><button id="voiceBtn">🎤</button></div>
+<div style="color:#fff;font-size:13px;font-weight:700">What do you want your photo/video to be like?</div>
+<div id="promptWrap"><input id="prompt" placeholder="Type: flying in air, Dubai suit, dancing, beach..."><button id="voiceBtn" onclick="startVoice()">🎤</button></div>
 <div class="aiRow">
 <button onclick="setPrompt('flying in the air like superman, sky background')">🦸 Flying</button>
-<button onclick="setPrompt('jumping high, action shot')">🤾 Jumping</button>
+<button onclick="setPrompt('jumping high, action shot, cinematic')">🤾 Jumping</button>
 <button onclick="setPrompt('swimming underwater, ocean')">🏊 Swimming</button>
 <button onclick="setPrompt('dancing on stage, lights')">💃 Dancing</button>
-<button onclick="setPrompt('remove background, white clean background')">🧹 Remove BG</button>
+<button onclick="setPrompt('remove background, clean white studio')">🧹 Remove BG</button>
 </div>
 <div class="aiRow">
-<button onclick="setPrompt('Dubai luxury background')">🏙️ Dubai</button>
+<button onclick="setPrompt('Dubai luxury background, sunset')">🏙️ Dubai</button>
 <button onclick="setPrompt('beach sunset background')">🏖️ Beach</button>
-<button onclick="setPrompt('wearing black suit, studio')">🤵 Suit</button>
-<button onclick="setPrompt('wearing agbada')">👘 Agbada</button>
-<button onclick="setPrompt('cartoon pixar style')">🎨 Cartoon</button>
-<button onclick="setPrompt('anime style')">✨ Anime</button>
+<button onclick="setPrompt('wearing black luxury suit, studio')">🤵 Suit</button>
+<button onclick="setPrompt('wearing white agbada, Nigerian style')">👘 Agbada</button>
+<button onclick="setPrompt('cartoon pixar 3d style, same face')">🎨 Cartoon</button>
+<button onclick="setPrompt('anime style, same face')">✨ Anime</button>
 </div>
-<button id="genBtn" onclick="generateAI()">🚀 GENERATE ANYTHING I TYPED</button>
-<div style="color:#666;font-size:11px;text-align:center">AI works for picture + video - type anything, AI will do it</div>
+<!-- GENERATE BUTTON APPEARS AFTER TYPING -->
+<button id="genBtn" onclick="generateAI()">🚀 GENERATE NOW → <span id="genText"></span></button>
+<div id="hint" style="color:#666;font-size:11px;text-align:center">Type or say what you want → Generate button will appear</div>
 </div>
 </div>
 
 <canvas id="canvas"></canvas>
-
 <script>
-// PWA ICON
-const ic=document.createElement('canvas');ic.width=512;ic.height=512;const ix=ic.getContext('2d');ix.fillStyle='#0a0a0a';ix.beginPath();ix.roundRect(0,0,512,512,80);ix.fill();ix.fillStyle='#2df4a0';ix.font='bold 420px system-ui';ix.fillText('P',70,480);const iconData=ic.toDataURL('image/png');const mf={name:"PizCamera AI",short_name:"PizCamera",start_url:".",display:"standalone",background_color:"#000",theme_color:"#000",icons:[{src:iconData,sizes:"512x512",type:"image/png"}]};const mb=new Blob([JSON.stringify(mf)],{type:'application/json'});document.getElementById('manifestLink').href=URL.createObjectURL(mb);if('serviceWorker' in navigator){const sw=`self.addEventListener('install',e=>self.skipWaiting())`;const sb=new Blob([sw],{type:'text/javascript'});navigator.serviceWorker.register(URL.createObjectURL(sb))}
+const ic=document.createElement('canvas');ic.width=512;ic.height=512;const ix=ic.getContext('2d');ix.fillStyle='#0a0a0a';ix.beginPath();ix.roundRect(0,0,512,512,80);ix.fill();ix.fillStyle='#2df4a0';ix.font='bold 420px system-ui';ix.fillText('P',70,480);const iconData=ic.toDataURL('image/png');const mf={name:"PizCamera AI",short_name:"PizCamera",start_url:".",display:"standalone",background_color:"#000",theme_color:"#000",icons:[{src:iconData,sizes:"512x512",type:"image/png"}]};const mb=new Blob([JSON.stringify(mf)],{type:'application/json'});document.getElementById('manifestLink').href=URL.createObjectURL(mb);
 
-const video=document.getElementById('video'),canvas=document.getElementById('canvas'),shutter=document.getElementById('shutter'),recBtn=document.getElementById('recBtn'),gallery=document.getElementById('gallery'),aiBtn=document.getElementById('aiBtn'),settingsView=document.getElementById('settingsView'),galleryView=document.getElementById('galleryView'),fullView=document.getElementById('fullView'),aiView=document.getElementById('aiView'),grid=document.getElementById('grid'),timerBox=document.getElementById('timerBox'),timeText=document.getElementById('timeText'),zoomText=document.getElementById('zoomText'),fullImg=document.getElementById('fullImg'),fullVideo=document.getElementById('fullVideo'),aiImg=document.getElementById('aiImg'),promptEl=document.getElementById('prompt'),loader=document.getElementById('aiLoader'),loaderPrompt=document.getElementById('loaderPrompt'),loaderText=document.getElementById('loaderText');
+const video=document.getElementById('video'),canvas=document.getElementById('canvas'),shutter=document.getElementById('shutter'),recBtn=document.getElementById('recBtn'),settingsView=document.getElementById('settingsView'),galleryView=document.getElementById('galleryView'),fullView=document.getElementById('fullView'),aiView=document.getElementById('aiView'),grid=document.getElementById('grid'),timerBox=document.getElementById('timerBox'),timeText=document.getElementById('timeText'),zoomText=document.getElementById('zoomText'),fullImg=document.getElementById('fullImg'),fullVideo=document.getElementById('fullVideo'),aiImg=document.getElementById('aiImg'),promptEl=document.getElementById('prompt'),loader=document.getElementById('aiLoader'),genBtn=document.getElementById('genBtn'),genText=document.getElementById('genText');
 let stream,facing='environment',zoom=1,sy=0,sz=1,rec,chunks=[],isRecording=false,watermark='on',timer=0,sec=0,timerId=null,items=[],currentFull=null,lastSnap=null;
 
-async function startCam(){try{if(stream)stream.getTracks().forEach(t=>t.stop());stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:1920},height:{ideal:1080}},audio:true});video.srcObject=stream;await video.play()}catch(e){alert('Camera error: '+e.message)}}startCam();
+async function startCam(){if(stream)stream.getTracks().forEach(t=>t.stop());stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:1920},height:{ideal:1080}},audio:true});video.srcObject=stream;await video.play()}startCam();
 function setF(f,b){video.style.filter=f;document.querySelectorAll('#filters button').forEach(x=>x.classList.remove('active'));if(b)b.classList.add('active')}
-
-document.getElementById('settingsBtn').onclick=()=>settingsView.style.display='flex';
-document.getElementById('flipBtn').onclick=()=>{facing=facing==='environment'?'user':'environment';startCam()};
-document.getElementById('wmSel').onchange=e=>watermark=e.target.value;
-document.getElementById('timerSel').onchange=e=>timer=parseInt(e.target.value);
-document.getElementById('flashBtn').onclick=async()=>{try{let tr=stream.getVideoTracks()[0];let torch=tr.getSettings().torch;await tr.applyConstraints({advanced:[{torch:!torch}]})}catch{}};
-
-function addToGrid(url,type,name){items.push({url,type,name});let el=document.createElement(type==='img'?'img':'video');el.src=url;el.style.width='100%';el.style.aspectRatio='1';el.style.objectFit='cover';el.onclick=()=>openFull(url,type,name);grid.prepend(el);gallery.innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover">`;if(type==='img')lastSnap=url}
+function openSettings(){settingsView.style.display='flex'}
+function flipCamera(){facing=facing==='environment'?'user':'environment';startCam()}
+function toggleFlash(){try{let tr=stream.getVideoTracks()[0];tr.applyConstraints({advanced:[{torch:!tr.getSettings().torch}]})}catch{}}
+function openGallery(){galleryView.style.display='flex'}
+function openAI(){aiView.style.display='flex';if(lastSnap)aiImg.src=lastSnap;checkPrompt()}
+function openAIEditor(){if(!currentFull||currentFull.type!=='img'){openAI();return}aiImg.src=currentFull.url;lastSnap=currentFull.url;fullView.style.display='none';aiView.style.display='flex';checkPrompt()}
+function addToGrid(url,type,name){items.push({url,type,name});let el=document.createElement(type==='img'?'img':'video');el.src=url;el.style.width='100%';el.style.aspectRatio='1';el.style.objectFit='cover';el.onclick=()=>openFull(url,type,name);grid.prepend(el);document.getElementById('galleryBtn').innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover">`;if(type==='img')lastSnap=url}
 function openFull(url,type,name){currentFull={url,type,name};fullView.style.display='flex';if(type==='img'){fullImg.style.display='block';fullVideo.style.display='none';fullImg.src=url;lastSnap=url}else{fullImg.style.display='none';fullVideo.style.display='block';fullVideo.src=url}document.getElementById('fullName').textContent=name}
 function downloadFull(){if(!currentFull)return;let a=document.createElement('a');a.href=currentFull.url;a.download=currentFull.name;a.click()}
-function openAIEditor(){if(!currentFull||currentFull.type!=='img'){alert('Snap photo first');return}aiImg.src=currentFull.url;lastSnap=currentFull.url;fullView.style.display='none';aiView.style.display='flex'}
 function downloadAI(){if(!aiImg.src)return;let a=document.createElement('a');a.href=aiImg.src;a.download='PIZ_AI_'+Date.now()+'.jpg';a.click();addToGrid(aiImg.src,'img','PIZ_AI_'+Date.now()+'.jpg')}
-
-gallery.onclick=()=>galleryView.style.display='flex';
-
-// AI BUTTON - FIXED, ALWAYS WORKS
-aiBtn.onclick=()=>{
- if(!lastSnap){
-   alert('Snap photo first, then tap AI ✨');
-   return;
- }
- aiImg.src=lastSnap;
- aiView.style.display='flex';
-};
 
 video.addEventListener('touchstart',e=>{if(e.touches.length===1){sy=e.touches[0].clientY;sz=zoom}if(e.touches.length===2){let d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);sy=d;sz=zoom}},{passive:true});
 video.addEventListener('touchmove',e=>{if(e.touches.length===1)zoom=Math.max(1,Math.min(5,sz+(e.touches[0].clientY-sy)/150));if(e.touches.length===2){let d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);zoom=Math.max(1,Math.min(5,sz*(d/sy)))}video.style.transform=(facing==='user'?'scaleX(-1) ':'')+`scale(${zoom})`;zoomText.textContent=zoom.toFixed(1)+'x';zoomText.style.display='block';clearTimeout(window.zt);window.zt=setTimeout(()=>zoomText.style.display='none',800)},{passive:true});
 
 function takePhoto(){const doSnap=()=>{canvas.width=video.videoWidth;canvas.height=video.videoHeight;let ctx=canvas.getContext('2d');ctx.filter=video.style.filter;if(facing==='user'){ctx.translate(canvas.width,0);ctx.scale(-1,1)}ctx.drawImage(video,0,0);if(watermark==='on'){ctx.filter='none';ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,canvas.height-60,canvas.width,60);ctx.fillStyle='#2df4a0';ctx.font=`bold ${canvas.width*.05}px system-ui`;ctx.textAlign='center';ctx.fillText('PIZCAMERA',canvas.width/2,canvas.height-20)}canvas.toBlob(b=>{let url=URL.createObjectURL(b);let name='PIZ_'+Date.now()+'.jpg';addToGrid(url,'img',name);let a=document.createElement('a');a.href=url;a.download=name;a.click()},'image/jpeg',.92)};if(timer>0){let c=timer;let iv=setInterval(()=>{zoomText.textContent=c+'s';zoomText.style.display='block';c--;if(c<0){clearInterval(iv);zoomText.style.display='none';doSnap()}},1000)}else doSnap()}
-shutter.onclick=takePhoto;
 function fmt(s){let h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sc).padStart(2,'0')}`}
-recBtn.onclick=()=>{if(!isRecording){chunks=[];sec=0;try{rec=new MediaRecorder(stream,{mimeType:'video/webm',videoBitsPerSecond:1500000})}catch{rec=new MediaRecorder(stream)}rec.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data)};rec.onstop=()=>{let blob=new Blob(chunks,{type:'video/webm'});let url=URL.createObjectURL(blob);let name='PIZ_'+Date.now()+'.webm';addToGrid(url,'video',name);let a=document.createElement('a');a.href=url;a.download=name;a.click()};rec.start(500);timerBox.style.display='block';timeText.textContent='● 00:00:00';timerId=setInterval(()=>{sec++;timeText.textContent='● '+fmt(sec)},1000);isRecording=true;recBtn.classList.add('on');recBtn.textContent='STOP'}else{clearInterval(timerId);timerBox.style.display='none';rec.stop();isRecording=false;recBtn.classList.remove('on');recBtn.textContent='REC'}};
+function toggleRec(){if(!isRecording){chunks=[];sec=0;try{rec=new MediaRecorder(stream,{mimeType:'video/webm',videoBitsPerSecond:1500000})}catch{rec=new MediaRecorder(stream)}rec.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data)};rec.onstop=()=>{let blob=new Blob(chunks,{type:'video/webm'});let url=URL.createObjectURL(blob);let name='PIZ_'+Date.now()+'.webm';addToGrid(url,'video',name);let a=document.createElement('a');a.href=url;a.download=name;a.click()};rec.start(500);timerBox.style.display='block';timeText.textContent='● 00:00:00';timerId=setInterval(()=>{sec++;timeText.textContent='● '+fmt(sec)},1000);isRecording=true;recBtn.classList.add('on');recBtn.textContent='STOP'}else{clearInterval(timerId);timerBox.style.display='none';rec.stop();isRecording=false;recBtn.classList.remove('on');recBtn.textContent='REC'}}
 
-function setPrompt(t){promptEl.value=t}
+document.getElementById('wmSel').onchange=e=>watermark=e.target.value;
+document.getElementById('timerSel').onchange=e=>timer=parseInt(e.target.value);
 
-async function generateAI(){
- let p=promptEl.value.trim(); if(!p){alert('Type what you want or tap mic 🎤');return}
- if(!lastSnap && !aiImg.src){alert('Snap photo first');return}
- let btn=document.getElementById('genBtn'); btn.disabled=true; btn.textContent='⏳ AI Working...'; loader.style.display='flex'; loaderPrompt.textContent='"'+p+'"'; loaderText.textContent='AI generating exactly: '+p;
- try{
-  const seed=Math.floor(Math.random()*9999999);
-  const finalPrompt=encodeURIComponent(p + ', photorealistic, ultra detailed, keep same person face, 8k, sharp focus, studio lighting, cinematic');
-  const aiUrl=`https://image.pollinations.ai/prompt/${finalPrompt}?seed=${seed}&width=1024&height=1024&nologo=true&enhance=true`;
-  let img=new Image(); img.crossOrigin='anonymous';
-  await new Promise((res,rej)=>{ let to=setTimeout(res,15000); img.onload=()=>{clearTimeout(to);res()}; img.onerror=()=>{clearTimeout(to);rej()}; img.src=aiUrl; });
-  let c2=document.createElement('canvas'); c2.width=1024; c2.height=1024; let ctx2=c2.getContext('2d'); ctx2.drawImage(img,0,0,1024,1024);
-  ctx2.fillStyle='rgba(0,0,0,.45)'; ctx2.fillRect(0,984,1024,40); ctx2.fillStyle='#2df4a0'; ctx2.font='bold 14px system-ui'; ctx2.fillText('PIZCAMERA AI • '+p.slice(0,35),10,1008);
-  let finalUrl=c2.toDataURL('image/jpeg',0.92);
-  aiImg.src=finalUrl; addToGrid(finalUrl,'img','PIZ_AI_'+Date.now()+'.jpg');
-  let a=document.createElement('a'); a.href=finalUrl; a.download='PIZ_AI_'+Date.now()+'.jpg'; a.click();
-  btn.textContent='✅ Done! Saved';
- }catch(e){ alert('Check internet - AI needs data. Try again'); btn.textContent='🚀 GENERATE ANYTHING I TYPED' }
- loader.style.display='none'; btn.disabled=false; setTimeout(()=>btn.textContent='🚀 GENERATE ANYTHING I TYPED',2500);
+function setPrompt(t){promptEl.value=t;checkPrompt()}
+function checkPrompt(){
+  let v=promptEl.value.trim();
+  if(v.length>2){
+    genBtn.classList.add('show');
+    genText.textContent=v.slice(0,30);
+    document.getElementById('hint').style.display='none';
+  } else {
+    genBtn.classList.remove('show');
+    document.getElementById('hint').style.display='block';
+  }
+}
+promptEl.addEventListener('input',checkPrompt);
+promptEl.addEventListener('change',checkPrompt);
+
+function startVoice(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){alert('Voice not supported, type instead');return}
+  let r=new SR(); r.lang='en-US';
+  let btn=document.getElementById('voiceBtn');
+  btn.classList.add('listening'); btn.textContent='🔴';
+  promptEl.placeholder='Listening... say flying, Dubai, suit...';
+  r.onresult=e=>{
+    promptEl.value=e.results[0][0].transcript;
+    btn.classList.remove('listening'); btn.textContent='🎤';
+    checkPrompt();
+    // Auto show generate button immediately after voice
+    setTimeout(()=>generateAI(),600);
+  };
+  r.onerror=()=>{btn.classList.remove('listening');btn.textContent='🎤'};
+  r.onend=()=>{btn.classList.remove('listening');btn.textContent='🎤'};
+  r.start();
 }
 
-// VOICE NOTE - speech to text
-document.getElementById('voiceBtn').onclick=()=>{
- const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
- if(!SR) return alert('Voice not supported on this browser, type instead');
- let rec=new SR(); rec.lang='en-US'; rec.onstart=()=>{document.getElementById('voiceBtn').textContent='🔴'; promptEl.placeholder='Listening...'};
- rec.onresult=e=>{promptEl.value=e.results[0][0].transcript; document.getElementById('voiceBtn').textContent='🎤'; generateAI()};
- rec.onerror=()=>{document.getElementById('voiceBtn').textContent='🎤'}; rec.start();
-};
-</script>
-</body>
-</html>
+async function generateAI(){
+ let p=promptEl.value.trim(); if(!p){alert('Type what you want first: e.g., flying in air');return}
+ let btn=genBtn; btn.disabled=true; btn.textContent='⏳ Generating: '+p.slice(0,25)+'...';
+ loader.style.display='flex'; document.getElementById('loaderPrompt').textContent='"'+p+'"'; document.getElementById('loaderText').textContent='AI turning your idea to: '+p;
+ try{
+  const seed=Math.floor(Math.random()*9999999);
+  const finalPrompt=encodeURIComponent(p + ', photorealistic, ultra detailed, same person face, 8k, cinematic lighting, sharp
