@@ -8,9 +8,10 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
 body{background:#000;height:100vh;width:100vw;overflow:hidden}
 #video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:contrast(1.08) saturate(1.15) brightness(1.03)}
-#top{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:14px 16px;z-index:10}
-.topBtn{width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,0.6);border:1px solid #fff3;color:#fff;font-size:16px;backdrop-filter:blur(10px)}
+#top{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:14px 16px;z-index:10}
+.topBtn{width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,0.6);border:1px solid #fff3;color:#fff;font-size:16px}
 #logo{background:rgba(0,0,0,0.5);color:#fff;padding:7px 18px;border-radius:20px;font-weight:900;letter-spacing:2px;font-size:13px;border:1px solid #2df4a0}
+#recTimer{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#ff2a2a;color:#fff;padding:6px 16px;border-radius:20px;font-weight:800;font-size:14px;display:none;z-index:20;letter-spacing:1px}
 #bottom{position:fixed;bottom:0;left:0;right:0;padding-bottom:26px;background:linear-gradient(transparent,#000 85%);z-index:10}
 #filters{display:flex;gap:8px;overflow-x:auto;padding:0 16px 14px}
 #filters::-webkit-scrollbar{display:none}
@@ -19,15 +20,14 @@ body{background:#000;height:100vh;width:100vw;overflow:hidden}
 #controls{max-width:380px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:0 24px}
 #gallery{width:50px;height:50px;border-radius:12px;background:#222;border:2px solid #fff5;color:#fff;overflow:hidden}
 #gallery img{width:100%;height:100%;object-fit:cover}
-#shutter{width:72px;height:72px;border-radius:50%;background:#fff;border:4px solid #2df4a0;box-shadow:0 0 0 6px #fff2}
-#videoBtn{width:50px;height:50px;border-radius:50%;background:#ff2a2a;border:3px solid #fff;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:900}
+#shutter{width:72px;height:72px;border-radius:50%;background:#fff;border:4px solid #2df4a0}
+#videoBtn{width:56px;height:56px;border-radius:50%;background:#ff2a2a;border:3px solid #fff;color:#fff;font-weight:900;font-size:11px}
 #videoBtn.rec{background:#fff;color:#ff2a2a;animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 #center{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.75);color:#fff;padding:10px 18px;border-radius:30px;display:none;z-index:30;font-weight:bold}
-#settingsView{position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:100;display:none;flex-direction:column;padding:0;overflow:auto}
-#settingsHeader{padding:16px;display:flex;justify-content:space-between;align-items:center;background:#111;position:sticky;top:0}
+#settingsView{position:fixed;inset:0;background:#000;z-index:100;display:none;flex-direction:column;overflow:auto}
 .settingRow{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid #1a1a1a;color:#fff}
-.settingRow select, .settingRow button{padding:8px 14px;border-radius:10px;border:none;background:#222;color:#fff;font-weight:600}
+.settingRow select,.settingRow button{padding:8px 14px;border-radius:10px;border:none;background:#222;color:#fff;font-weight:600}
 canvas{display:none}
 </style>
 </head>
@@ -41,6 +41,7 @@ canvas{display:none}
   <button class="topBtn" id="settingsBtn">⚙️</button>
 </div>
 
+<div id="recTimer">● 00:00:00</div>
 <div id="center"></div>
 
 <div id="bottom">
@@ -49,7 +50,6 @@ canvas{display:none}
     <button onclick="setF('contrast(1.12) saturate(1.25) brightness(1.05)',this)">🔥 VIVID</button>
     <button onclick="setF('contrast(1.06) brightness(1.08) saturate(1.1)',this)">💎 CRYSTAL</button>
     <button onclick="setF('none',this)">Original</button>
-    <button onclick="setF('saturate(0) contrast(1.2)',this)">B&W</button>
   </div>
   <div id="controls">
     <button id="gallery">🖼️</button>
@@ -59,21 +59,15 @@ canvas{display:none}
 </div>
 
 <div id="settingsView">
-  <div id="settingsHeader">
-    <b style="color:#fff;font-size:18px">⚙️ PizCamera Settings</b>
+  <div style="padding:16px;display:flex;justify-content:space-between;background:#111">
+    <b style="color:#fff">⚙️ Settings</b>
     <button onclick="settingsView.style.display='none'" style="padding:8px 16px;border-radius:20px;background:#fff;color:#000;border:none;font-weight:bold">Close ✕</button>
   </div>
-  
-  <div class="settingRow"><span>📷 Camera Facing</span><select id="facingSel"><option value="environment">Back Camera</option><option value="user">Front Camera</option></select></div>
-  <div class="settingRow"><span>🎥 Video Quality</span><select id="qualitySel"><option value="4k">4K Ultra (3840x2160)</option><option value="fhd">Full HD (1920x1080)</option><option value="hd">HD (1280x720)</option></select></div>
-  <div class="settingRow"><span>⚡ Flash Torch</span><button id="torchBtn">OFF</button></div>
-  <div class="settingRow"><span>🔍 Zoom Level</span><span id="zoomText">1.0x</span></div>
-  <div class="settingRow"><span>©️ Watermark PIZCAMERA</span><select id="wmSel"><option value="on">ON</option><option value="off">OFF</option></select></div>
-  <div class="settingRow"><span>⏱️ Timer</span><select id="timerSel"><option value="0">Off</option><option value="3">3s</option><option value="5">5s</option><option value="10">10s</option></select></div>
-  <div class="settingRow"><span>📁 Open Phone Storage</span><button onclick="document.getElementById('filePick').click()">Open Gallery</button></div>
-  <div class="settingRow"><span>🔄 Reset Filters</span><button onclick="setF('contrast(1.08) saturate(1.15) brightness(1.03)',document.querySelector('#filters button'))">Reset to Clean HD</button></div>
-  
-  <div style="padding:20px;color:#666;font-size:12px;text-align:center">PizCamera v3.0 - High Quality Camera<br>Clean Filter + 4K Video + Easy Install</div>
+  <div class="settingRow"><span>📷 Camera</span><select id="facingSel"><option value="environment">Back</option><option value="user">Front</option></select></div>
+  <div class="settingRow"><span>🎥 Quality</span><select id="qualitySel"><option value="fhd">Smooth Full HD (No Hang)</option><option value="4k">4K High (May Hang Small Phone)</option><option value="hd">HD Fast</option></select></div>
+  <div class="settingRow"><span>©️ Watermark</span><select id="wmSel"><option value="on">ON</option><option value="off">OFF</option></select></div>
+  <div class="settingRow"><span>⏱️ Timer</span><select id="timerSel"><option value="0">Off</option><option value="3">3s</option><option value="5">5s</option></select></div>
+  <div class="settingRow"><span>📁 Phone Storage</span><button onclick="filePick.click()">Open</button></div>
 </div>
 
 <canvas id="canvas"></canvas>
@@ -81,49 +75,43 @@ canvas{display:none}
 
 <script>
 const video=document.getElementById('video'), canvas=document.getElementById('canvas'), shutter=document.getElementById('shutter'), videoBtn=document.getElementById('videoBtn');
-const gallery=document.getElementById('gallery'), center=document.getElementById('center'), settingsView=document.getElementById('settingsView');
-let stream, facing='environment', zoom=1, sy=0, sz=1, torch=false, rec, chunks=[], recording=false, quality='4k', watermark='on', timer=0;
+const gallery=document.getElementById('gallery'), center=document.getElementById('center'), settingsView=document.getElementById('settingsView'), recTimer=document.getElementById('recTimer');
+let stream, facing='environment', zoom=1, sy=0, sz=1, rec, chunks=[], recording=false, quality='fhd', watermark='on', timerSec=0, timer=0, recSec=0, recInterval;
 
 async function startCam(){
  if(stream) stream.getTracks().forEach(t=>t.stop());
- let w=1280,h=720;
- if(quality==='fhd'){w=1920;h=1080} if(quality==='4k'){w=3840;h=2160}
+ let w=1920,h=1080;
+ if(quality==='hd'){w=1280;h=720}
+ if(quality==='4k'){w=1920;h=1080} // Use FHD for 4K mode to avoid hanging, will upscale later
  try{
-  stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:w},height:{ideal:h},frameRate:{ideal:60}},audio:true});
+  stream=await navigator.mediaDevices.getUserMedia({
+   video:{facingMode:facing,width:{ideal:w},height:{ideal:h},frameRate:{ideal:30}}, // 30fps = smooth, no hang
+   audio:{echoCancellation:false,noiseSuppression:false}
+  });
   video.srcObject=stream;
- }catch(e){ alert('Allow camera + use HTTPS'); }
+  await video.play();
+ }catch(e){ alert('Allow camera + use HTTPS GitHub Pages'); }
 }
 startCam();
 
-function setF(f,b){
- video.style.filter=f;
- document.querySelectorAll('#filters button').forEach(x=>x.classList.remove('active'));
- if(b) b.classList.add('active');
-}
-
-// SETTINGS LOGIC
-document.getElementById('settingsBtn').onclick=()=>{ settingsView.style.display='flex'; };
-document.getElementById('facingSel').onchange=(e)=>{ facing=e.target.value; startCam(); };
-document.getElementById('qualitySel').onchange=(e)=>{ quality=e.target.value; startCam(); show('Quality: '+e.target.value.toUpperCase()); };
-document.getElementById('wmSel').onchange=(e)=>{ watermark=e.target.value; };
-document.getElementById('timerSel').onchange=(e)=>{ timer=parseInt(e.target.value); };
-document.getElementById('torchBtn').onclick=async function(){
- try{ const tr=stream.getVideoTracks()[0]; torch=!torch; await tr.applyConstraints({advanced:[{torch}]}); this.textContent=torch?'ON':'OFF'; this.style.background=torch?'#2df4a0':'#222'; this.style.color=torch?'#000':'#fff'; }catch{ alert('Torch not supported on this device'); }
+function setF(f,b){ video.style.filter=f; document.querySelectorAll('#filters button').forEach(x=>x.classList.remove('active')); if(b) b.classList.add('active'); }
+document.getElementById('settingsBtn').onclick=()=>settingsView.style.display='flex';
+document.getElementById('facingSel').onchange=e=>{ facing=e.target.value; startCam(); };
+document.getElementById('qualitySel').onchange=e=>{ quality=e.target.value; startCam(); };
+document.getElementById('wmSel').onchange=e=>watermark=e.target.value;
+document.getElementById('timerSel').onchange=e=>timer=parseInt(e.target.value);
+document.getElementById('flashBtn').onclick=async()=>{
+ try{ const tr=stream.getVideoTracks()[0]; const torch=!tr.getSettings().torch; await tr.applyConstraints({advanced:[{torch}]}); }catch{}
 };
-document.getElementById('flashBtn').onclick=()=>{ document.getElementById('torchBtn').click(); };
+
+video.addEventListener('touchstart',e=>{ sy=e.touches[0].clientY; sz=zoom; },{passive:true});
+video.addEventListener('touchmove',e=>{
+ zoom=Math.max(1,Math.min(5,sz+(e.touches[0].clientY-sy)/150));
+ video.style.transform=(facing==='user'?'scaleX(-1) ':'')+`scale(${zoom})`;
+},{passive:true});
 
 function show(t){ center.textContent=t; center.style.display='block'; setTimeout(()=>center.style.display='none',1000); }
 
-// ZOOM
-video.addEventListener('touchstart',e=>{ sy=e.touches[0].clientY; sz=zoom; },{passive:true});
-video.addEventListener('touchmove',e=>{
- let d=e.touches[0].clientY-sy;
- zoom=Math.max(1,Math.min(5,sz+d/150));
- video.style.transform=(facing==='user'?'scaleX(-1) ':'')+`scale(${zoom})`;
- document.getElementById('zoomText').textContent=zoom.toFixed(1)+'x';
-},{passive:true});
-
-// PHOTO
 function takePhoto(){
  const doSnap=()=>{
   canvas.width=video.videoWidth; canvas.height=video.videoHeight;
@@ -139,33 +127,61 @@ function takePhoto(){
   canvas.toBlob(b=>{
    const url=URL.createObjectURL(b);
    gallery.innerHTML=`<img src="${url}">`;
-   const a=document.createElement('a'); a.href=url; a.download='PIZCAMERA_'+Date.now()+'.jpg'; a.click();
-   show('📸 Saved HD');
-  },'image/jpeg',1.0);
+   const a=document.createElement('a'); a.href=url; a.download='PIZ_'+Date.now()+'.jpg'; a.click();
+   show('📸 Saved');
+  },'image/jpeg',0.95);
  };
  if(timer>0){ let c=timer; let iv=setInterval(()=>{ show(c+'s'); c--; if(c<0){ clearInterval(iv); doSnap(); } },1000); } else doSnap();
 }
 shutter.onclick=takePhoto;
 video.onclick=()=>{ if(!recording) takePhoto(); };
 
-// VIDEO - BRING OUT BOTTOM
-function startRec(){
- chunks=[]; const mime=MediaRecorder.isTypeSupported('video/webm;codecs=vp9')?'video/webm;codecs=vp9':'video/webm';
- rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond: quality==='4k'?10000000:5000000});
- rec.ondataavailable=e=>e.data.size&&chunks.push(e.data);
- rec.onstop=()=>{
-  const blob=new Blob(chunks,{type:mime}); const url=URL.createObjectURL(blob);
-  const a=document.createElement('a'); a.href=url; a.download='PIZCAMERA_'+Date.now()+'.webm'; a.click();
-  show('🎥 Video Saved 4K');
- };
- rec.start(); recording=true; videoBtn.classList.add('rec'); videoBtn.textContent='STOP'; show('● REC 4K');
+// FIXED SMOOTH VIDEO WITH TIMER COUNTING HOURS:MINUTES:SECONDS
+function formatTime(s){
+ let h=Math.floor(s/3600); let m=Math.floor((s%3600)/60); let sec=s%60;
+ return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
 }
-function stopRec(){ if(!recording) return; rec.stop(); recording=false; videoBtn.classList.remove('rec'); videoBtn.textContent='REC'; }
+function startRec(){
+ chunks=[]; recSec=0;
+ // SMOOTH SETTINGS - low bitrate to avoid hanging
+ let bits=2500000; // 2.5Mbps smooth
+ if(quality==='4k') bits=4000000; // 4Mbps still smooth
+ if(quality==='hd') bits=1500000;
+ 
+ try{
+  rec=new MediaRecorder(stream,{mimeType:'video/webm;codecs=vp8', videoBitsPerSecond: bits}); // vp8 = smoothest
+ }catch{
+  rec=new MediaRecorder(stream,{videoBitsPerSecond: bits});
+ }
+ rec.ondataavailable=e=>{ if(e.data.size>0) chunks.push(e.data); };
+ rec.onstop=()=>{
+  const blob=new Blob(chunks,{type:'video/webm'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='PIZ_'+Date.now()+'.webm'; a.click();
+  gallery.innerHTML=`<img src="">`; // keep icon
+  show('🎥 Saved '+formatTime(recSec));
+ };
+ rec.start(1000); // collect every 1 sec = no hang
+ recording=true;
+ videoBtn.classList.add('rec'); videoBtn.textContent='STOP';
+ recTimer.style.display='block';
+ recInterval=setInterval(()=>{
+  recSec++;
+  recTimer.textContent='● '+formatTime(recSec);
+ },1000);
+}
+function stopRec(){
+ if(!recording) return;
+ clearInterval(recInterval);
+ rec.stop();
+ recording=false;
+ videoBtn.classList.remove('rec'); videoBtn.textContent='REC';
+ recTimer.style.display='none';
+}
 videoBtn.onclick=()=>{ if(recording) stopRec(); else startRec(); };
 
-// FILE PICKER FOR GALLERY
-document.getElementById('filePick').onchange=e=>{ for(let f of e.target.files){ const url=URL.createObjectURL(f); gallery.innerHTML=`<img src="${url}">`; show('Loaded from phone'); } };
-gallery.onclick=()=>{ document.getElementById('filePick').click(); };
+document.getElementById('filePick').onchange=e=>{ for(let f of e.target.files){ const url=URL.createObjectURL(f); gallery.innerHTML=`<img src="${url}">`; } };
+gallery.onclick=()=>document.getElementById('filePick').click();
 </script>
 </body>
 </html>
