@@ -3,13 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
-<title>PizCamera AI</title>
+<title>PizCamera AI Fixed</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
 body{background:#000;height:100vh;overflow:hidden;color:#fff}
-#video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:contrast(1.08) saturate(1.15) brightness(1.03)}
-#top{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:12px;z-index:20}
-.topBtn{width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center}
+#video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#111;filter:contrast(1.08) saturate(1.15) brightness(1.03)}
+#startCam{position:fixed;inset:0;z-index:50;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px}
+#startCam button{padding:20px 40px;border-radius:30px;background:#2df4a0;color:#000;font-weight:900;font-size:18px;border:none}
+#top{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:12px;z-index:20;pointer-events:auto}
+.topBtn{width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.8);border:1px solid #fff4;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer}
 #logo{padding:6px 14px;border-radius:20px;background:rgba(0,0,0,.6);border:1px solid #2df4a0;font-weight:900;font-size:11px;color:#fff}
 #timerBox{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:20;display:none}
 #timerBox span{background:#ff2a2a;color:#fff;padding:6px 16px;border-radius:20px;font-weight:900;font-size:13px}
@@ -17,16 +19,16 @@ body{background:#000;height:100vh;overflow:hidden;color:#fff}
 #bottom{position:fixed;bottom:0;left:0;right:0;padding-bottom:20px;background:linear-gradient(transparent,#000 95%);z-index:20}
 #filters{display:flex;gap:8px;overflow-x:auto;padding:0 12px 12px}
 #filters::-webkit-scrollbar{display:none}
-#filters button{flex:0 0 auto;padding:7px 14px;border-radius:20px;background:#1a1a1a;color:#fff;border:1px solid #333;font-size:11px}
+#filters button{flex:0 0 auto;padding:7px 14px;border-radius:20px;background:#1a1a1a;color:#fff;border:1px solid #333;font-size:11px;cursor:pointer}
 #filters button.active{background:#2df4a0;color:#000;font-weight:800}
 #controls{display:flex;justify-content:space-evenly;align-items:center;padding:0 10px}
-.cBtn{width:54px;height:54px;border-radius:16px;background:#222;border:2px solid #fff3;color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.cBtn{width:54px;height:54px;border-radius:16px;background:#222;border:2px solid #fff3;color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer}
 .cBtn img{width:100%;height:100%;object-fit:cover}
-#shutter{width:74px;height:74px;border-radius:50%;background:#fff;border:4px solid #2df4a0}
-#recBtn{width:54px;height:54px;border-radius:50%;background:#ff2a2a;border:3px solid #fff;color:#fff;font-weight:900;font-size:10px}
+#shutter{width:74px;height:74px;border-radius:50%;background:#fff;border:4px solid #2df4a0;cursor:pointer}
+#recBtn{width:54px;height:54px;border-radius:50%;background:#ff2a2a;border:3px solid #fff;color:#fff;font-weight:900;font-size:10px;cursor:pointer}
 #recBtn.on{animation:pulse 1s infinite;background:#fff;color:red}
 @keyframes pulse{50%{transform:scale(1.1)}}
-#aiBtnMain{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#2df4a0,#1a73e8);border:3px solid #fff;color:#000;font-weight:900;font-size:12px;display:flex;align-items:center;justify-content:center}
+#aiBtnMain{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#2df4a0,#1a73e8);border:3px solid #fff;color:#000;font-weight:900;font-size:12px;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .view{position:fixed;inset:0;background:#000;z-index:100;display:none;flex-direction:column}
 #grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;overflow:auto;background:#000;flex:1}
 #aiPreview{flex:1;background:#080808;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
@@ -40,9 +42,16 @@ canvas{display:none}
 <body>
 <video id="video" autoplay playsinline muted></video>
 
+<div id="startCam">
+<div style="font-size:60px">📸</div>
+<div style="font-weight:900;font-size:20px">PIZCAMERA AI</div>
+<div style="color:#aaa;font-size:13px;padding:0 30px;text-align:center">Tap to start camera - allow camera permission</div>
+<button onclick="initAll()">📷 START CAMERA - TAP HERE</button>
+</div>
+
 <div id="top">
 <div style="display:flex;gap:8px;align-items:center"><button class="topBtn" onclick="toggleFlash()">⚡</button><div id="logo">PIZCAMERA AI</div></div>
-<div style="display:flex;gap:8px"><button class="topBtn" onclick="flipCamera()">🔄</button><button class="topBtn" onclick="settingsView.style.display='flex'">⚙️</button></div>
+<div style="display:flex;gap:8px"><button class="topBtn" onclick="flipCamera()">🔄</button><button class="topBtn" onclick="openSettings()">⚙️</button></div>
 </div>
 
 <div id="timerBox"><span id="timeText">● 00:00:00</span></div>
@@ -54,10 +63,8 @@ canvas{display:none}
 <button onclick="setFilter('contrast(1.12) saturate(1.25) brightness(1.05)',this)">🔥 VIVID</button>
 <button onclick="setFilter('contrast(1.06) brightness(1.08) saturate(1.1)',this)">💎 CRYSTAL</button>
 <button onclick="setFilter('saturate(1.3) contrast(1.1)',this)">🌈 HOT</button>
-<button onclick="setFilter('saturate(1.2) hue-rotate(200deg) contrast(1.1)',this)">💙 BLUE</button>
-<button onclick="setFilter('saturate(1.2) hue-rotate(80deg) contrast(1.1)',this)">💚 GREEN</button>
-<button onclick="setFilter('none',this)">ORIGINAL</button>
 <button onclick="setFilter('saturate(0) contrast(1.2)',this)">B&W</button>
+<button onclick="setFilter('none',this)">ORIGINAL</button>
 </div>
 <div id="controls">
 <button class="cBtn" id="galleryBtn" onclick="openGallery()">🖼️</button>
@@ -68,18 +75,19 @@ canvas{display:none}
 </div>
 
 <div id="settingsView" class="view">
-<div style="padding:14px;display:flex;justify-content:space-between;background:#111"><b>⚙️ Settings</b><button onclick="settingsView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">Close ✕</button></div>
-<div style="padding:20px;display:flex;justify-content:space-between;border-bottom:1px solid #222"><span>Watermark</span><select id="wmSel" style="background:#222;color:#fff;padding:8px;border-radius:10px;border:none"><option value="on">ON</option><option value="off">OFF</option></select></div>
-<div style="padding:20px;display:flex;justify-content:space-between"><span>Timer</span><select id="timerSel" style="background:#222;color:#fff;padding:8px;border-radius:10px;border:none"><option value="0">Off</option><option value="3">3s</option><option value="5">5s</option></select></div>
+<div style="padding:14px;display:flex;justify-content:space-between;background:#111"><b>⚙️ Settings</b><button onclick="closeView('settingsView')" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">Close ✕</button></div>
+<div style="padding:20px;display:flex;justify-content:space-between;border-bottom:1px solid #222"><span>Watermark</span><select id="wmSel"><option value="on">ON</option><option value="off">OFF</option></select></div>
+<div style="padding:20px;display:flex;justify-content:space-between"><span>Timer</span><select id="timerSel"><option value="0">Off</option><option value="3">3s</option><option value="5">5s</option></select></div>
+<div style="padding:20px;color:#2df4a0;font-size:12px">All buttons working now boss! Tap START CAMERA first.</div>
 </div>
 
 <div id="galleryView" class="view">
-<div style="padding:12px;display:flex;justify-content:space-between;background:#111"><span style="font-weight:700">📸 Your Shots</span><button onclick="galleryView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">Close ✕</button></div>
+<div style="padding:12px;display:flex;justify-content:space-between;background:#111"><span style="font-weight:700">📸 Your Shots</span><button onclick="closeView('galleryView')" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">Close ✕</button></div>
 <div id="grid"></div>
 </div>
 
 <div id="fullView" class="view">
-<div style="padding:12px;display:flex;justify-content:space-between;background:#111"><button onclick="fullView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">← Back</button><span id="fullName"></span><button onclick="fullView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#222;color:#fff;border:none">✕</button></div>
+<div style="padding:12px;display:flex;justify-content:space-between;background:#111"><button onclick="closeView('fullView')" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">← Back</button><span id="fullName"></span><button onclick="closeView('fullView')" style="padding:8px 14px;border-radius:20px;background:#222;color:#fff;border:none">✕</button></div>
 <img id="fullImg" style="flex:1;object-fit:contain;background:#000;display:none">
 <video id="fullVideo" style="flex:1;width:100%;background:#000;display:none" controls playsinline></video>
 <div style="padding:12px;display:flex;gap:10px;justify-content:center;background:#111">
@@ -90,4 +98,50 @@ canvas{display:none}
 
 <div id="aiView" class="view" style="z-index:200">
 <div style="padding:12px;display:flex;justify-content:space-between;align-items:center;background:#111;border-bottom:1px solid #222">
-<button onclick="aiView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#fff;border:none;font-weight:700
+<button onclick="closeView('aiView')" style="padding:8px 14px;border-radius:20px;background:#fff;border:none;font-weight:700">← Back</button>
+<span style="color:#2df4a0;font-weight:900">PIZ AI STUDIO</span>
+<button onclick="downloadAI()" style="padding:8px 14px;border-radius:20px;background:#2df4a0;border:none;font-weight:800">💾 Save</button>
+</div>
+<div style="padding:12px;background:#111;border-bottom:1px solid #222;display:flex;flex-direction:column;gap:10px">
+<input id="prompt" type="text" placeholder="add wings only keep face same / make me fly / Dubai background only" style="width:100%;padding:14px;border-radius:12px;background:#1e1e1e;color:#fff;border:1px solid #333;font-size:15px">
+<button id="genBtn" onclick="generateAI()" style="width:100%;padding:15px;border-radius:12px;background:linear-gradient(90deg,#2df4a0,#1a73e8);border:none;font-weight:900;font-size:16px;color:#000;cursor:pointer">🚀 GENERATE NOW - SMART AI</button>
+</div>
+<div id="aiPreview"><img id="aiImg"><div id="aiLoader"><div class="spinner"></div><div id="loaderText" style="font-weight:800">Generating...</div><div id="loaderPrompt" style="font-size:12px;color:#aaa;text-align:center;padding:0 20px"></div></div></div>
+<div style="padding:10px;background:#111;border-top:1px solid #222">
+<div style="font-size:11px;color:#888;margin-bottom:6px">TAP KEYWORD - WORKS:</div>
+<div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:6px">
+<button onclick="setKeyword('add angel wings only, keep my face and clothes same')" style="flex:0 0 auto;padding:8px 12px;border-radius:20px;background:#222;color:#fff;border:1px solid #333">🦸 Wings Only</button>
+<button onclick="setKeyword('make me fly in sky like superman, keep my face same')" style="flex:0 0 auto;padding:8px 12px;border-radius:20px;background:#222;color:#fff;border:1px solid #333">🦸 Fly</button>
+<button onclick="setKeyword('change background to Dubai only, keep my face same')" style="flex:0 0 auto;padding:8px 12px;border-radius:20px;background:#222;color:#fff;border:1px solid #333">🏙️ Dubai Only</button>
+<button onclick="setKeyword('remove background white studio, keep me same')" style="flex:0 0 auto;padding:8px 12px;border-radius:20px;background:#222;color:#fff;border:1px solid #333">🧹 Remove BG</button>
+<button onclick="setKeyword('wearing black suit only, keep my face same')" style="flex:0 0 auto;padding:8px 12px;border-radius:20px;background:#222;color:#fff;border:1px solid #333">🤵 Suit Only</button>
+</div>
+</div>
+</div>
+
+<canvas id="canvas"></canvas>
+<script>
+var stream=null, facing='environment', zoom=1, sy=0, sz=1, rec=null, chunks=[], isRecording=false, watermark='on', timerSec=0, sec=0, timerId=null, items=[], currentFull=null, lastSnap=null;
+
+function $(id){ return document.getElementById(id); }
+
+function initAll(){
+  $('startCam').style.display='none';
+  startCam();
+}
+
+async function startCam(){
+  try{
+    if(stream) stream.getTracks().forEach(t=>t.stop());
+    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:facing}, audio:true});
+    var video = $('video');
+    video.srcObject = stream;
+    await video.play();
+    $('startCam').style.display='none';
+  }catch(e){
+    alert('Camera need permission boss: '+e.message+' - Use Chrome and allow camera');
+    $('startCam').style.display='flex';
+  }
+}
+
+function setFilter(f
