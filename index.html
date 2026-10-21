@@ -4,18 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 <title>PizCamera AI</title>
-<meta name="theme-color" content="#000">
-<link id="manifestLink" rel="manifest">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}body{background:#000;height:100vh;overflow:hidden}
-#video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:contrast(1.08) saturate(1.15) brightness(1.03);transform-origin:center}
-#top{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:12px;z-index:10}
-.topBtn{width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.7);border:1px solid #fff3;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center}
-#logo{color:#fff;font-weight:900;padding:6px 14px;border-radius:20px;border:1px solid #2df4a0;background:rgba(0,0,0,.6);font-size:11px}
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+body{background:#000;height:100vh;overflow:hidden;color:#fff}
+#video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:contrast(1.08) saturate(1.15) brightness(1.03)}
+#top{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:12px;z-index:20}
+.topBtn{width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center}
+#logo{padding:6px 14px;border-radius:20px;background:rgba(0,0,0,.6);border:1px solid #2df4a0;font-weight:900;font-size:11px}
 #timerBox{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:20;display:none}
 #timerBox span{background:#ff2a2a;color:#fff;padding:6px 16px;border-radius:20px;font-weight:900;font-size:13px}
-#bottom{position:fixed;bottom:0;left:0;right:0;padding-bottom:22px;background:linear-gradient(transparent,#000 95%);z-index:20}
-#filters{display:flex;gap:8px;overflow-x:auto;padding:0 12px 12px}#filters::-webkit-scrollbar{display:none}
+#zoomText{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.7);color:#fff;padding:8px 16px;border-radius:20px;display:none;z-index:20;font-weight:700}
+#bottom{position:fixed;bottom:0;left:0;right:0;padding-bottom:20px;background:linear-gradient(transparent,#000 95%);z-index:20}
+#filters{display:flex;gap:8px;overflow-x:auto;padding:0 12px 12px}
+#filters::-webkit-scrollbar{display:none}
 #filters button{flex:0 0 auto;padding:7px 14px;border-radius:20px;background:#1a1a1a;color:#fff;border:1px solid #333;font-size:11px}
 #filters button.active{background:#2df4a0;color:#000;font-weight:800}
 #controls{display:flex;justify-content:space-evenly;align-items:center;padding:0 10px}
@@ -23,24 +24,16 @@
 .cBtn img{width:100%;height:100%;object-fit:cover}
 #shutter{width:74px;height:74px;border-radius:50%;background:#fff;border:4px solid #2df4a0}
 #recBtn{width:54px;height:54px;border-radius:50%;background:#ff2a2a;border:3px solid #fff;color:#fff;font-weight:900;font-size:10px}
-#recBtn.on{animation:pulse 1s infinite;background:#fff;color:red}@keyframes pulse{50%{transform:scale(1.08)}}
-#aiBtnMain{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#2df4a0,#1a73e8);border:3px solid #fff;color:#000;font-weight:900;font-size:12px;display:flex;align-items:center;justify-content:center}
-#zoomText{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.7);color:#fff;padding:8px 16px;border-radius:20px;display:none;z-index:20;font-weight:700}
+#recBtn.on{animation:pulse 1s infinite;background:#fff;color:red}
+@keyframes pulse{50%{transform:scale(1.1)}}
+#aiBtnMain{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#2df4a0,#1a73e8);border:3px solid #fff;color:#000;font-weight:900;font-size:12px}
 .view{position:fixed;inset:0;background:#000;z-index:100;display:none;flex-direction:column}
-#grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;overflow:auto}
-#aiPreview{flex:1;background:#0a0a0a;display:flex;align-items:center;justify-content:center;position:relative}
+#grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;overflow:auto;background:#000}
+#aiPreview{flex:1;background:#080808;display:flex;align-items:center;justify-content:center;position:relative}
 #aiPreview img{max-width:100%;max-height:100%;object-fit:contain}
-#aiLoader{position:absolute;inset:0;background:rgba(0,0,0,.9);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#fff;z-index:5}
-.spinner{width:48px;height:48px;border:4px solid #333;border-top-color:#2df4a0;border-radius:50%;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
-#aiTopBar{padding:10px;background:#111;display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid #222}
-#aiGenArea{padding:10px;background:#111;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid #222}
-#prompt{width:100%;padding:14px;border-radius:12px;background:#1e1e1e;color:#fff;border:1px solid #333;font-size:15px;outline:none}
-#prompt:focus{border-color:#2df4a0}
-#genBtnTop{width:100%;padding:14px;border-radius:12px;background:linear-gradient(90deg,#2df4a0,#1a73e8);border:none;font-weight:900;font-size:15px;color:#000}
-#aiTools{padding:10px;background:#111;display:flex;flex-direction:column;gap:8px;overflow:auto}
-.aiRow{display:flex;gap:8px;overflow-x:auto}.aiRow::-webkit-scrollbar{display:none}
-.aiRow button{flex:0 0 auto;padding:8px 14px;border-radius:20px;background:#222;color:#fff;border:1px solid #333;font-size:12px}
-.aiRow button:active{background:#2df4a0;color:#000}
+#aiLoader{position:absolute;inset:0;background:rgba(0,0,0,.92);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:5}
+.spinner{width:48px;height:48px;border:4px solid #333;border-top-color:#2df4a0;border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 canvas{display:none}
 </style>
 </head>
@@ -49,7 +42,7 @@ canvas{display:none}
 
 <div id="top">
 <div style="display:flex;gap:8px;align-items:center"><button class="topBtn" onclick="toggleFlash()">⚡</button><div id="logo">PIZCAMERA AI</div></div>
-<div style="display:flex;gap:8px"><button class="topBtn" onclick="flipCamera()">🔄</button><button class="topBtn" onclick="openSettings()">⚙️</button></div>
+<div style="display:flex;gap:8px"><button class="topBtn" onclick="flipCamera()">🔄</button><button class="topBtn" onclick="settingsView.style.display='flex'">⚙️</button></div>
 </div>
 
 <div id="timerBox"><span id="timeText">● 00:00:00</span></div>
@@ -57,14 +50,14 @@ canvas{display:none}
 
 <div id="bottom">
 <div id="filters">
-<button class="active" onclick="setF('contrast(1.08) saturate(1.15) brightness(1.03)',this)">✨ CLEAN</button>
-<button onclick="setF('contrast(1.12) saturate(1.25) brightness(1.05)',this)">🔥 VIVID</button>
-<button onclick="setF('contrast(1.06) brightness(1.08) saturate(1.1)',this)">💎 CRYSTAL</button>
-<button onclick="setF('saturate(1.3) contrast(1.1)',this)">🌈 HOT</button>
-<button onclick="setF('saturate(1.2) hue-rotate(200deg) contrast(1.1)',this)">💙 BLUE</button>
-<button onclick="setF('saturate(1.2) hue-rotate(80deg) contrast(1.1)',this)">💚 GREEN</button>
-<button onclick="setF('none',this)">ORIGINAL</button>
-<button onclick="setF('saturate(0) contrast(1.2)',this)">B&W</button>
+<button class="active" onclick="setFilter('contrast(1.08) saturate(1.15) brightness(1.03)',this)">✨ CLEAN</button>
+<button onclick="setFilter('contrast(1.12) saturate(1.25) brightness(1.05)',this)">🔥 VIVID</button>
+<button onclick="setFilter('contrast(1.06) brightness(1.08) saturate(1.1)',this)">💎 CRYSTAL</button>
+<button onclick="setFilter('saturate(1.3) contrast(1.1)',this)">🌈 HOT</button>
+<button onclick="setFilter('saturate(1.2) hue-rotate(200deg) contrast(1.1)',this)">💙 BLUE</button>
+<button onclick="setFilter('saturate(1.2) hue-rotate(80deg) contrast(1.1)',this)">💚 GREEN</button>
+<button onclick="setFilter('none',this)">ORIGINAL</button>
+<button onclick="setFilter('saturate(0) contrast(1.2)',this)">B&W</button>
 </div>
 <div id="controls">
 <button class="cBtn" id="galleryBtn" onclick="openGallery()">🖼️</button>
@@ -74,51 +67,147 @@ canvas{display:none}
 </div>
 </div>
 
-<div id="settingsView" class="view"><div style="padding:14px;display:flex;justify-content:space-between;background:#111"><b style="color:#fff">⚙️ Settings</b><button onclick="settingsView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">Close ✕</button></div><div style="padding:16px 20px;color:#fff;display:flex;justify-content:space-between;border-bottom:1px solid #222"><span>Watermark</span><select id="wmSel" style="padding:6px 12px;border-radius:10px;background:#222;color:#fff;border:none"><option value="on">ON</option><option value="off">OFF</option></select></div><div style="padding:16px 20px;color:#fff;display:flex;justify-content:space-between"><span>Timer</span><select id="timerSel" style="padding:6px 12px;border-radius:10px;background:#222;color:#fff;border:none"><option value="0">Off</option><option value="3">3s</option><option value="5">5s</option></select></div></div>
-<div id="galleryView" class="view"><div style="padding:12px;display:flex;justify-content:space-between;background:#111"><span style="color:#fff;font-weight:700">📸 Your shots</span><button onclick="galleryView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">Close ✕</button></div><div id="grid"></div></div>
-<div id="fullView" class="view"><div style="padding:12px;display:flex;justify-content:space-between;background:#111"><button onclick="fullView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">← Back</button><span id="fullName" style="color:#fff"></span><button onclick="fullView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#222;color:#fff;border:none">✕</button></div><img id="fullImg" style="flex:1;object-fit:contain;background:#000;display:none"><video id="fullVideo" style="flex:1;width:100%;background:#000;display:none" controls playsinline></video><div style="padding:12px;display:flex;gap:10px;justify-content:center;background:#111"><button onclick="openAIEditor()" style="padding:12px 20px;border-radius:20px;background:linear-gradient(90deg,#2df4a0,#1a73e8);border:none;font-weight:800">✨ Edit with AI</button><button onclick="downloadFull()" style="padding:12px 20px;border-radius:20px;background:#fff;border:none">💾 Save</button></div></div>
+<!-- SETTINGS -->
+<div id="settingsView" class="view">
+<div style="padding:14px;display:flex;justify-content:space-between;background:#111"><b>⚙️ Settings</b><button onclick="settingsView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">Close ✕</button></div>
+<div style="padding:20px;display:flex;justify-content:space-between;border-bottom:1px solid #222"><span>Watermark</span><select id="wmSel" style="background:#222;color:#fff;padding:8px;border-radius:10px;border:none"><option value="on">ON</option><option value="off">OFF</option></select></div>
+<div style="padding:20px;display:flex;justify-content:space-between"><span>Timer</span><select id="timerSel" style="background:#222;color:#fff;padding:8px;border-radius:10px;border:none"><option value="0">Off</option><option value="3">3s</option><option value="5">5s</option></select></div>
+</div>
 
-<!-- AI VIEW FIXED AS YOU ASKED -->
+<!-- GALLERY -->
+<div id="galleryView" class="view">
+<div style="padding:12px;display:flex;justify-content:space-between;background:#111"><span style="font-weight:700">📸 Your Shots</span><button onclick="galleryView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">Close ✕</button></div>
+<div id="grid"></div>
+</div>
+
+<!-- FULL VIEW -->
+<div id="fullView" class="view">
+<div style="padding:12px;display:flex;justify-content:space-between;background:#111"><button onclick="fullView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#fff;border:none">← Back</button><span id="fullName"></span><button onclick="fullView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#222;color:#fff;border:none">✕</button></div>
+<img id="fullImg" style="flex:1;object-fit:contain;background:#000;display:none">
+<video id="fullVideo" style="flex:1;width:100%;background:#000;display:none" controls playsinline></video>
+<div style="padding:12px;display:flex;gap:10px;justify-content:center;background:#111">
+<button onclick="openAIEditor()" style="padding:12px 20px;border-radius:20px;background:linear-gradient(90deg,#2df4a0,#1a73e8);border:none;font-weight:800">✨ Edit with AI</button>
+<button onclick="downloadFull()" style="padding:12px 20px;border-radius:20px;background:#fff;border:none;font-weight:700">💾 Save</button>
+</div>
+</div>
+
+<!-- AI VIEW - CLEAN FIXED -->
 <div id="aiView" class="view" style="z-index:200">
-<div id="aiTopBar">
+<div style="padding:12px;display:flex;justify-content:space-between;align-items:center;background:#111;border-bottom:1px solid #222">
 <button onclick="aiView.style.display='none'" style="padding:8px 14px;border-radius:20px;background:#fff;border:none;font-weight:700">← Back</button>
 <span style="color:#2df4a0;font-weight:900">PIZ AI STUDIO</span>
-<button onclick="downloadAI()" style="padding:8px 14px;border-radius:20px;background:#2df4a0;border:none;font-weight:700">💾 Save</button>
+<button onclick="downloadAI()" style="padding:8px 14px;border-radius:20px;background:#2df4a0;border:none;font-weight:800">💾 Save to Device</button>
 </div>
 
-<!-- GENERATE BUTTON UP UP MIDDLE - NOT BLOCKING PICTURE -->
-<div id="aiGenArea">
-<input id="prompt" type="text" placeholder="Type exactly what you want: e.g flying like superman in Dubai">
-<button id="genBtnTop" onclick="generateAI()">🚀 GENERATE EXACTLY WHAT I TYPED - TAP HERE</button>
+<!-- UP UP MIDDLE - GENERATE AREA NOT BLOCKING PICTURE -->
+<div style="padding:12px;background:#111;border-bottom:1px solid #222;display:flex;flex-direction:column;gap:10px">
+<input id="prompt" type="text" placeholder="Type what you want: flying in air like superman, Dubai suit..." style="width:100%;padding:14px;border-radius:12px;background:#1e1e1e;color:#fff;border:1px solid #333;font-size:15px">
+<button id="genBtn" onclick="generateAI()" style="width:100%;padding:15px;border-radius:12px;background:linear-gradient(90deg,#2df4a0,#1a73e8);border:none;font-weight:900;font-size:16px;color:#000">🚀 GENERATE NOW - TAP HERE</button>
 </div>
 
-<div id="aiPreview"><img id="aiImg"><div id="aiLoader"><div class="spinner"></div><div id="loaderText" style="font-weight:700">Generating your idea...</div><div id="loaderPrompt" style="font-size:12px;color:#aaa;padding:0 20px;text-align:center"></div></div></div>
+<div id="aiPreview">
+<img id="aiImg">
+<div id="aiLoader"><div class="spinner"></div><div id="loaderText" style="font-weight:800">Generating...</div><div id="loaderPrompt" style="font-size:12px;color:#aaa;text-align:center;padding:0 20px"></div></div>
+</div>
 
-<div id="aiTools">
-<div style="color:#888;font-size:11px">TAP KEYWORD - IT WILL WORK:</div>
-<div class="aiRow">
-<button onclick="setKeyword('flying in the air like superman')">🦸 Flying</button>
-<button onclick="setKeyword('jumping high in sky')">🤾 Jumping</button>
-<button onclick="setKeyword('swimming underwater in ocean')">🏊 Swimming</button>
-<button onclick="setKeyword('dancing on stage with lights')">💃 Dancing</button>
-<button onclick="setKeyword('remove background clean white studio')">🧹 Remove BG</button>
-</div>
-<div class="aiRow">
-<button onclick="setKeyword('Dubai luxury background')">🏙️ Dubai</button>
-<button onclick="setKeyword('beach sunset background')">🏖️ Beach</button>
-<button onclick="setKeyword('wearing black luxury suit')">🤵 Suit</button>
-<button onclick="setKeyword('wearing white agbada Nigerian style')">👘 Agbada</button>
-<button onclick="setKeyword('cartoon pixar 3d style')">🎨 Cartoon</button>
-<button onclick="setKeyword('anime style')">✨ Anime</button>
-</div>
-<div class="aiRow">
-<button onclick="setKeyword('flying like bird over Lagos')">🦅 Lagos Fly</button>
-<button onclick="setKeyword('sitting on private jet')">✈️ Jet</button>
-<button onclick="setKeyword('holding money, rich')">💰 Money</button>
+<div style="padding:10px;background:#111;border-top:1px solid #222">
+<div style="font-size:11px;color:#888;margin-bottom:6px">TAP KEYWORD — IT WORKS AUTOMATIC:</div>
+<div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:6px">
+<button onclick="setKeyword('flying in the air like superman')" style="flex:0 0 auto;padding:8px 12px;border-radius:20px;background:#222;color:#fff;border:1px solid #333">🦸 Flying</button>
+<button onclick="setKeyword('jumping high in sky')" style="flex:0 0 auto;padding:8px 12px;border-radius:20px;background:#222;color:#fff;border:1px solid #333">🤾 Jumping</button>
+<button onclick="setKeyword('swimming underwater')" style="flex:0 0 auto;padding:8px 12px;border-radius:20px;background:#222;color:#fff;border:1px solid #333">🏊 Swimming</button>
+<button onclick="setKeyword('dancing on stage')" style="flex:0 0 auto;padding:8px 12px;border-radius:20px;background:#222;color:#fff;border:1px solid #333">💃 Dancing</button>
+<button onclick="setKeyword('remove background white studio')" style="flex:0 0 auto;padding:8px 12px;border-radius:20px;background:#222;color:#fff;border:1px solid #333">🧹 Remove BG</button>
+<button onclick="setKeyword('Dubai luxury background')" style="flex:0 0 auto;padding:8px 12px;border-radius:20px;background:#222;color:#fff;border:1px solid #333">🏙️ Dubai</button>
+<button onclick="setKeyword('beach sunset background')" style="flex:0 0 auto;padding:8px 12px;border-radius:20px;background:#222;color:#fff;border:1px solid #333">🏖️ Beach</button>
+<button onclick="setKeyword('wearing black luxury suit')" style="flex:0 0 auto;padding:8px 12px;border-radius:20px;background:#222;color:#fff;border:1px solid #333">🤵 Suit</button>
+<button onclick="setKeyword('wearing white agbada')" style="flex:0 0 auto;padding:8px 12px;border-radius:20px;background:#222;color:#fff;border:1px solid #333">👘 Agbada</button>
 </div>
 </div>
 </div>
 
 <canvas id="canvas"></canvas>
 <script>
-const ic=document.createElement('canvas');ic.width=512;ic.height=512;const ix=ic.getContext('2d');ix.fillStyle='#0a0a0a';ix.beginPath();ix.roundRect(0,0,512,512,80);ix.fill();ix.fillStyle='#2df4a0';ix.font='bold 420px system-ui';ix.fillText('P',70,480);const iconData=ic.toDataURL('image/png');const mf={name:"PizCamera AI",short_name:"PizCamera",start_url:".",display:"standalone",background_color:"#000",
+let stream, facing='environment', zoom=1, sy=0, sz=1, rec, chunks=[], isRecording=false, watermark='on', timerSec=0, sec=0, timerId=null, items=[], currentFull=null, lastSnap=null;
+const video=document.getElementById('video'), canvas=document.getElementById('canvas'), settingsView=document.getElementById('settingsView'), galleryView=document.getElementById('galleryView'), fullView=document.getElementById('fullView'), aiView=document.getElementById('aiView'), grid=document.getElementById('grid'), timerBox=document.getElementById('timerBox'), timeText=document.getElementById('timeText'), zoomText=document.getElementById('zoomText'), fullImg=document.getElementById('fullImg'), fullVideo=document.getElementById('fullVideo'), aiImg=document.getElementById('aiImg'), promptEl=document.getElementById('prompt'), loader=document.getElementById('aiLoader'), recBtn=document.getElementById('recBtn');
+
+async function startCam(){if(stream)stream.getTracks().forEach(t=>t.stop());try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:1920},height:{ideal:1080}},audio:true});video.srcObject=stream;await video.play()}catch(e){alert('Camera error: '+e.message)}}startCam();
+function setFilter(f,b){video.style.filter=f;document.querySelectorAll('#filters button').forEach(x=>x.classList.remove('active'));if(b)b.classList.add('active')}
+function flipCamera(){facing=facing==='environment'?'user':'environment';startCam()}
+function toggleFlash(){try{let tr=stream.getVideoTracks()[0];let cap=tr.getCapabilities();if(cap.torch){tr.applyConstraints({advanced:[{torch:tr.getSettings().torch?false:true}]})}}catch{}}
+function openGallery(){galleryView.style.display='flex'}
+function openAI(){aiView.style.display='flex';if(lastSnap)aiImg.src=lastSnap}
+function openAIEditor(){if(!currentFull||currentFull.type!=='img'){openAI();return}aiImg.src=currentFull.url;lastSnap=currentFull.url;fullView.style.display='none';aiView.style.display='flex'}
+function addToGrid(url,type,name){items.push({url,type,name});let el=document.createElement(type==='img'?'img':'video');el.src=url;el.style.width='100%';el.style.aspectRatio='1';el.style.objectFit='cover';el.style.background='#111';el.onclick=()=>openFull(url,type,name);if(grid.firstChild)grid.insertBefore(el,grid.firstChild);else grid.appendChild(el);document.getElementById('galleryBtn').innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover">`;if(type==='img'){lastSnap=url;aiImg.src=url}}
+function openFull(url,type,name){currentFull={url,type,name};fullView.style.display='flex';document.getElementById('fullName').textContent=name;if(type==='img'){fullImg.style.display='block';fullVideo.style.display='none';fullImg.src=url}else{fullImg.style.display='none';fullVideo.style.display='block';fullVideo.src=url;fullVideo.play()}}
+function downloadFull(){if(!currentFull)return;let a=document.createElement('a');a.href=currentFull.url;a.download=currentFull.name;a.click()}
+function downloadAI(){if(!aiImg.src||aiImg.src===''){alert('Generate first');return}let a=document.createElement('a');a.href=aiImg.src;a.download='PIZ_AI_'+Date.now()+'.jpg';a.click();addToGrid(aiImg.src,'img','PIZ_AI_'+Date.now()+'.jpg')}
+
+video.addEventListener('touchstart',e=>{if(e.touches.length===1){sy=e.touches[0].clientY;sz=zoom}if(e.touches.length===2){let d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);sy=d;sz=zoom}},{passive:true});
+video.addEventListener('touchmove',e=>{if(e.touches.length===1){zoom=Math.max(1,Math.min(5,sz+(e.touches[0].clientY-sy)/150))}if(e.touches.length===2){let d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);zoom=Math.max(1,Math.min(5,sz*(d/sy)))}video.style.transform=(facing==='user'?'scaleX(-1) ':'')+`scale(${zoom})`;zoomText.textContent=zoom.toFixed(1)+'x';zoomText.style.display='block';clearTimeout(window.zt);window.zt=setTimeout(()=>zoomText.style.display='none',800)},{passive:true});
+
+function takePhoto(){
+ const doSnap=()=>{
+  canvas.width=video.videoWidth||1280;canvas.height=video.videoHeight||720;
+  let ctx=canvas.getContext('2d');ctx.filter=video.style.filter;
+  if(facing==='user'){ctx.translate(canvas.width,0);ctx.scale(-1,1)}
+  ctx.drawImage(video,0,0);
+  if(watermark==='on'){ctx.filter='none';ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(0,canvas.height-60,canvas.width,60);ctx.fillStyle='#2df4a0';ctx.font=`bold ${Math.floor(canvas.width*0.05)}px system-ui`;ctx.textAlign='center';ctx.fillText('PIZCAMERA',canvas.width/2,canvas.height-20)}
+  canvas.toBlob(b=>{
+   let url=URL.createObjectURL(b);let name='PIZ_'+Date.now()+'.jpg';addToGrid(url,'img',name);
+   let a=document.createElement('a');a.href=url;a.download=name;a.click()
+  },'image/jpeg',0.92)
+ };
+ if(timerSec>0){let c=timerSec;let iv=setInterval(()=>{zoomText.textContent=c+'s';zoomText.style.display='block';c--;if(c<0){clearInterval(iv);zoomText.style.display='none';doSnap()}},1000)}else doSnap()
+}
+function fmt(s){let h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sc).padStart(2,'0')}`}
+function toggleRec(){
+ if(!isRecording){
+  chunks=[];sec=0;
+  try{rec=new MediaRecorder(stream,{mimeType:'video/webm;codecs=vp9',videoBitsPerSecond:2500000})}catch{try{rec=new MediaRecorder(stream,{mimeType:'video/webm'})}catch{rec=new MediaRecorder(stream)}}
+  rec.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data)};
+  rec.onstop=()=>{let blob=new Blob(chunks,{type:'video/webm'});let url=URL.createObjectURL(blob);let name='PIZ_'+Date.now()+'.webm';addToGrid(url,'video',name);let a=document.createElement('a');a.href=url;a.download=name;a.click()};
+  rec.start(200);
+  timerBox.style.display='block';timeText.textContent='● 00:00:00';
+  timerId=setInterval(()=>{sec++;timeText.textContent='● '+fmt(sec)},1000);
+  isRecording=true;recBtn.classList.add('on');recBtn.textContent='STOP'
+ }else{
+  clearInterval(timerId);timerBox.style.display='none';rec.stop();isRecording=false;recBtn.classList.remove('on');recBtn.textContent='REC'
+ }
+}
+document.getElementById('wmSel').onchange=e=>watermark=e.target.value;
+document.getElementById('timerSel').onchange=e=>timerSec=parseInt(e.target.value);
+
+function setKeyword(t){document.getElementById('prompt').value=t;document.getElementById('prompt').focus()}
+
+async function generateAI(){
+ let p=document.getElementById('prompt').value.trim();
+ if(!p){alert('Type what you want first! Example: flying like superman');return}
+ let btn=document.getElementById('genBtn');
+ btn.textContent='⏳ Generating "'+p+'" ...';
+ btn.disabled=true;
+ loader.style.display='flex';
+ document.getElementById('loaderPrompt').textContent='"'+p+'"';
+ document.getElementById('loaderText').textContent='Doing exactly: '+p;
+ try{
+  let seed=Math.floor(Math.random()*9999999);
+  let q=encodeURIComponent(p);
+  let url=`https://image.pollinations.ai/prompt/${q}?seed=${seed}&width=1024&height=1024&nologo=true`;
+  let img=new Image();img.crossOrigin='anonymous';
+  await new Promise((res,rej)=>{let done=false;let to=setTimeout(()=>{if(!done){done=true;res()}},15000);img.onload=()=>{if(!done){done=true;clearTimeout(to);res()}};img.onerror=()=>{if(!done){done=true;clearTimeout(to);rej()}};img.src=url});
+  let c2=document.createElement('canvas');c2.width=1024;c2.height=1024;let x=c2.getContext('2d');x.drawImage(img,0,0,1024,1024);
+  x.fillStyle='rgba(0,0,0,.5)';x.fillRect(0,984,1024,40);x.fillStyle='#2df4a0';x.font='bold 13px system-ui';x.fillText('PIZCAMERA AI • '+p.slice(0,40),10,1008);
+  let finalUrl=c2.toDataURL('image/jpeg',0.92);
+  aiImg.src=finalUrl;
+  addToGrid(finalUrl,'img','PIZ_AI_'+Date.now()+'.jpg');
+  btn.textContent='✅ Done! Tap 💾 Save to Device to save';
+ }catch(e){
+  alert('No internet or try different words');
+  btn.textContent='🚀 GENERATE NOW - TAP HERE';
+ }
+ loader.style.display='none';btn.disabled=false;
+ setTimeout(()=>btn.textContent='🚀 GENERATE NOW - TAP HERE',4000);
+}
+</script>
+</body>
+</html>
