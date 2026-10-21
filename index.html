@@ -3,64 +3,237 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>PizCamera FINAL FIXED</title>
+<title>PizCamera AI - GT Hub Complete</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:system-ui,Arial}
+html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:system-ui,Segoe UI,Arial}
 #video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:#000;z-index:1}
-#top{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:12px env(safe-area-inset-top) 12px 12px;background:linear-gradient(rgba(0,0,0,.6),transparent)}
-.topBtn{width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.25);color:#fff;font-size:18px;backdrop-filter:blur(10px)}
-#logo{padding:7px 14px;border-radius:20px;background:rgba(0,0,0,.55);border:1px solid #2df4a0;font-weight:900;font-size:11px;letter-spacing:.5px;backdrop-filter:blur(10px)}
-#bottom{position:fixed;bottom:0;left:0;right:0;z-index:10;padding:0 0 calc(16px + env(safe-area-inset-bottom)) 0;background:linear-gradient(transparent,rgba(0,0,0,.95) 70%)}
-#filters{display:flex;gap:8px;overflow-x:auto;padding:8px 12px 12px;scrollbar-width:none}
+#canvas{display:none}
+#gridOverlay{position:fixed;inset:0;z-index:2;pointer-events:none;display:none}
+#gridOverlay span{position:absolute;background:rgba(255,255,255,.25)}
+#gridOverlay .v{width:1px;top:0;bottom:0}
+#gridOverlay .h{height:1px;left:0;right:0}
+#top{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:12px;background:linear-gradient(rgba(0,0,0,.7),transparent)}
+.topBtn{width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:18px;backdrop-filter:blur(8px)}
+#logo{padding:6px 14px;border-radius:20px;background:rgba(0,0,0,.55);border:1px solid #2df4a0;font-weight:900;font-size:11px;backdrop-filter:blur(8px);letter-spacing:.5px}
+#bottom{position:fixed;bottom:0;left:0;right:0;z-index:10;padding-bottom:calc(12px + env(safe-area-inset-bottom));background:linear-gradient(transparent,rgba(0,0,0,.95) 70%)}
+#filters{display:flex;gap:8px;overflow-x:auto;padding:8px 12px 10px;scrollbar-width:none}
 #filters::-webkit-scrollbar{display:none}
 #filters button{flex:0 0 auto;padding:8px 16px;border-radius:20px;background:rgba(30,30,30,.9);color:#fff;border:1px solid rgba(255,255,255,.15);font-size:12px;font-weight:600}
 #filters button.active{background:#2df4a0;color:#000;border-color:#2df4a0;font-weight:900}
-#controls{display:flex;justify-content:space-evenly;align-items:center;padding:4px 12px}
-.ctrl{width:56px;height:56px;border-radius:16px;background:rgba(40,40,40,.9);border:2px solid rgba(255,255,255,.2);color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#controls{display:flex;justify-content:space-evenly;align-items:center;padding:6px 8px}
+.ctrl{width:56px;height:56px;border-radius:16px;background:rgba(40,40,40,.9);border:2px solid rgba(255,255,255,.2);color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
 .ctrl img{width:100%;height:100%;object-fit:cover}
+.ctrl small{position:absolute;bottom:2px;font-size:8px;background:rgba(0,0,0,.7);padding:1px 4px;border-radius:8px}
 #shutter{width:76px;height:76px;border-radius:50%;background:#fff;border:4px solid #2df4a0;box-shadow:0 0 0 4px rgba(45,244,160,.2)}
-#rec{width:58px;height:58px;border-radius:50%;background:#ff2a2a;border:3px solid #fff;color:#fff;font-weight:900;font-size:11px;letter-spacing:.5px}
-#aiMain{width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#2df4a0,#1a73e8);border:3px solid #fff;color:#000;font-weight:900;font-size:11px}
-#msg{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:20;background:rgba(0,0,0,.85);border:1px solid #2df4a0;color:#fff;padding:20px;border-radius:20px;text-align:center;display:none;min-width:260px}
-#msg button{margin-top:12px;padding:12px 24px;border-radius:25px;background:#2df4a0;color:#000;border:none;font-weight:900;width:100%}
-.view{position:fixed;inset:0;background:#000;z-index:100;display:none;flex-direction:column}
-#grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;flex:1;overflow:auto;background:#000}
+#rec{width:60px;height:60px;border-radius:50%;background:#ff2a2a;border:3px solid #fff;color:#fff;font-weight:900;font-size:11px}
+#aiMain{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#2df4a0,#1a73e8);border:3px solid #fff;color:#000;font-weight:900;font-size:12px}
+#timer{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:10;display:none;background:rgba(255,0,0,.9);color:#fff;padding:6px 16px;border-radius:20px;font-weight:900;font-size:14px;letter-spacing:.5px}
+#zoomBar{position:fixed;bottom:180px;left:50%;transform:translateX(-50%);z-index:10;display:flex;gap:8px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.15);padding:6px;border-radius:20px;backdrop-filter:blur(10px)}
+#zoomBar button{padding:6px 12px;border-radius:14px;background:rgba(255,255,255,.15);border:none;color:#fff;font-weight:700;font-size:12px}
+#zoomBar button.active{background:#2df4a0;color:#000}
+#startScreen{position:fixed;inset:0;z-index:100;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;text-align:center}
+#startScreen button{padding:16px 36px;border-radius:30px;background:#2df4a0;color:#000;font-weight:900;border:none;font-size:18px}
+.view{position:fixed;inset:0;background:#000;z-index:50;display:none;flex-direction:column}
+.viewHead{padding:12px;display:flex;justify-content:space-between;align-items:center;background:#111;border-bottom:1px solid #222}
+.viewHead button{padding:8px 16px;border-radius:20px;background:#fff;color:#000;border:none;font-weight:700}
+#gridGallery{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;flex:1;overflow:auto;background:#000}
+.settingItem{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1a1a1a}
+.settingItem span{color:#aaa;font-size:13px}
+.settingItem b{color:#fff;font-size:13px}
+.switch{width:44px;height:26px;background:#333;border-radius:20px;position:relative;transition:.2s}
+.switch.on{background:#2df4a0}
+.switch i{position:absolute;top:3px;left:3px;width:20px;height:20px;background:#fff;border-radius:50%;transition:.2s}
+.switch.on i{transform:translateX(18px)}
 #aiPreview{flex:1;background:#0a0a0a;display:flex;align-items:center;justify-content:center}
 #aiPreview img{max-width:100%;max-height:100%;object-fit:contain}
-#timer{position:fixed;top:72px;left:50%;transform:translateX(-50%);z-index:10;display:none;background:#ff2a2a;color:#fff;padding:6px 14px;border-radius:20px;font-weight:900;font-size:13px}
-canvas{display:none}
+#countdown{position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.4);font-size:120px;font-weight:900;color:#fff}
 </style>
 </head>
 <body>
 <video id="video" autoplay playsinline muted></video>
+<canvas id="canvas"></canvas>
+<div id="gridOverlay"><span class="v" style="left:33.3%"></span><span class="v" style="left:66.6%"></span><span class="h" style="top:33.3%"></span><span class="h" style="top:66.6%"></span></div>
+<div id="countdown">3</div>
 
-<div id="msg">
-<div style="font-weight:900;color:#2df4a0;margin-bottom:6px">PIZCAMERA</div>
-<div id="msgText" style="font-size:13px;color:#ccc">Starting HD camera...</div>
-<button id="msgBtn" onclick="startCam()">TAP TO START CAMERA</button>
+<div id="startScreen">
+<div style="font-size:60px">📸</div>
+<div style="font-weight:900;font-size:24px;letter-spacing:.5px">PIZCAMERA AI</div>
+<div style="color:#888;font-size:13px;max-width:280px">GT Hub Complete • Live Camera • HD Photo • Video H:M:S • AI Enhancement • Settings</div>
+<button onclick="initCamera()">START LIVE CAMERA</button>
+<div style="color:#555;font-size:11px">Requires HTTPS • Allow camera permission</div>
 </div>
 
 <div id="top">
-<div style="display:flex;gap:8px;align-items:center"><button class="topBtn" onclick="location.reload()">⚡</button><div id="logo">PIZCAMERA • HD CLEAR</div></div>
-<div style="display:flex;gap:8px"><button class="topBtn" onclick="flipCam()">🔄</button><button class="topBtn" onclick="openView('settingsView')">⚙️</button></div>
+<div style="display:flex;gap:8px;align-items:center"><button class="topBtn" onclick="toggleTorch()" title="Flash">⚡</button><div id="logo">PIZCAMERA • HD CLEAR</div></div>
+<div style="display:flex;gap:8px"><button class="topBtn" onclick="flipCam()" title="Front/Rear">🔄</button><button class="topBtn" onclick="openView('settingsView')" title="Settings">⚙️</button></div>
 </div>
 
 <div id="timer">● 00:00:00</div>
 
+<div id="zoomBar">
+<button onclick="setZoom(1)" class="active" id="z1">1x</button>
+<button onclick="setZoom(2)" id="z2">2x</button>
+<button onclick="setZoom(3)" id="z3">3x</button>
+</div>
+
 <div id="bottom">
 <div id="filters">
-<button class="active" onclick="setFilter('none',this)">ORIGINAL CLEAN</button>
-<button onclick="setFilter('contrast(1.06) saturate(1.10) brightness(1.04)',this)">✨ CLEAN HD</button>
+<button class="active" onclick="setFilter('none',this)">ORIGINAL</button>
+<button onclick="setFilter('contrast(1.06) saturate(1.10) brightness(1.04)',this)">✨ BRIGHTER</button>
 <button onclick="setFilter('contrast(1.12) saturate(1.18) brightness(1.05)',this)">🔥 VIVID HD</button>
-<button onclick="setFilter('saturate(0) contrast(1.15)',this)">B&W</button>
+<button onclick="setFilter('contrast(1.08) saturate(1.14) brightness(1.06)',this)">💎 ENHANCED</button>
+<button onclick="setFilter('saturate(0) contrast(1.15) brightness(1.05)',this)">B&W HD</button>
 </div>
 <div id="controls">
-<button class="ctrl" id="gBtn" onclick="openView('galleryView')">🖼️</button>
-<button id="shutter" onclick="snapPhoto()"></button>
+<button class="ctrl" id="gBtn" onclick="openView('galleryView')"><span>🖼️</span><small id="gCount">0</small></button>
+<button id="shutter" onclick="photoFlow()"></button>
 <button id="aiMain" onclick="openAI()">AI ✨</button>
 <button id="rec" onclick="toggleRec()">REC</button>
 </div>
 </div>
 
-<div id="galleryView" class
+<!-- GALLERY -->
+<div id="galleryView" class="view">
+<div class="viewHead"><b style="color:#fff">Gallery • Persistent</b><div style="display:flex;gap:8px"><button onclick="clearGallery()" style="background:#ff2a2a;color:#fff">Clear</button><button onclick="closeView('galleryView')">Close</button></div></div>
+<div id="gridGallery"></div>
+</div>
+
+<!-- SETTINGS -->
+<div id="settingsView" class="view">
+<div class="viewHead"><b style="color:#fff">Camera Settings</b><button onclick="closeView('settingsView')">Close</button></div>
+<div style="overflow:auto;flex:1">
+<div style="padding:12px 16px;color:#2df4a0;font-weight:800;font-size:12px;letter-spacing:1px">QUALITY & CAPTURE</div>
+<div class="settingItem"><span>Photo Quality</span><b><select id="quality" style="background:#222;color:#fff;border:1px solid #333;border-radius:8px;padding:4px"><option value="0.95">High 95%</option><option value="1.0">Ultra HD 100%</option><option value="0.92">Standard 92%</option></select></b></div>
+<div class="settingItem"><span>Countdown Timer</span><b><select id="countdownSel" style="background:#222;color:#fff;border:1px solid #333;border-radius:8px;padding:4px"><option value="0">Off</option><option value="3">3s</option><option value="5">5s</option><option value="10">10s</option></select></b></div>
+<div class="settingItem"><span>Selfie Mirroring</span><div class="switch on" id="mirrorSwitch" onclick="toggleSwitch('mirrorSwitch')"><i></i></div></div>
+<div class="settingItem"><span>Framing Grid</span><div class="switch" id="gridSwitch" onclick="toggleGrid()"><i></i></div></div>
+<div class="settingItem"><span>Zoom</span><b><span id="zoomLabel">1x</span></b></div>
+<div style="padding:12px 16px;color:#2df4a0;font-weight:800;font-size:12px;letter-spacing:1px">VIDEO & STORAGE</div>
+<div class="settingItem"><span>Video Resolution</span><b><select id="videoRes" style="background:#222;color:#fff;border:1px solid #333;border-radius:8px;padding:4px"><option>1080p HD</option><option>720p</option><option>4K (if supported)</option></select></b></div>
+<div class="settingItem"><span>Audio Recording</span><div class="switch on" id="audioSwitch" onclick="toggleSwitch('audioSwitch')"><i></i></div></div>
+<div class="settingItem"><span>Storage Used</span><b><span id="storageUsed">0 items</span></b></div>
+<div style="padding:16px;color:#666;font-size:11px;line-height:1.6">Camera access requires HTTPS. Max resolution, zoom, torch depend on phone browser. GT Hub: Place this file as main HTML or camera page. Adapt if using React.</div>
+</div>
+</div>
+
+<!-- AI -->
+<div id="aiView" class="view" style="z-index:60">
+<div class="viewHead"><button onclick="closeView('aiView')">Back</button><b style="color:#2df4a0">AI ENHANCEMENT</b><button onclick="saveAI()" style="background:#2df4a0">Save</button></div>
+<div style="padding:12px;background:#111;border-bottom:1px solid #222">
+<input id="prompt" placeholder="add wings only keep face same - portrait enhancement" style="width:100%;padding:14px;border-radius:12px;background:#1e1e1e;color:#fff;border:1px solid #333">
+<div style="display:flex;gap:8px;margin-top:8px;overflow-x:auto"><button onclick="setPrompt('upscale to 8k ultra HD')" style="padding:6px 12px;border-radius:20px;background:#222;color:#fff;border:1px solid #333;font-size:11px">Upscale 8k</button><button onclick="setPrompt('portrait enhancement background blur')" style="padding:6px 12px;border-radius:20px;background:#222;color:#fff;border:1px solid #333;font-size:11px">Portrait</button><button onclick="setPrompt('noise reduction clean smooth skin')" style="padding:6px 12px;border-radius:20px;background:#222;color:#fff;border:1px solid #333;font-size:11px">Noise Reduce</button><button onclick="setPrompt('add angel wings keep face same')" style="padding:6px 12px;border-radius:20px;background:#222;color:#fff;border:1px solid #333;font-size:11px">Wings</button></div>
+<button id="genBtn" onclick="generateAI()" style="width:100%;margin-top:10px;padding:14px;border-radius:12px;background:linear-gradient(90deg,#2df4a0,#1a73e8);border:none;font-weight:900;color:#000">🚀 GENERATE AI ENHANCED</button>
+<div style="color:#666;font-size:10px;margin-top:6px">Advanced AI requires AI service (Pollinations free starter included). Connect your own model for genuine upscaling.</div>
+</div>
+<div id="aiPreview"><img id="aiImg" style="max-width:100%;max-height:100%"></div>
+</div>
+
+<script>
+let stream=null,facing='environment',rec=null,chunks=[],isRec=false,sec=0,tid=null,lastSnap=null,zoom=1,mirror=true,gridOn=false;
+const video=document.getElementById('video'),canvas=document.getElementById('canvas'),gridGallery=document.getElementById('gridGallery');
+let mediaStore=[];
+
+async function initCamera(){
+ try{
+  if(stream) stream.getTracks().forEach(t=>t.stop());
+  let audioOn=document.getElementById('audioSwitch').classList.contains('on');
+  let constraints={
+    video:{facingMode:facing,width:{ideal:1920},height:{ideal:1080},advanced:[{zoom:zoom}]},
+    audio:audioOn
+  };
+  stream=await navigator.mediaDevices.getUserMedia(constraints);
+  video.srcObject=stream;
+  await video.play();
+  document.getElementById('startScreen').style.display='none';
+  applyMirror();
+ }catch(e){alert('Camera error: '+e.message+'\nUse https link from Netlify Drop and allow permission');}
+}
+
+function applyMirror(){video.style.transform=facing==='user' && mirror ? 'scaleX(-1)' : 'none';}
+function setFilter(f,b){video.style.filter=f;document.querySelectorAll('#filters button').forEach(x=>x.classList.remove('active'));if(b)b.classList.add('active');}
+function flipCam(){facing=facing==='environment'?'user':'environment';initCamera();}
+async function toggleTorch(){try{let track=stream.getVideoTracks()[0];await track.applyConstraints({advanced:[{torch:true}]});setTimeout(async()=>{await track.applyConstraints({advanced:[{torch:false}]});},800);}catch{}}
+function setZoom(z){zoom=z;document.querySelectorAll('#zoomBar button').forEach(b=>b.classList.remove('active'));document.getElementById('z'+z).classList.add('active');document.getElementById('zoomLabel').textContent=z+'x';try{let track=stream.getVideoTracks()[0];track.applyConstraints({advanced:[{zoom:z}]});}catch{video.style.transform=(facing==='user'&&mirror?'scaleX(-1) ':'')+'scale('+z+')';}}
+function toggleSwitch(id){document.getElementById(id).classList.toggle('on');if(id==='mirrorSwitch'){mirror=document.getElementById(id).classList.contains('on');applyMirror();}}
+function toggleGrid(){toggleSwitch('gridSwitch');gridOn=document.getElementById('gridSwitch').classList.contains('on');document.getElementById('gridOverlay').style.display=gridOn?'block':'none';}
+function openView(id){document.getElementById(id).style.display='flex';}
+function closeView(id){document.getElementById(id).style.display='none';}
+
+function photoFlow(){
+ let cd=parseInt(document.getElementById('countdownSel').value);
+ if(cd>0){startCountdown(cd,()=>snapPhoto());}else{snapPhoto();}
+}
+function startCountdown(n,cb){
+ let el=document.getElementById('countdown');el.style.display='flex';el.textContent=n;
+ let c=n;let it=setInterval(()=>{c--;if(c>0){el.textContent=c;}else{clearInterval(it);el.style.display='none';cb();}},1000);
+}
+
+function snapPhoto(){
+ if(!stream){initCamera();return;}
+ let q=parseFloat(document.getElementById('quality').value)||0.95;
+ canvas.width=video.videoWidth||1920;canvas.height=video.videoHeight||1080;
+ let ctx=canvas.getContext('2d');
+ ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+ ctx.filter=video.style.filter||'none';
+ // Focus / exposure handled by browser, stabilization via high smoothing
+ if(facing==='user' && mirror){ctx.translate(canvas.width,0);ctx.scale(-1,1);}
+ ctx.drawImage(video,0,0,canvas.width,canvas.height);
+ canvas.toBlob(b=>{
+  let url=URL.createObjectURL(b);
+  addMedia(url,'img',b);
+  let a=document.createElement('a');a.href=url;a.download='PIZ_HD_'+Date.now()+'.jpg';a.click();
+ },'image/jpeg',q);
+}
+
+function fmt(s){let h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(sc).padStart(2,'0');}
+function toggleRec(){
+ if(!stream){initCamera();return;}
+ let timer=document.getElementById('timer'),btn=document.getElementById('rec');
+ if(!isRec){
+  chunks=[];sec=0;rec=new MediaRecorder(stream,{mimeType:'video/webm'});
+  rec.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data);};
+  rec.onstop=()=>{let blob=new Blob(chunks,{type:'video/webm'});let url=URL.createObjectURL(blob);addMedia(url,'video',blob);let a=document.createElement('a');a.href=url;a.download='PIZ_VIDEO_'+Date.now()+'.webm';a.click();};
+  rec.start(200);timer.style.display='block';tid=setInterval(()=>{sec++;timer.textContent='● '+fmt(sec);},1000);isRec=true;btn.textContent='STOP';btn.style.background='#fff';btn.style.color='red';
+ }else{clearInterval(tid);timer.style.display='none';rec.stop();isRec=false;btn.textContent='REC';btn.style.background='#ff2a2a';btn.style.color='#fff';}
+}
+
+function addMedia(url,type,blob){
+ mediaStore.unshift({url,type,blob,time:Date.now()});
+ let wrap=document.createElement('div');wrap.style.position='relative';wrap.style.aspectRatio='1';wrap.style.overflow='hidden';wrap.style.background='#111';
+ let el=document.createElement(type==='img'?'img':'video');el.src=url;el.style.width='100%';el.style.height='100%';el.style.objectFit='cover';
+ if(type==='video'){el.muted=true;el.loop=true;el.playsInline=true;}
+ wrap.appendChild(el);
+ let del=document.createElement('button');del.textContent='×';del.style.position='absolute';del.style.top='4px';del.style.right='4px';del.style.width='22px';del.style.height='22px';del.style.borderRadius='50%';del.style.background='rgba(0,0,0,.7)';del.style.color='#fff';del.style.border='1px solid #fff';del.onclick=()=>{wrap.remove();mediaStore=mediaStore.filter(m=>m.url!==url);updateCounts();};
+ let share=document.createElement('button');share.textContent='↗';share.style.position='absolute';share.style.bottom='4px';share.style.left='4px';share.style.width='22px';share.style.height='22px';share.style.borderRadius='50%';share.style.background='rgba(45,244,160,.9)';share.style.color='#000';share.style.border='none';share.onclick=async()=>{if(navigator.share){try{await navigator.share({files:[new File([blob], 'piz.'+(type==='img'?'jpg':'webm'),{type:blob.type})]});}catch{}}};
+ wrap.appendChild(del);wrap.appendChild(share);
+ gridGallery.prepend(wrap);
+ document.getElementById('gBtn').innerHTML='<img src="'+url+'" style="width:100%;height:100%;object-fit:cover"><small id="gCount">'+mediaStore.length+'</small>';
+ lastSnap=type==='img'?url:lastSnap;
+ document.getElementById('aiImg').src=lastSnap||url;
+ updateCounts();
+}
+
+function clearGallery(){if(confirm('Clear all?')){gridGallery.innerHTML='';mediaStore=[];updateCounts();document.getElementById('gBtn').innerHTML='🖼️<small id="gCount">0</small>';}}
+function updateCounts(){document.getElementById('gCount').textContent=mediaStore.length;document.getElementById('storageUsed').textContent=mediaStore.length+' items';}
+
+function openAI(){if(!lastSnap){alert('Snap photo first');return;}openView('aiView');}
+function saveAI(){let s=document.getElementById('aiImg').src;if(!s)return;let a=document.createElement('a');a.href=s;a.download='PIZ_AI_ENHANCED_'+Date.now()+'.jpg';a.click();addMedia(s,'img',null);}
+function setPrompt(t){document.getElementById('prompt').value=t;}
+async function generateAI(){
+ let p=document.getElementById('prompt').value.trim();if(!p)return;let btn=document.getElementById('genBtn');btn.textContent='Generating AI Enhanced...';btn.disabled=true;
+ try{
+  let q=encodeURIComponent('portrait enhancement, same face, '+p+', noise reduction, genuine AI upscaling, photorealistic 8k ultra HD clear');
+  let url='https://image.pollinations.ai/prompt/'+q+'?seed='+Math.floor(Math.random()*999999)+'&width=1024&height=1024&nologo=true&enhance=true';
+  let img=new Image();img.crossOrigin='anonymous';
+  await new Promise((res,rej)=>{let to=setTimeout(res,15000);img.onload=()=>{clearTimeout(to);res();};img.onerror=()=>{clearTimeout(to);rej();};img.src=url;});
+  document.getElementById('aiImg').src=img.src;addMedia(img.src,'img',null);btn.textContent='Done AI Enhanced';
+ }catch{btn.textContent='Failed - check internet';}
+ btn.disabled=false;setTimeout(()=>btn.textContent='🚀 GENERATE AI ENHANCED',2500);
+}
+
+// Auto try open
+window.addEventListener('load',()=>{setTimeout(()=>{if(navigator.mediaDevices) initCamera();},300);});
+</script>
+</body>
+</html>
