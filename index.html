@@ -2,64 +2,66 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>PizChat - Your AI Assistant</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
-body{background:#000;min-height:100vh;display:flex;justify-content:center}
-.phone{width:100%;max-width:480px;min-height:100vh;background:#0a0a0a;display:flex;flex-direction:column;position:relative;overflow:hidden}
-@media(min-width:481px){.phone{margin:18px 0;border-radius:30px;min-height:calc(100vh - 36px);box-shadow:0 20px 60px rgba(0,0,0,.6);border:3px solid #111}}
+html,body{height:100%;background:#000}
+body{display:flex;justify-content:center;overflow:hidden}
+.phone{width:100%;max-width:480px;height:100dvh;height:100vh;display:flex;flex-direction:column;background:#0a0a0a;position:relative}
+@media(min-width:481px){.phone{height:calc(100dvh - 36px);margin:18px 0;border-radius:30px;box-shadow:0 20px 60px rgba(0,0,0,.6);border:3px solid #111;overflow:hidden}}
 
-/* HEADER - EXACT LIKE IMAGE */
-header{background:linear-gradient(90deg,#0f2a0a 0%,#1a4d14 40%,#2e8b2e 70%,#4caf3a 100%);padding:16px 18px 20px;color:#fff;border-radius:0 0 24px 24px;position:sticky;top:0;z-index:10}
+/* HEADER */
+header{background:linear-gradient(90deg,#0f2a0a 0%,#1a4d14 40%,#2e8b2e 70%,#4caf3a 100%);padding:14px 18px 16px;color:#fff;border-radius:0 0 24px 24px;flex-shrink:0}
 .top{display:flex;align-items:center;justify-content:space-between}
-.logo{display:flex;align-items:center;gap:6px;font-size:32px;font-weight:900;letter-spacing:-.5px}
-.logo i{color:#a3ff5e;font-style:normal;font-size:30px}
-.icons{display:flex;gap:16px}
-.icons button{background:transparent;border:0;color:#a3ff5e;font-size:21px;cursor:pointer}
+.logo{display:flex;align-items:center;gap:6px;font-size:30px;font-weight:900}
+.logo i{color:#a3ff5e;font-style:normal}
+.icons{display:flex;gap:14px}
+.icons button{background:rgba(255,255,255,.15);border:0;color:#fff;font-size:19px;cursor:pointer;width:38px;height:38px;border-radius:50%}
 
-/* BODY */
-.main{flex:1;overflow-y:auto;padding:18px 14px 115px;background:#0a0a0a}
-.greet{font-size:20px;color:#cbd5c8;line-height:1.35;margin:6px 4px 16px}
-.greet b{font-size:23px;color:#fff}
+/* BODY - SCROLLABLE, NO HIDE */
+.main{flex:1;overflow-y:auto;padding:16px 14px 14px;background:#0a0a0a;-webkit-overflow-scrolling:touch}
+.greet{font-size:20px;color:#cbd5c8;line-height:1.35;margin:4px 4px 14px}
+.greet b{font-size:22px;color:#fff}
 .sugg-label{font-size:13px;font-weight:700;color:#a3ff5e;margin:0 0 10px 4px}
-.cards{display:flex;gap:10px;margin-bottom:20px}
-.card{flex:1;border-radius:18px;padding:18px 8px 16px;text-align:center;cursor:pointer;font-size:12.5px;font-weight:700;color:#a3ff5e;line-height:1.35;min-height:122px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;border:0;background:linear-gradient(180deg,#1a3a12,#0f2a0a)}
-.card span{font-size:28px;color:#a3ff5e}
+.cards{display:flex;gap:10px;margin-bottom:16px}
+.card{flex:1;border-radius:18px;padding:16px 6px 14px;text-align:center;cursor:pointer;font-size:12.5px;font-weight:700;color:#a3ff5e;line-height:1.35;min-height:112px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border:0;background:linear-gradient(180deg,#1a3a12,#0f2a0a)}
+.card span{font-size:26px}
 
-/* CHAT - EXACT LIKE IMAGE */
-.msg{display:flex;gap:8px;margin-bottom:10px;align-items:flex-start}
+/* CHAT */
+.msg{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start}
 .msg.me{justify-content:flex-end}
-.avatar{width:36px;height:36px;border-radius:50%;background:#111;border:2px solid #a3ff5e;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;color:#a3ff5e}
-.bubble{max-width:82%;padding:13px 14px;border-radius:18px;font-size:14.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word}
+.avatar{width:34px;height:34px;border-radius:50%;background:#111;border:2px solid #a3ff5e;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;color:#a3ff5e}
+.bubble{max-width:82%;padding:12px 14px;border-radius:18px;font-size:14.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word}
 .ai .bubble{background:#2a2a2a;color:#fff;border-bottom-left-radius:6px}
 .me .bubble{background:#a3ff5e;color:#111;font-weight:600;border-bottom-right-radius:6px}
-.time{font-size:11px;color:#888;margin:4px 0 10px 44px}
-.me + .time{text-align:right;margin-right:4px;margin-left:0}
-.typing{display:flex;gap:5px;padding:14px 16px}
+.time{font-size:11px;color:#888;margin:3px 0 8px 42px}
+.me + .time{text-align:right;margin-left:0;margin-right:4px}
+.typing{display:flex;gap:5px;padding:13px 15px}
 .typing i{width:8px;height:8px;background:#a3ff5e;border-radius:50%;animation:b 1s infinite}
 .typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
 @keyframes b{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(-5px);opacity:1}}
 
-/* INPUT - EXACT LIKE IMAGE */
-.input-bar{position:absolute;bottom:0;left:0;right:0;background:#0a0a0a;padding:12px 12px 16px;display:flex;gap:10px;align-items:center}
-.plus{width:42px;height:42px;border-radius:50%;background:#a3ff5e;border:0;font-size:26px;color:#000;cursor:pointer;flex-shrink:0;font-weight:700}
-.input-wrap{flex:1;background:#2a2a2a;border-radius:999px;display:flex;align-items:center;padding:0 12px}
-.input-wrap input{flex:1;border:0;background:transparent;outline:none;padding:13px 4px;font-size:15px;color:#fff}
+/* BOTTOM BAR - NOW ALWAYS VISIBLE, NOT HIDING */
+.input-bar{flex-shrink:0;background:#0a0a0a;padding:10px 12px calc(12px + env(safe-area-inset-bottom));display:flex;gap:8px;align-items:center;border-top:1px solid #222}
+.plus{width:42px;height:42px;border-radius:50%;background:#a3ff5e;border:0;font-size:24px;color:#000;cursor:pointer;flex-shrink:0;font-weight:700}
+.input-wrap{flex:1;background:#2a2a2a;border-radius:999px;display:flex;align-items:center;padding:0 10px;min-width:0}
+.input-wrap input{flex:1;border:0;background:transparent;outline:none;padding:12px 4px;font-size:15px;color:#fff;min-width:0}
 .input-wrap input::placeholder{color:#999}
-.input-wrap button{border:0;background:transparent;font-size:20px;cursor:pointer}
-.send{width:58px;height:58px;border-radius:50%;background:#a3ff5e;border:0;color:#111;font-size:26px;cursor:pointer;box-shadow:0 8px 22px rgba(163,255,94,.35);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.input-wrap button{border:0;background:transparent;font-size:19px;cursor:pointer;flex-shrink:0}
+.send{height:42px;padding:0 16px;border-radius:999px;background:#a3ff5e;border:0;color:#000;font-size:14px;font-weight:800;cursor:pointer;flex-shrink:0;white-space:nowrap}
 
-/* SETTINGS - GREEN THEME */
+/* SETTINGS */
 .modal{display:none;position:absolute;inset:0;background:rgba(0,0,0,.7);z-index:50;align-items:flex-end}
 .modal.open{display:flex}
-.sheet{background:#111;width:100%;border-radius:22px 22px 0 0;padding:20px;color:#fff}
+.sheet{background:#111;width:100%;border-radius:22px 22px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom));color:#fff;max-height:85%;overflow-y:auto}
 .sheet h3{font-size:19px;margin-bottom:14px;color:#a3ff5e}
 .sheet label{font-size:13px;font-weight:700;color:#ccc}
 .sheet input{width:100%;padding:12px;border:2px solid #333;background:#222;color:#fff;border-radius:12px;margin:6px 0 14px;font-size:15px;outline:none}
 .sheet input:focus{border-color:#a3ff5e}
 .btn{width:100%;padding:13px;border:0;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:8px}
 .btn-p{background:#a3ff5e;color:#000}.btn-g{background:#222;color:#fff}.btn-r{background:#3a1111;color:#ff6b6b}
+.status{font-size:12px;color:#a3ff5e;text-align:center;margin-top:4px}
 </style>
 </head>
 <body>
@@ -67,7 +69,7 @@ header{background:linear-gradient(90deg,#0f2a0a 0%,#1a4d14 40%,#2e8b2e 70%,#4caf
 <header>
 <div class="top">
 <div class="logo"><i>✦</i> PizChat</div>
-<div class="icons"><button onclick="openSettings()">🔍</button><button onclick="openSettings()">🔔</button></div>
+<div class="icons"><button onclick="openSettings()" title="Search">🔍</button><button onclick="openSettings()" title="Settings">🔔</button></div>
 </div>
 </header>
 
@@ -82,10 +84,11 @@ header{background:linear-gradient(90deg,#0f2a0a 0%,#1a4d14 40%,#2e8b2e 70%,#4caf
 <div id="messages"></div>
 </div>
 
+<!-- BOTTOM - NOW FIXED AND VISIBLE -->
 <div class="input-bar">
-<button class="plus" onclick="newChat()">+</button>
+<button class="plus" onclick="newChat()" title="New Chat">+</button>
 <div class="input-wrap"><input id="input" placeholder="Ask anything..." onkeydown="if(event.key==='Enter')send()"><button onclick="startVoice()">🎤</button></div>
-<button class="send" onclick="send()">➤</button>
+<button class="send" onclick="send()">Send ➤</button>
 </div>
 
 <div class="modal" id="settingsModal" onclick="if(event.target===this)closeSettings()">
@@ -97,11 +100,14 @@ header{background:linear-gradient(90deg,#0f2a0a 0%,#1a4d14 40%,#2e8b2e 70%,#4caf
 <button class="btn btn-g" onclick="newChat();closeSettings()">+ New Chat</button>
 <button class="btn btn-r" onclick="clearChat()">🗑️ Clear All Chats</button>
 <button class="btn btn-g" onclick="closeSettings()">Close</button>
+<div class="status" id="statusText">● Connected to PizChat AI</div>
 </div>
 </div>
 </div>
 
 <script>
+// FIX: Use Vercel backend even when site is on GitHub Pages
+const API_URL = "https://pizchatai-three.vercel.app/api/chat";
 let history = JSON.parse(localStorage.getItem('piz_history')||'[]');
 let userName = localStorage.getItem('piz_name')||'Mia';
 document.getElementById('userName').textContent=userName;
@@ -117,28 +123,28 @@ function renderHistory(){
     ? `<div class="msg me"><div class="bubble">${escapeHtml(m.text)}</div></div><div class="time">Just now</div>`
     : `<div class="msg ai"><div class="avatar">✦</div><div class="bubble">${escapeHtml(m.text)}</div></div><div class="time">Just now • PizChat</div>`;
   });
-  document.getElementById('chatBox').scrollTop=99999;
+  const c=document.getElementById('chatBox'); c.scrollTop=c.scrollHeight;
 }
-function escapeHtml(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function escapeHtml(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function quickAsk(t){document.getElementById('input').value=t; send();}
 async function send(){
   const inp=document.getElementById('input'); const text=inp.value.trim(); if(!text) return;
   inp.value=''; addMsg('user',text); showTyping();
   try{
-    const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:text}]})});
+    const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:text}]})});
     const data=await res.json(); hideTyping();
     const reply=data.reply||data.message||data.text||"Sorry, I no fit reply now. Try again.";
     addMsg('assistant',reply);
-  }catch(e){ hideTyping(); addMsg('assistant',"Network wahala. Check your internet and try again."); }
+  }catch(e){ hideTyping(); addMsg('assistant',"Network wahala. Make sure your Vercel site pizchatai-three.vercel.app dey online, then try again."); }
 }
 function addMsg(role,text){ history.push({role,text}); localStorage.setItem('piz_history',JSON.stringify(history)); renderHistory(); }
-function showTyping(){ const b=document.getElementById('messages'); b.innerHTML+=`<div class="msg ai" id="typing"><div class="avatar">✦</div><div class="bubble typing"><i></i><i></i><i></i></div></div>`; document.getElementById('chatBox').scrollTop=99999; }
+function showTyping(){ const b=document.getElementById('messages'); b.innerHTML+=`<div class="msg ai" id="typing"><div class="avatar">✦</div><div class="bubble typing"><i></i><i></i><i></i></div></div>`; document.getElementById('chatBox').scrollTop=document.getElementById('chatBox').scrollHeight; }
 function hideTyping(){ const t=document.getElementById('typing'); if(t) t.remove(); }
 function newChat(){ history=[]; localStorage.removeItem('piz_history'); renderHistory(); }
 function clearChat(){ newChat(); alert('Chats cleared!'); closeSettings(); }
 function openSettings(){ document.getElementById('settingsModal').classList.add('open'); }
 function closeSettings(){ document.getElementById('settingsModal').classList.remove('open'); }
-function saveName(){ const n=document.getElementById('nameInput').value.trim()||'Mia'; localStorage.setItem('piz_name',n); userName=n; document.getElementById('userName').textContent=n; closeSettings(); location.reload(); }
+function saveName(){ const n=document.getElementById('nameInput').value.trim()||'Mia'; localStorage.setItem('piz_name',n); document.getElementById('userName').textContent=n; closeSettings(); document.getElementById('greet').innerHTML = greetWord+', <span id="userName">'+n+'</span> —<br><b>how can I help today?</b>'; }
 function startVoice(){ alert('Voice dey come soon! Type for now.'); }
 renderHistory();
 </script>
