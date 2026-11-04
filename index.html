@@ -3,90 +3,83 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PizChat</title>
+<title>PizChat AI</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
-body{background:#000;min-height:100svh;display:flex;justify-content:center;padding:12px}
-.phone{width:100%;max-width:420px;background:#0a0a0a;border-radius:32px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.5);border:3px solid #1a1a1a;min-height:calc(100svh - 24px)}
-/* HEADER - EXACT LIKE IMAGE */
-header{background:linear-gradient(90deg,#0f2a0a,#1a4d14 40%,#2e8b2e 70%,#4caf3a);padding:14px 16px 18px;border-radius:0 0 22px 22px;flex-shrink:0}
-.top{display:flex;justify-content:space-between;align-items:center}
-.logo{font-size:30px;font-weight:900;color:#fff;display:flex;align-items:center;gap:4px}.logo i{font-style:normal;color:#a3ff5e;font-size:28px}
-.icons{display:flex;gap:16px}.icons button{background:transparent;border:0;color:#a3ff5e;font-size:20px;cursor:pointer}
-/* BODY */
-.main{flex:1;padding:16px 14px 10px;overflow-y:auto}
-.greet{font-size:19px;color:#cbd5c8;line-height:1.35;margin:2px 4px 14px}.greet b{font-size:21px;color:#fff}
-.sugg{font-size:12px;font-weight:700;color:#a3ff5e;margin:0 0 10px 4px}
-.cards{display:flex;gap:9px;margin-bottom:18px}
-.card{flex:1;border:0;border-radius:16px;padding:16px 6px 14px;text-align:center;cursor:pointer;font-size:11.5px;font-weight:700;color:#a3ff5e;line-height:1.35;min-height:112px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:linear-gradient(180deg,#1e3a13,#0f2a0a)}
-.card span{font-size:26px;color:#a3ff5e}
-/* CHAT - EXACT LIKE IMAGE */
-.msg{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start}.msg.me{justify-content:flex-end}
-.avatar{width:34px;height:34px;border-radius:50%;background:#111;border:2px solid #a3ff5e;display:flex;align-items:center;justify-content:center;color:#a3ff5e;font-size:15px;flex-shrink:0}
-.bubble{max-width:82%;padding:12px 13px;border-radius:16px;font-size:13.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
-.ai .bubble{background:#2a2a2a;color:#fff;border-bottom-left-radius:6px}
-.me .bubble{background:#a3ff5e;color:#111;font-weight:600;border-bottom-right-radius:6px}
-.time{font-size:11px;color:#888;margin:3px 0 8px 42px}.me + .time{text-align:right;margin-right:4px;margin-left:0}
-.typing{display:flex;gap:5px;padding:13px}.typing i{width:7px;height:7px;background:#a3ff5e;border-radius:50%;animation:b 1s infinite}
-@keyframes b{50%{transform:translateY(-4px)}}
-/* BOTTOM - STICKY, NO HIDE AGAIN */
-.input-bar{background:#0a0a0a;padding:10px 10px 14px;display:flex;gap:8px;align-items:center;border-top:1px solid #222;position:sticky;bottom:0}
-.plus{width:38px;height:38px;border-radius:50%;background:#a3ff5e;border:0;font-size:20px;color:#000;font-weight:700;flex-shrink:0;cursor:pointer}
-.input-wrap{flex:1;background:#2a2a2a;border-radius:999px;display:flex;align-items:center;padding:0 10px;min-width:0}
-.input-wrap input{flex:1;background:transparent;border:0;outline:none;padding:11px 4px;font-size:14px;color:#fff;min-width:0}
-.input-wrap input::placeholder{color:#999}
-.input-wrap button{background:transparent;border:0;font-size:18px;cursor:pointer;flex-shrink:0}
-.send{width:52px;height:52px;border-radius:50%;background:#a3ff5e;border:0;color:#111;font-size:22px;flex-shrink:0;cursor:pointer;box-shadow:0 6px 18px rgba(163,255,94,.35)}
-/* SETTINGS - GREEN */
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:99;align-items:flex-end}.modal.open{display:flex}
-.sheet{background:#111;width:100%;border-radius:20px 20px 0 0;padding:20px;color:#fff}
-.sheet h3{margin-bottom:12px;color:#a3ff5e}
-.sheet input{width:100%;padding:12px;border:2px solid #333;background:#222;color:#fff;border-radius:12px;margin:6px 0 12px;outline:none}
-.btn{width:100%;padding:13px;border:0;border-radius:12px;font-weight:700;margin-bottom:8px;cursor:pointer}
-.btn-p{background:#a3ff5e;color:#000}.btn-g{background:#222;color:#fff}.btn-r{background:#3a1111;color:#ff6b6b}
+body{background:#f2f2f2;min-height:100svh;display:flex;justify-content:center}
+.phone{width:100%;max-width:480px;background:#f2f2f2;min-height:100svh;display:flex;flex-direction:column}
+/* HEADER - EXACT LIKE SCREENSHOT */
+header{background:#2fa32f;padding:16px 14px;text-align:center;position:sticky;top:0;z-index:10}
+header h1{color:#fff;font-size:19px;font-weight:600;letter-spacing:.2px}
+/* CHAT AREA */
+.main{flex:1;padding:18px 14px 10px;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
+.msg{max-width:85%;padding:13px 14px;border-radius:10px;font-size:16px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
+.msg.ai{background:#d9f2d9;color:#111;align-self:flex-start;border-radius:10px}
+.msg.me{background:#fff;color:#111;align-self:flex-end;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.msg.thinking{background:#d9f2d9;color:#111;align-self:flex-start;display:flex;gap:6px;align-items:center}
+.dot{width:7px;height:7px;background:#2fa32f;border-radius:50%;animation:b 1s infinite}
+.dot:nth-child(2){animation-delay:.15s}.dot:nth-child(3){animation-delay:.3s}
+@keyframes b{50%{transform:translateY(-3px);opacity:.5}}
+/* BOTTOM - EXACT LIKE SCREENSHOT */
+.input-bar{background:#f2f2f2;padding:10px 10px 18px;display:flex;gap:8px;align-items:center;position:sticky;bottom:0}
+.input-wrap{flex:1;background:#fff;border:1px solid #ddd;border-radius:999px;display:flex;align-items:center;padding:0 14px;min-width:0;height:48px}
+.input-wrap input{flex:1;border:0;outline:none;font-size:15px;background:transparent;min-width:0;color:#111}
+.input-wrap input::placeholder{color:#888}
+.send{background:#1e9e1e;border:0;color:#fff;font-size:16px;font-weight:600;padding:0 22px;height:48px;border-radius:999px;cursor:pointer;flex-shrink:0}
+.send:active{transform:scale(.97)}
 </style>
 </head>
 <body>
 <div class="phone">
-<header><div class="top"><div class="logo"><i>✦</i> PizChat</div><div class="icons"><button onclick="openSettings()">🔍</button><button onclick="openSettings()">🔔</button></div></div></header>
+<header><h1>PizChat AI - Ask Me Anything</h1></header>
 
-<div class="main" id="chatBox">
-<div class="greet">Good evening, <span id="userName">Mia</span> —<br><b>how can I help today?</b></div>
-<div class="sugg">✦ Suggestions</div>
-<div class="cards">
-<button class="card" onclick="quickAsk('Draft an email for me')"><span>💡</span>Draft an email<br>for me</button>
-<button class="card" onclick="quickAsk('Create a study plan for me')"><span>✏️</span>Create a<br>study plan</button>
-<button class="card" onclick="quickAsk('Brainstorm creative ideas for my business')"><span>📍</span>Brainstorm<br>creative ideas</button>
-</div>
-<div id="messages"></div>
+<div class="main" id="messages">
+<div class="msg ai">Hello boss! I be PizChat AI. Ask me anything, I go answer you sharp sharp.</div>
 </div>
 
 <div class="input-bar">
-<button class="plus" onclick="newChat()">+</button>
-<div class="input-wrap"><input id="input" placeholder="Ask anything..." onkeydown="if(event.key==='Enter')send()"><button onclick="alert('Voice dey come soon!')">🎤</button></div>
-<button class="send" onclick="send()">➤</button>
+<div class="input-wrap"><input id="input" placeholder="Ask anything..." onkeydown="if(event.key==='Enter')send()"></div>
+<button class="send" onclick="send()">Send</button>
 </div>
-
-<div class="modal" id="settingsModal" onclick="if(event.target===this)closeSettings()"><div class="sheet"><h3>⚙️ PizChat Settings</h3><label>Your Name</label><input id="nameInput" value="Mia"><button class="btn btn-p" onclick="saveName()">Save Name</button><button class="btn btn-g" onclick="newChat();closeSettings()">+ New Chat</button><button class="btn btn-r" onclick="clearChat()">🗑️ Clear All Chats</button><button class="btn btn-g" onclick="closeSettings()">Close</button></div></div>
 </div>
 
 <script>
-const API_URL="https://pizchatai-three.vercel.app/api/chat";
-let history=JSON.parse(localStorage.getItem('piz_history')||'[]');
-let userName=localStorage.getItem('piz_name')||'Mia';
-document.getElementById('userName').textContent=userName; document.getElementById('nameInput').value=userName;
-const h=new Date().getHours(); let g=h<12?'Good morning':h<18?'Good afternoon':'Good evening';
-document.querySelector('.greet').innerHTML=g+', <span id="userName">'+userName+'</span> —<br><b>how can I help today?</b>';
-function render(){let b=document.getElementById('messages');b.innerHTML='';history.forEach(m=>{b.innerHTML+=m.role==='user'?`<div class="msg me"><div class="bubble">${esc(m.text)}</div></div><div class="time">Just now</div>`:`<div class="msg"><div class="avatar">✦</div><div class="bubble">${esc(m.text)}</div></div><div class="time">Just now • PizChat</div>`});window.scrollTo(0,document.body.scrollHeight)}
+// KEEP YOUR WORKING BACKEND - NO CHANGE
+const API_URL = "/api/chat";
+let history = [{role:"assistant", text:"Hello boss! I be PizChat AI. Ask me anything, I go answer you sharp sharp."}];
+try{ let saved = JSON.parse(localStorage.getItem('piz_history')||'[]'); if(saved.length) history = saved; }catch(e){}
+
+function render(){
+  let b = document.getElementById('messages');
+  b.innerHTML = '';
+  history.forEach(m=>{
+    b.innerHTML += `<div class="msg ${m.role==='user'?'me':'ai'}">${esc(m.text)}</div>`;
+  });
+  window.scrollTo(0, document.body.scrollHeight);
+}
 function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-function quickAsk(t){document.getElementById('input').value=t;send()}
-async function send(){let inp=document.getElementById('input');let txt=inp.value.trim();if(!txt)return;inp.value='';add('user',txt);let b=document.getElementById('messages');b.innerHTML+=`<div class="msg" id="typing"><div class="avatar">✦</div><div class="bubble typing"><i></i><i></i><i></i></div></div>`;try{let r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:txt}]})});let d=await r.json();document.getElementById('typing')?.remove();add('assistant',d.reply||d.message||d.text||"No reply")}catch(e){document.getElementById('typing')?.remove();add('assistant',"Network wahala: Test for Vercel site pizchatai-three.vercel.app, GitHub Pages no get backend.")}}
-function add(role,text){history.push({role,text});localStorage.setItem('piz_history',JSON.stringify(history));render()}
-function newChat(){history=[];localStorage.removeItem('piz_history');render()}
-function clearChat(){newChat();alert('Chats cleared!');closeSettings()}
-function openSettings(){document.getElementById('settingsModal').classList.add('open')}
-function closeSettings(){document.getElementById('settingsModal').classList.remove('open')}
-function saveName(){let n=document.getElementById('nameInput').value.trim()||'Mia';localStorage.setItem('piz_name',n);document.getElementById('userName').textContent=n;closeSettings()}
+
+async function send(){
+  let inp = document.getElementById('input');
+  let txt = inp.value.trim(); if(!txt) return;
+  inp.value=''; add('user', txt);
+
+  let b = document.getElementById('messages');
+  b.innerHTML += `<div class="msg thinking" id="typing">PizChat dey think... <span class="dot"></span><span class="dot"></span><span class="dot"></span></div>`;
+  window.scrollTo(0, document.body.scrollHeight);
+
+  try{
+    let ctrl = new AbortController(); setTimeout(()=>ctrl.abort(), 30000);
+    let r = await fetch(API_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({messages:[{role:'user', content: txt}]}), signal: ctrl.signal});
+    let d = await r.json();
+    document.getElementById('typing')?.remove();
+    add('assistant', d.reply || d.message || d.text || "No reply, try again");
+  }catch(e){
+    document.getElementById('typing')?.remove();
+    add('assistant', "Network wahala, try again — check internet and resend.");
+  }
+}
+function add(role,text){ history.push({role, text}); localStorage.setItem('piz_history', JSON.stringify(history)); render(); }
 render();
 </script>
 </body>
