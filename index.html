@@ -3,84 +3,157 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PizChat AI</title>
+<title>PizChat AI - A Product of NjemWise</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
-body{background:#f2f2f2;min-height:100svh;display:flex;justify-content:center}
-.phone{width:100%;max-width:480px;background:#f2f2f2;min-height:100svh;display:flex;flex-direction:column}
-/* HEADER - EXACT LIKE SCREENSHOT */
-header{background:#2fa32f;padding:16px 14px;text-align:center;position:sticky;top:0;z-index:10}
-header h1{color:#fff;font-size:19px;font-weight:600;letter-spacing:.2px}
-/* CHAT AREA */
-.main{flex:1;padding:18px 14px 10px;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
-.msg{max-width:85%;padding:13px 14px;border-radius:10px;font-size:16px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
-.msg.ai{background:#d9f2d9;color:#111;align-self:flex-start;border-radius:10px}
-.msg.me{background:#fff;color:#111;align-self:flex-end;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.msg.thinking{background:#d9f2d9;color:#111;align-self:flex-start;display:flex;gap:6px;align-items:center}
-.dot{width:7px;height:7px;background:#2fa32f;border-radius:50%;animation:b 1s infinite}
-.dot:nth-child(2){animation-delay:.15s}.dot:nth-child(3){animation-delay:.3s}
-@keyframes b{50%{transform:translateY(-3px);opacity:.5}}
-/* BOTTOM - EXACT LIKE SCREENSHOT */
-.input-bar{background:#f2f2f2;padding:10px 10px 18px;display:flex;gap:8px;align-items:center;position:sticky;bottom:0}
-.input-wrap{flex:1;background:#fff;border:1px solid #ddd;border-radius:999px;display:flex;align-items:center;padding:0 14px;min-width:0;height:48px}
-.input-wrap input{flex:1;border:0;outline:none;font-size:15px;background:transparent;min-width:0;color:#111}
-.input-wrap input::placeholder{color:#888}
-.send{background:#1e9e1e;border:0;color:#fff;font-size:16px;font-weight:600;padding:0 22px;height:48px;border-radius:999px;cursor:pointer;flex-shrink:0}
-.send:active{transform:scale(.97)}
+  *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+  body{background:#000;color:#fff;height:100vh;display:flex;flex-direction:column}
+  header{display:flex;align-items:center;justify-content:space-between;padding:14px 12px;border-bottom:1px solid #222}
+  .logo-box{display:flex;align-items:center;gap:8px}
+  .logo{width:38px;height:38px;background:#a3e635;color:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:20px}
+  header h1{font-size:22px;line-height:1}
+  header p{font-size:11px;color:#888}
+  .new-chat{background:#222;color:#fff;border:none;padding:8px 14px;border-radius:20px;cursor:pointer}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;padding:12px 12px 6px}
+  .chips button{background:#222;color:#fff;border:none;padding:9px 13px;border-radius:20px;cursor:pointer;font-size:13px}
+  #chat{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:12px}
+  .msg{max-width:88%;padding:12px 14px;border-radius:18px;line-height:1.55;font-size:15px;white-space:pre-wrap;word-break:break-word}
+  .ai{background:#222;align-self:flex-start}
+  .user{background:#1a73e8;align-self:flex-end}
+  .msg img{width:100%;border-radius:12px;margin-top:8px;display:block}
+  .msg pre{background:#000;padding:10px;border-radius:10px;overflow-x:auto;margin-top:8px;font-size:13px}
+  .input-bar{display:flex;gap:8px;padding:12px;align-items:center;border-top:1px solid #222}
+  .input-bar button{width:44px;height:44px;border-radius:50%;border:none;font-size:18px;cursor:pointer;flex-shrink:0}
+  #input{flex:1;background:#222;color:#fff;border:none;padding:13px 16px;border-radius:25px;outline:none;font-size:15px}
+  #send{background:#a3e635;color:#000;font-weight:bold}
+  #fileBtn,#micBtn{background:#222;color:#fff}
+  footer{text-align:center;font-size:11px;color:#555;padding:0 0 8px}
 </style>
 </head>
 <body>
-<div class="phone">
-<header><h1>PizChat AI - Ask Me Anything</h1></header>
 
-<div class="main" id="messages">
-<div class="msg ai">Hello boss! I be PizChat AI. Ask me anything, I go answer you sharp sharp.</div>
+<header>
+  <div class="logo-box">
+    <div class="logo">P</div>
+    <div>
+      <h1>PizChat AI</h1>
+      <p>A product of NjemWise International Limited</p>
+    </div>
+  </div>
+  <button class="new-chat" onclick="newChat()">+ New Chat</button>
+</header>
+
+<div class="chips">
+  <button onclick="quick('Write a story for me')">Write a story</button>
+  <button onclick="quick('Explain like I am 5')">Explain like I am 5</button>
+  <button onclick="quick('Give me a business idea')">Business idea</button>
+  <button onclick="quick('Help me with my homework')">Homework</button>
+  <button onclick="quick('Write code for a calculator app')">Write code</button>
+  <button onclick="quick('Generate image of a beautiful Nigerian city at night')">Generate image</button>
+</div>
+
+<div id="chat">
+  <div class="msg ai">Hello. I be PizChat AI, a product of NjemWise International Limited. How can I help today? Ask question, ask for code, generate image, or upload your photo to edit only what you ask.</div>
 </div>
 
 <div class="input-bar">
-<div class="input-wrap"><input id="input" placeholder="Ask anything..." onkeydown="if(event.key==='Enter')send()"></div>
-<button class="send" onclick="send()">Send</button>
+  <button id="fileBtn" onclick="document.getElementById('file').click()">+</button>
+  <input type="file" id="file" hidden accept="image/*" onchange="uploadPhoto(event)">
+  <button id="micBtn" onclick="startVoice()">🎤</button>
+  <input id="input" placeholder="Ask anything, code or image..." onkeydown="if(event.key==='Enter') send()">
+  <button id="send" onclick="send()">➤</button>
 </div>
-</div>
+<footer>© 2026 NjemWise International Limited • PizChat AI</footer>
 
 <script>
-// KEEP YOUR WORKING BACKEND - NO CHANGE
-const API_URL = "/api/chat";
-let history = [{role:"assistant", text:"Hello boss! I be PizChat AI. Ask me anything, I go answer you sharp sharp."}];
-try{ let saved = JSON.parse(localStorage.getItem('piz_history')||'[]'); if(saved.length) history = saved; }catch(e){}
+// ======== PUT YOUR GROQ API KEY HERE - NAME IT PizChat ========
+const API_KEY = "PASTE_YOUR_PIZCHAT_KEY_HERE";
 
-function render(){
-  let b = document.getElementById('messages');
-  b.innerHTML = '';
-  history.forEach(m=>{
-    b.innerHTML += `<div class="msg ${m.role==='user'?'me':'ai'}">${esc(m.text)}</div>`;
-  });
-  window.scrollTo(0, document.body.scrollHeight);
+const chatBox = document.getElementById('chat');
+const input = document.getElementById('input');
+
+let history = [{role:"system", content:"You are PizChat AI, a product of NjemWise International Limited. You are smart, fast, helpful, friendly. Answer any question. If user asks for code, give clean working code with explanation. If user uses Pidgin, reply in simple English + small Pidgin. Never say you are Meta AI or ChatGPT. Always say you are PizChat AI, built by NjemWise."}];
+
+function newChat(){
+  chatBox.innerHTML='';
+  history=[history[0]];
+  addMsg("Hello. I be PizChat AI, a product of NjemWise International Limited. How can I help today?",'ai');
 }
-function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function quick(t){ input.value=t; send(); }
+
+function addMsg(text, who){
+  const d=document.createElement('div');
+  d.className='msg '+who;
+  d.textContent=text;
+  chatBox.appendChild(d);
+  chatBox.scrollTop=chatBox.scrollHeight;
+  return d;
+}
+
+function isImageRequest(text){
+  let t = text.toLowerCase();
+  return t.includes('generate image') || t.includes('create image') || t.includes('draw') || t.includes('picture of') || t.includes('make an image') || t.includes('generate a picture');
+}
 
 async function send(){
-  let inp = document.getElementById('input');
-  let txt = inp.value.trim(); if(!txt) return;
-  inp.value=''; add('user', txt);
+  let text = input.value.trim();
+  if(!text) return;
+  addMsg(text,'user');
+  input.value='';
 
-  let b = document.getElementById('messages');
-  b.innerHTML += `<div class="msg thinking" id="typing">PizChat dey think... <span class="dot"></span><span class="dot"></span><span class="dot"></span></div>`;
-  window.scrollTo(0, document.body.scrollHeight);
-
-  try{
-    let ctrl = new AbortController(); setTimeout(()=>ctrl.abort(), 30000);
-    let r = await fetch(API_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({messages:[{role:'user', content: txt}]}), signal: ctrl.signal});
-    let d = await r.json();
-    document.getElementById('typing')?.remove();
-    add('assistant', d.reply || d.message || d.text || "No reply, try again");
-  }catch(e){
-    document.getElementById('typing')?.remove();
-    add('assistant', "Network wahala, try again — check internet and resend.");
+  // --- 1. IMAGE GENERATION - FREE & FAST ---
+  if(isImageRequest(text)){
+    let prompt = text.replace(/generate image|create image|draw|picture of|make an image|generate a picture/gi,'').trim() || text;
+    let loading = addMsg('Generating your picture... 🎨 Please wait...','ai');
+    let imgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt + ', high quality, beautiful, detailed') }?width=1024&height=1024&seed=${Date.now()}&nologo=true`;
+    loading.innerHTML = '';
+    let b = document.createElement('b'); b.textContent = `Here is your picture for: ${prompt}`;
+    loading.appendChild(b);
+    let img = document.createElement('img');
+    img.src = imgUrl;
+    img.alt = prompt;
+    loading.appendChild(img);
+    let small = document.createElement('div'); small.style.fontSize='12px'; small.style.color='#888'; small.style.marginTop='6px'; small.textContent='Made by PizChat AI • NjemWise';
+    loading.appendChild(small);
+    return;
   }
+
+  // --- 2. CHAT / CODE / ANY QUESTION ---
+  history.push({role:"user", content:text});
+  let loading = addMsg('Thinking...','ai');
+  try{
+    let res = await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+API_KEY},
+      body: JSON.stringify({model:'llama-3.3-70b-versatile', messages: history, temperature:0.7, max_tokens:3000})
+    });
+    let data = await res.json();
+    if(data.error){ loading.textContent = 'Abeg check your API Key. E never correct. Paste your Groq key for the code where e write PASTE_YOUR_PIZCHAT_KEY_HERE'; return; }
+    let reply = data.choices[0].message.content;
+    loading.textContent = reply;
+    history.push({role:"assistant", content: reply});
+  }catch(e){
+    loading.textContent = 'Network slow, abeg try again. Check your internet and API Key.';
+  }
+  chatBox.scrollTop = chatBox.scrollHeight;
 }
-function add(role,text){ history.push({role, text}); localStorage.setItem('piz_history', JSON.stringify(history)); render(); }
-render();
+
+function uploadPhoto(e){
+  let file = e.target.files[0]; if(!file) return;
+  let reader = new FileReader();
+  reader.onload = function(){
+    let div = addMsg('Photo uploaded ✅ Tell me what you want me to change in this photo only. Example: "Make background beautiful" or "Make me wear suit"','ai');
+    let img = document.createElement('img'); img.src = reader.result; div.appendChild(img);
+  };
+  reader.readAsDataURL(file);
+}
+
+function startVoice(){
+  if(!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)){ alert('Voice no dey work for this browser. Use Chrome.'); return; }
+  let Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let rec = new Rec(); rec.lang='en-NG'; rec.start();
+  rec.onresult = function(e){ input.value = e.results[0][0].transcript; send(); };
+}
 </script>
 </body>
 </html>
