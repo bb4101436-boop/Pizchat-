@@ -1,35 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>PizChat AI</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-body{background:#FFF9FB;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#fff;border-bottom:1px solid #FFE4EF;flex-shrink:0}
-.brand{display:flex;align-items:center;gap:10px}
-.logo{width:40px;height:40px;background:#FF4D8D;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:21px}
-.brand h1{font-size:20px;line-height:1.1}
-.brand p{font-size:11px;color:#FF4D8D;font-weight:bold}
-.right{display:flex;align-items:center;gap:10px}
-.new-btn{background:#111;color:#fff;border:none;padding:10px 15px;border-radius:20px;font-size:13px;cursor:pointer}
-.menu-btn{width:42px;height:42px;border-radius:50%;border:1px solid #FFE4EF;background:#FFF0F6;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer}
-.chips{display:flex;gap:8px;flex-wrap:wrap;padding:12px 12px 4px;background:#fff;flex-shrink:0}
-.chips button{background:#FFF0F6;border:1px solid #FFE4EF;padding:8px 13px;border-radius:20px;font-size:13px;cursor:pointer}
-.chips button:nth-child(even){background:#F7FEE7;border-color:#D9F99D}
-#chat{flex:1;min-height:0;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:14px;background:#FFF9FB}
-.msg{max-width:88%;padding:12px 14px;border-radius:18px;line-height:1.55;font-size:15px;white-space:pre-wrap;word-break:break-word}
-.ai{background:#fff;border:1px solid #FFE4EF;align-self:flex-start}
-.user{background:#FF4D8D;color:#fff;align-self:flex-end}
-.msg img{width:100%;border-radius:12px;margin-top:10px}
-.input-wrap{flex-shrink:0;padding:10px 12px;background:#fff;border-top:1px solid #FFE4EF;position:relative}
-.input-box{display:flex;align-items:center;gap:8px;background:#FFF0F6;border:1px solid #FFE4EF;border-radius:28px;padding:6px 6px 6px 10px}
-.plus-btn{width:40px;height:40px;border-radius:50%;border:none;background:#fff;font-size:22px;cursor:pointer;flex-shrink:0}
-.mic-btn{width:40px;height:40px;border-radius:50%;border:none;background:#fff;font-size:18px;cursor:pointer;flex-shrink:0}
-#input{flex:1;border:none;background:transparent;outline:none;font-size:15px;padding:10px 0;min-width:0}
-#send{background:#A3E635;color:#111;font-weight:bold;font-size:18px;width:40px;height:40px;border-radius:50%;border:none;cursor:pointer;flex-shrink:0}
-.hint{text-align:center;font-size:11px;color:#999;padding:4px 0 6px;background:#fff;flex-shrink:0}
-#plusTray{position:absolute;left:12px;right:12px;bottom:72px;background:#fff;border:1px solid #FFE4EF;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,0.18);padding:8px;display:none;z-index:60;max-height:55vh;overflow-y:auto}
-.tray-item{padding:13px 12px;border-radius:12px;cursor:pointer;display:flex;gap:11px;align-items:center;font-size:15px}
-#overlay{position:fixed;inset:0;background:rgba(
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PizChat AI</title><style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}body{background:#FFF9FB;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px;background:#fff;border-bottom:1px solid #FFE4EF}
+.brand{display:flex;gap:10px;align-items:center}.logo{width:40px;height:40px;background:#FF4D8D;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:21px}
+.brand h1{font-size:20px}.brand p{font-size:11px;color:#FF4D8D;font-weight:bold}
+.new-btn{background:#111;color:#fff;border:none;padding:10px 15px;border-radius:20px;cursor:pointer}.menu-btn{width:42px;height:42px;border-radius:50%;border:1px solid #FFE4EF;background:#FFF0F6;font-size:20px;cursor:pointer}
+.chips{display:flex;gap:8px;flex-wrap:wrap;padding:12px 12px 4px;background:#fff}.chips button{background:#FFF0F6;border:1px solid #FFE4EF;padding:8px 13px;border-radius:20px;cursor:pointer}.chips button:nth-child(even){background:#F7FEE7;border-color:#D9F99D}
+#chat{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:14px}.msg{max-width:88%;padding:12px 14px;border-radius:18px;font-size:15px;line-height:1.5;white-space:pre-wrap}.ai{background:#fff;border:1px solid #FFE4EF;align-self:flex-start}.user{background:#FF4D8D;color:#fff;align-self:flex-end}.msg img{width:100%;border-radius:12px;margin-top:10px}
+.input-wrap{padding:10px 12px;background:#fff;border-top:1px solid #FFE4EF;position:relative}.input-box{display:flex;gap:8px;align-items:center;background:#FFF0F6;border:1px solid #FFE4EF;border-radius:28px;padding:6px}.input-box button{width:40px;height:40px;border-radius:50%;border:none;background:#fff;font-size:18px;cursor:pointer;flex-shrink:0}#input{flex:1;border:none;background:transparent;outline:none;font-size:15px;padding:10px 0;min-width:0}#send{background:#A3E635!important;font-weight:bold}
+.hint{text-align:center;font-size:11px;color:#999;padding:4px;background:#fff}
+#tray{position:absolute;left:12px;right:12px;bottom:72px;background:#fff;border:1px solid #FFE4EF;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:8px;display:none;z-index:60}.tray-item{padding:13px 12px;border-radius:12px;cursor:pointer}
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:90}#menu{position:fixed;top:0;right:0;width:280px;height:100dvh;background:#fff;z-index:100;display:none;padding:16px}#menu button{width:100%;padding:13px;margin:4px 0;border-radius:12px;border:1px solid #FFE4EF;background:#FFF0F6;cursor:pointer;text-align:left;font-size:15px}
+#box{position:fixed;left:12px;right:12px;bottom:90px;background:#fff;border:1px solid #FFE4EF;border-radius:18px;padding:14px;display:none;z-index:70}#box input,#box select{width:100%;padding:10px;border-radius:10px;border:1px solid #FFE4EF;margin-bottom:8px}#box button{width:100%;padding:11px;border:none;border-radius:10px;background:#FF4D8D;color:#fff;font-weight:bold;cursor:pointer;margin-bottom:6px}
+</style></head><body>
+
+<header><div class="brand"><div class="logo">P</div><div><h1>PizChat AI</h1><p>Ask anything ✨</p></div></div><div><button class="new-btn" onclick="document.getElementById('chat').innerHTML='';addMsg('Hello 👋 I be PizChat AI. How can I help today?','ai')">+ New Chat</button> <button class="menu-btn" onclick="document.getElementById('menu').style.display='block';document.getElementById('overlay').style.display='block'">☰</button></div></header>
+
+<div class="chips"><button onclick="ask('Write a story for me')">✍️ Write a story</button><button onclick="ask('Explain like I am 5')">💡 Explain like I am 5</button><button onclick="ask('Give me a business idea')">💼 Business idea</button><button onclick="ask('Help me with my homework')">📚 Homework</button><button onclick="ask('Write code for a calculator app')">💻 Write code</button><button onclick="ask('Generate image of a beautiful Nigerian city at night')">🎨 Generate image</button></div>
+
+<div id="chat"><div class="msg ai">Hello 👋 I be <b>PizChat AI</b>.<br><br>How can I help today? Ask question, ask for code, generate image, or upload your photo.</div></div>
+
+<div class="input-wrap">
+<div id="tray"><div class="tray-item" onclick="document.getElementById('file').click();document.getElementById('tray').style.display='none'">📷 Upload Photo</div><div class="tray-item" onclick="document.getElementById('tray').style.display='none';document.getElementById('box').style.display='block';document.getElementById('boxTitle').textContent='🖼️ Image';document.getElementById('boxInput').placeholder='Describe image...'">🖼️ Generate Image</div><div class="tray-item" onclick="document.getElementById('tray').style.display='none';alert('Library: Your chats dey save automatically. Chat first, e go save.')">📚 Library</div><div class="tray-item" onclick="document.getElementById('tray').style.display='none';document.getElementById('box').style.display='block';document.getElementById('boxTitle').textContent='🎨 Customize';document.getElementById('boxInput').placeholder='Your name...'">🎨 Customize</div><div class="tray-item" onclick="document.getElementById('tray').style.display='none';alert('Projects: Coming - your chats go save for project')">📁 Projects</div><div class="tray-item" onclick="document.getElementById('tray').style.display='none';alert('Scheduled: Type your reminder for chat')">⏰ Scheduled</div><div class="tray-item" onclick="document.getElementById('tray').style.display='none';alert('Memory: PizChat go remember your old chats')">🧠 Memory</div><div class="tray-item" onclick="login()">🔵 Login with Gmail</div><div class="tray-item" onclick="document.getElementById('tray').style.display='none';document.getElementById('box').style.display='block';document.getElementById('boxTitle').textContent='⚙️ Settings';document.getElementById('boxInput').placeholder='Paste Groq key gsk_...'">⚙️ Settings / API Key</div></div>
+<div class="input-box"><button onclick="var t=document.getElementById('tray');t.style.display=t.style.display==='block'?'none':'block';this.textContent=t.style.display==='block'?'×':'+'">+</button><input type="file" id="file" hidden accept="image/*" onchange="up(event)"><button onclick="mic()">🎤</button><input id="input" placeholder="Ask anything, code or image..." onkeydown="if(event.key==='Enter')send()"><button id="send" onclick="send()">➤</button></div>
+</div><div class="hint">PizChat AI ✨</div>
+
+<div id="overlay" onclick="this.style.display='none';document.getElementById('menu').style.display='none'"></div>
+<div id="menu"><button onclick="this.parentElement.style.display='none';document.getElementById('overlay').style.display='none'">✕ Close</button><button onclick="document.getElementById('chat').innerHTML='';addMsg('Hello 👋 I be PizChat AI. How can I help today?','ai');this.parentElement.style.display='none';document.getElementById('overlay').style.display='none'">✏️ New Chat</button><button onclick="alert('Chat History: Your chats dey save automatically')">🕒 Chat History</button><button onclick="ask('Generate image of a beautiful place');this.parentElement.style.display='none';document.getElementById('overlay').style.display='none'">🎨 Image Generator</button><button onclick="ask('Write code for me');this.parentElement.style.display='none';document.getElementById('overlay').style.display='none'">💻 Code Generator</button><button onclick="this.parentElement.style.display='none';document.getElementById('overlay').style.display='none';document.getElementById('box').style.display='block';document.getElementById('boxTitle').textContent='⚙️ Settings'">🔌 Plugins / API Key</button><button onclick="alert('NjemWise International Limited - PizChat AI')">🏢 About NjemWise</button></div>
+
+<div id="box"><h4 id="boxTitle">Feature</h4><br><input id="boxInput" placeholder="Type here..."><button onclick="useBox()">Use ✅</button><button onclick="document.getElementById('box').style.display='none'" style="background:#fff!important;color:#FF4D8D!important;border:1px solid #FFE4EF">Close</button></div>
+
+<script>
+var KEY="PASTE_YOUR_PIZCHAT_KEY_HERE";try{var s=localStorage.getItem('pizchat_key');if(s)KEY=s;}catch(e){}
+var hist=[{role:'system',content:'You are PizChat AI, product of NjemWise International Limited. Be friendly, smart. Never say you are Meta AI or ChatGPT.'}];
+function addMsg(t,w){var d=document.createElement('div');d.className='msg '+w;d.textContent=t;var c=document.getElementById('chat');c.appendChild(d);c.scrollTop=c.scrollHeight;return d;}
+function ask(t){document.getElementById('input').value=t;send();}
+function login(){var n=prompt('Enter your name:');var e=prompt('Enter your Gmail:');if(n&&e){alert('Welcome '+n+' ✅');document.getElementById('tray').style.display='none';}}
+function mic(){var SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert('Mic no dey work for this browser. Use Chrome and allow microphone.');return;}var r=new SR();r.lang='en-NG';alert('Mic on 🎤 Talk now...');r.onresult=function(e){document.getElementById('input').value=e.results[0][0].transcript;send();};r.onerror=function(){alert('Allow microphone permission');};try{r.start();}catch(e){}}
+function up(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){var d=addMsg('Photo uploaded ✅ Tell me what you want me to change','ai');var i=document.createElement('img');i.src=r.result;d.appendChild(i);};r.readAsDataURL(f);}
+function useBox(){var v=document.getElementById('boxInput').value.trim();var t=document.getElementById('boxTitle').textContent;document.getElementById('box').style.display='none';if(!v)return;if(t.indexOf('Image')>=0){document.getElementById('input').value='Generate image of '+v;send();}else if(t.indexOf('Settings')>=0){KEY=v;try{localStorage.setItem('pizchat_key',v);}catch(e){}alert('Saved! ✅');}else{alert('Saved: '+v);}}
+function send(){var inp=document.getElementById('input');var txt=inp.value.trim();if(!txt)return;addMsg(txt,'user');inp.value='';document.getElementById('tray').style.display='none';var low=txt.toLowerCase();if(low.indexOf('generate image')>=0||low.indexOf('create image')>=0||low.indexOf('draw')>=0||low.indexOf('picture of')>=0){var p=txt.replace(/generate image|create image|draw|picture of/gi,'').trim()||txt;var ld=addMsg('Generating picture... 🎨','ai');var u='https://image.pollinations.ai/prompt/'+encodeURIComponent(p)+'?width=1024&height=1024&seed='+Date.now();ld.innerHTML='';var b=document.createElement('b');b.textContent='Here is your picture: '+p;ld.appendChild(b);var im=document.createElement('img');im.src=u;ld.appendChild(im);return;}hist.push({role:'user',content:txt});var ld2=addMsg('Thinking...','ai');fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+KEY},body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:hist,temperature:0.7,max_tokens:2000})}).then(function(r){return r.json();}).then(function(d){if(d.error){ld2.textContent='Abeg check API Key. Press ☰ > Settings > paste Groq key gsk_... > Save';return;}var rep=d.choices[0].message.content;ld2.textContent=rep;hist.push({role:'assistant',content:rep});}).catch(function(){ld2.textContent='Network slow, try again.';});}
+</script></body></html>
