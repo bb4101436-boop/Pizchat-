@@ -4,50 +4,72 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>PizChat AI</title>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
-  :root{--pink:#FF4D8D;--pink-light:#FFE4EF;--pink-soft:#FFF0F6;--green:#A3E635;--green-light:#D9F99D;--green-soft:#F7FEE7;--dark:#1A1A1A}
   body{background:#FFF9FB;color:#1A1A1A;height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
-  /* HEADER - NO NJEMWISE HERE AGAIN */
   header{display:flex;align-items:center;justify-content:space-between;padding:12px 12px;border-bottom:1px solid #FFE4EF;background:#fff;z-index:10}
   .left{display:flex;align-items:center;gap:10px}
-  .icon-btn{width:40px;height:40px;border-radius:50%;border:1px solid #FFE4EF;background:#FFF0F6;display:flex;align-items:center;justify-content:center;font-size:19px;cursor:pointer}
+  .icon-btn{width:40px;height:40px;border-radius:50%;border:1px solid #FFE4EF;background:#FFF0F6;display:flex;align-items:center;justify-content:center;font-size:19px;cursor:pointer;overflow:hidden}
+  .icon-btn img{width:100%;height:100%;object-fit:cover}
   .logo{width:38px;height:38px;background:linear-gradient(135deg,#FF4D8D,#FF8AB0);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;box-shadow:0 3px 10px rgba(255,77,141,0.35)}
   .head-text h1{font-size:19px;line-height:1.1;color:#111}
   .head-text p{font-size:11px;color:#FF4D8D;font-weight:600}
   .right{display:flex;align-items:center;gap:8px}
   .new-btn{background:#111;color:#fff;border:none;padding:9px 14px;border-radius:20px;font-size:13px;cursor:pointer}
-  /* SIDEBAR */
+  /* PENCIL DRAWER - LEFT SIDE */
+  #pencilDrawer{position:fixed;top:0;left:-300px;width:285px;height:100%;background:#fff;box-shadow:5px 0 20px rgba(0,0,0,0.12);z-index:120;transition:0.3s;display:flex;flex-direction:column;overflow-y:auto}
+  #pencilDrawer.open{left:0}
+  #overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:none;z-index:110}
+  #overlay.show{display:block}
+  .drawer-head{padding:16px;border-bottom:1px solid #FFE4EF;display:flex;align-items:center;justify-content:space-between;background:#FFF0F6}
+  .user-box{display:flex;align-items:center;gap:10px}
+  .avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#FF4D8D,#A3E635);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;overflow:hidden}
+  .avatar img{width:100%;height:100%;object-fit:cover}
+  .user-box b{font-size:14px;display:block;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .user-box small{font-size:11px;color:#888;display:block;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .close-x{width:32px;height:32px;border-radius:50%;border:1px solid #FFE4EF;background:#fff;cursor:pointer;font-size:16px}
+  .drawer-section{padding:10px 10px 4px;font-size:11px;color:#999;letter-spacing:1px;font-weight:700}
+  .menu-item{margin:2px 8px;padding:12px 12px;border-radius:12px;cursor:pointer;display:flex;gap:11px;align-items:center;font-size:15px}
+  .menu-item:hover{background:#FFF0F6}
+  .menu-item.active{background:#F7FEE7;border:1px solid #D9F99D}
+  .menu-item span{font-size:18px}
+  .menu-item small{margin-left:auto;font-size:11px;background:#FFE4EF;color:#FF4D8D;padding:3px 7px;border-radius:10px}
+  .menu-divider{height:1px;background:#FFE4EF;margin:10px 12px}
+  .google-btn{margin:10px 12px;padding:12px;border-radius:12px;border:1px solid #ddd;background:#fff;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font-size:14px;font-weight:600}
+  .logout-btn{margin:8px 12px;padding:11px;border-radius:12px;border:1px solid #FFE4EF;background:#FFF0F6;cursor:pointer;font-size:14px}
+  /* SIDEBAR RIGHT - 3 LINES - DON'T TOUCH */
   #sidebar{position:fixed;top:0;right:-290px;width:280px;height:100%;background:#fff;box-shadow:-5px 0 20px rgba(0,0,0,0.12);z-index:100;transition:0.3s;padding:16px;display:flex;flex-direction:column}
   #sidebar.open{right:0}
   #sidebar h3{font-size:16px;margin-bottom:4px}
   #sidebar p{font-size:12px;color:#FF4D8D;margin-bottom:16px}
-  .menu-item{padding:13px 12px;border-radius:12px;cursor:pointer;display:flex;gap:10px;align-items:center;font-size:15px}
-  .menu-item:hover{background:#FFF0F6}
-  .menu-item span{font-size:18px}
-  .menu-divider{height:1px;background:#FFE4EF;margin:12px 0}
-  .close-menu{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;border:1px solid #FFE4EF;background:#FFF0F6;cursor:pointer;font-size:16px}
-  #overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:none;z-index:90}
-  #overlay.show{display:block}
-  /* CHIPS */
+  .close-menu{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;border:1px solid #FFE4EF;background:#FFF0F6;cursor:pointer}
   .chips{display:flex;gap:8px;flex-wrap:wrap;padding:12px 12px 4px;background:#fff}
   .chips button{background:#FFF0F6;border:1px solid #FFE4EF;padding:8px 13px;border-radius:20px;font-size:13px;cursor:pointer}
   .chips button:nth-child(even){background:#F7FEE7;border-color:#D9F99D}
-  /* CHAT */
   #chat{flex:1;overflow-y:auto;padding:14px 14px 10px;display:flex;flex-direction:column;gap:14px;background:#FFF9FB}
   .msg{max-width:88%;padding:12px 14px;border-radius:18px;line-height:1.55;font-size:15px;white-space:pre-wrap;word-break:break-word}
   .ai{background:#fff;border:1px solid #FFE4EF;align-self:flex-start;box-shadow:0 1px 5px rgba(255,77,141,0.08)}
   .user{background:linear-gradient(135deg,#FF4D8D,#FF6B9D);color:#fff;align-self:flex-end}
   .msg img{width:100%;border-radius:12px;margin-top:10px;display:block}
-  /* INPUT - ALWAYS VISIBLE */
   .input-wrap{padding:10px 12px 8px;background:#fff;border-top:1px solid #FFE4EF}
   .input-box{display:flex;align-items:center;gap:8px;background:#FFF0F6;border:1px solid #FFE4EF;border-radius:28px;padding:6px 6px 6px 10px}
-  .input-box button{width:40px;height:40px;border-radius:50%;border:none;background:#fff;font-size:18px;cursor:pointer;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,0.08)}
+  .input-box button{width:40px;height:40px;border-radius:50%;border:none;background:#fff;font-size:18px;cursor:pointer;flex-shrink:0}
   #input{flex:1;border:none;background:transparent;outline:none;font-size:15px;padding:10px 0;min-width:0}
-  #send{background:var(--green)!important;color:#111!important;font-weight:bold;font-size:18px;box-shadow:0 2px 8px rgba(163,230,53,0.5)}
+  #send{background:#A3E635!important;color:#111!important;font-weight:bold;font-size:18px;box-shadow:0 2px 8px rgba(163,230,53,0.5)}
   .hint{text-align:center;font-size:11px;color:#999;padding:4px 0 8px;background:#fff}
-  /* SETTINGS MODAL - PENCIL ONLY */
-  #settingsModal{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:flex-end;justify-content:center;z-index:120}
+  /* PANELS INSIDE DRAWER - LIBRARY / PROJECTS / SCHEDULED / CUSTOMIZE */
+  .panel{margin:8px 12px;padding:12px;border-radius:14px;background:#FFF9FB;border:1px solid #FFE4EF;display:none}
+  .panel.show{display:block}
+  .panel h4{font-size:14px;margin-bottom:8px}
+  .panel input,.panel select,.panel textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #FFE4EF;outline:none;font-size:14px;margin-bottom:8px;background:#fff}
+  .panel button{width:100%;padding:10px;border:none;border-radius:10px;background:#FF4D8D;color:#fff;cursor:pointer;font-weight:600;margin-bottom:6px}
+  .panel button.green{background:#A3E635;color:#111}
+  .saved-item{padding:10px;background:#fff;border:1px solid #FFE4EF;border-radius:10px;margin-bottom:6px;cursor:pointer;font-size:13px}
+  .saved-item b{display:block;font-size:13px}
+  .saved-item small{color:#888}
+  /* SETTINGS MODAL */
+  #settingsModal{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:flex-end;justify-content:center;z-index:130}
   #settingsModal.show{display:flex}
   .modal{background:#fff;width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:20px;padding-bottom:30px;position:relative}
   .modal h2{font-size:18px;margin-bottom:12px}
@@ -62,13 +84,9 @@
 
 <header>
   <div class="left">
-    <!-- PENCIL = SETTINGS ONLY -->
-    <button class="icon-btn" onclick="openSettings()" title="Settings">✏️</button>
+    <button class="icon-btn" id="pencilBtn" onclick="openPencil()" title="PizChat Menu">✏️</button>
     <div class="logo">P</div>
-    <div class="head-text">
-      <h1>PizChat AI</h1>
-      <p>Ask anything ✨</p>
-    </div>
+    <div class="head-text"><h1>PizChat AI</h1><p>Ask anything ✨</p></div>
   </div>
   <div class="right">
     <button class="new-btn" onclick="newChat()">+ New Chat</button>
@@ -85,28 +103,109 @@
   <button onclick="quick('Generate image of a beautiful Nigerian city at night')">🎨 Generate image</button>
 </div>
 
-<div id="chat">
-  <div class="msg ai">Hello 👋 I be <b>PizChat AI</b>.
+<div id="chat"><div class="msg ai">Hello 👋 I be <b>PizChat AI</b>.\n\nHow can I help today? Ask question, ask for code, generate image, or upload your photo to edit only what you ask.</div></div>
 
-How can I help today? Ask question, ask for code, generate image, or upload your photo to edit only what you ask.</div>
-</div>
-
-<div class="input-wrap">
-  <div class="input-box">
-    <button onclick="document.getElementById('file').click()" title="Upload photo">+</button>
-    <input type="file" id="file" hidden accept="image/*" onchange="uploadPhoto(event)">
-    <button onclick="startVoice()" title="Voice">🎤</button>
-    <input id="input" placeholder="Ask anything, code or image..." onkeydown="if(event.key==='Enter') send()">
-    <button id="send" onclick="send()">➤</button>
-  </div>
-</div>
+<div class="input-wrap"><div class="input-box">
+  <button onclick="document.getElementById('file').click()">+</button>
+  <input type="file" id="file" hidden accept="image/*" onchange="uploadPhoto(event)">
+  <button onclick="startVoice()">🎤</button>
+  <input id="input" placeholder="Ask anything, code or image..." onkeydown="if(event.key==='Enter') send()">
+  <button id="send" onclick="send()">➤</button>
+</div></div>
 <div class="hint">PizChat AI ✨</div>
 
-<div id="overlay" onclick="toggleMenu()"></div>
+<!-- OVERLAY -->
+<div id="overlay" onclick="closeAllDrawers()"></div>
+
+<!-- ✏️ PENCIL DRAWER -->
+<div id="pencilDrawer">
+  <div class="drawer-head">
+    <div class="user-box">
+      <div class="avatar" id="userAvatar">P</div>
+      <div><b id="userName">Guest User</b><small id="userEmail">Login to save your chats</small></div>
+    </div>
+    <button class="close-x" onclick="closePencil()">✕</button>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="loginArea">
+    <button class="google-btn" onclick="loginWithGoogle()">🔵 Login with Gmail</button>
+    <div id="g_id_onload" data-client_id="PASTE_YOUR_GOOGLE_CLIENT_ID_HERE" data-callback="handleGoogleLogin" data-auto_prompt="false"></div>
+    <div style="font-size:11px;color:#999;text-align:center;padding:0 12px">Login with your Gmail to save chats & make PizChat remember you</div>
+  </div>
+  <button class="logout-btn" id="logoutBtn" style="display:none" onclick="logoutGoogle()">🚪 Log Out</button>
+
+  <div class="drawer-section">PIZCHAT FEATURES</div>
+  <div class="menu-item" onclick="openFeature('image')"><span>🖼️</span> Image <small>Generate</small></div>
+  <div class="menu-item" onclick="openFeature('library')"><span>📚</span> Library <small id="libCount">0 chats</small></div>
+  <div class="menu-item" onclick="openFeature('customize')"><span>🎨</span> Customize</div>
+  <div class="menu-item" onclick="openFeature('projects')"><span>📁</span> Projects</div>
+  <div class="menu-item" onclick="openFeature('scheduled')"><span>⏰</span> Scheduled</div>
+  <div class="menu-item" onclick="openFeature('memory')"><span>🧠</span> Memory</div>
+
+  <!-- PANELS -->
+  <div class="panel" id="panel-image">
+    <h4>🖼️ Image Generator</h4>
+    <input id="imgPrompt" placeholder="Describe image... e.g. Beautiful Lagos at night">
+    <button onclick="generateFromPanel()">Generate Image 🎨</button>
+    <button class="green" onclick="quick('Generate image of a beautiful Nigerian city');closePencil()">Quick: Nigerian City</button>
+  </div>
+
+  <div class="panel" id="panel-library">
+    <h4>📚 Library - Saved Chats</h4>
+    <div id="libraryList"></div>
+    <button class="green" onclick="newChat();closePencil()">+ New Chat</button>
+    <button onclick="clearAllChats()" style="background:#fff;color:#FF4D8D;border:1px solid #FFE4EF">Clear All History</button>
+  </div>
+
+  <div class="panel" id="panel-customize">
+    <h4>🎨 Customize PizChat</h4>
+    <label style="font-size:12px;color:#888">How should PizChat talk?</label>
+    <select id="aiStyle"><option value="friendly">Friendly & Smart</option><option value="pidgin">Pidgin + Simple English</option><option value="pro">Professional / Business</option><option value="teacher">Teacher - Explain Well</option><option value="coder">Coder - Code Expert</option></select>
+    <label style="font-size:12px;color:#888">Your Name (AI go call you)</label>
+    <input id="myNameInput" placeholder="e.g. Wisdom">
+    <label style="font-size:12px;color:#888">What should AI remember about you?</label>
+    <textarea id="aboutMe" placeholder="e.g. I am a student, I like business, I live in Abuja"></textarea>
+    <button onclick="saveCustomize()">Save Customize ✅</button>
+  </div>
+
+  <div class="panel" id="panel-projects">
+    <h4>📁 Projects</h4>
+    <input id="projectName" placeholder="Project name... e.g. My Business">
+    <button onclick="createProject()">Create Project 📁</button>
+    <div id="projectList"></div>
+  </div>
+
+  <div class="panel" id="panel-scheduled">
+    <h4>⏰ Scheduled</h4>
+    <input id="schedText" placeholder="What to remind? e.g. Remind me to study">
+    <input id="schedTime" type="datetime-local">
+    <button onclick="scheduleMsg()">Schedule Reminder ⏰</button>
+    <div id="schedList"></div>
+  </div>
+
+  <div class="panel" id="panel-memory">
+    <h4>🧠 Memory</h4>
+    <p style="font-size:13px;color:#666;line-height:1.5">PizChat go automatically remember your old chats. When you ask question wey you don ask before, e go reply with old answer + new update.</p>
+    <div id="memoryList" style="font-size:13px"></div>
+    <button onclick="clearMemory()" style="background:#fff;color:#FF4D8D;border:1px solid #FFE4EF">Clear Memory</button>
+  </div>
+
+  <div class="menu-divider"></div>
+  <div class="drawer-section">SETTINGS & MORE</div>
+  <div class="menu-item" onclick="closePencil();openSettings()"><span>🔌</span> Plugins / API Key</div>
+  <div class="menu-item" onclick="closePencil();openSettings()"><span>⚙️</span> Settings</div>
+  <div class="menu-item" onclick="toggleVoice()"><span>🎙️</span> Voice Mode <small id="voiceStatus">OFF</small></div>
+  <div class="menu-item" onclick="shareApp()"><span>🔗</span> Share PizChat</div>
+  <div class="menu-item" onclick="aboutApp()"><span>🏢</span> About NjemWise</div>
+  <div class="menu-item" onclick="appInfo()"><span>ℹ️</span> App Info</div>
+  <div style="margin-top:auto;padding:14px;text-align:center;font-size:11px;color:#999">© 2026 PizChat AI<br>Professional • Fast • Smart</div>
+</div>
+
+<!-- RIGHT MENU - SAME AS BEFORE -->
 <div id="sidebar">
   <button class="close-menu" onclick="toggleMenu()">✕</button>
-  <h3>☰ Menu</h3>
-  <p>PizChat AI</p>
+  <h3>☰ Menu</h3><p>PizChat AI</p>
   <div class="menu-item" onclick="newChat();toggleMenu()"><span>✏️</span> New Chat</div>
   <div class="menu-item" onclick="showHistory()"><span>🕒</span> Chat History</div>
   <div class="menu-item" onclick="quick('Generate image of a beautiful place');toggleMenu()"><span>🎨</span> Image Generator</div>
@@ -120,18 +219,15 @@ How can I help today? Ask question, ask for code, generate image, or upload your
   <div style="margin-top:auto;font-size:11px;color:#999;text-align:center">© 2026 PizChat AI</div>
 </div>
 
+<!-- SETTINGS MODAL -->
 <div id="settingsModal" onclick="if(event.target==this) closeSettings()">
   <div class="modal">
     <button class="x-top" onclick="closeSettings()">✕</button>
-    <h2>✏️ PizChat Settings</h2>
+    <h2>⚙️ Settings</h2>
     <label>Your Groq API Key (for PizChat)</label>
     <input id="apiKeyInput" placeholder="gsk_..." type="password">
-    <label>Language / Style</label>
-    <select id="styleSelect">
-      <option value="normal">Normal - Smart & Friendly</option>
-      <option value="pidgin">Pidgin + Simple English</option>
-      <option value="pro">Professional - For Business</option>
-    </select>
+    <label>AI Style</label>
+    <select id="styleSelect"><option value="friendly">Friendly & Smart</option><option value="pidgin">Pidgin + Simple English</option><option value="pro">Professional</option></select>
     <button onclick="saveSettings()">Save Settings ✅</button>
     <button class="close-modal" onclick="closeSettings()">Close</button>
     <p style="font-size:11px;color:#888;margin-top:10px;text-align:center">Get free key from console.groq.com<br>Name it: PizChat</p>
@@ -139,46 +235,59 @@ How can I help today? Ask question, ask for code, generate image, or upload your
 </div>
 
 <script>
+// ===== CONFIG =====
 let API_KEY = localStorage.getItem('pizchat_key') || "PASTE_YOUR_PIZCHAT_KEY_HERE";
-document.getElementById('apiKeyInput').value = API_KEY.startsWith('gsk_') ? API_KEY : '';
+let currentUser = JSON.parse(localStorage.getItem('pizchat_user') || 'null');
+let allChats = JSON.parse(localStorage.getItem('pizchat_all_chats') || '[]');
+let currentChatId = localStorage.getItem('pizchat_current_id') || ('chat_'+Date.now());
+let projects = JSON.parse(localStorage.getItem('pizchat_projects') || '[]');
+let schedules = JSON.parse(localStorage.getItem('pizchat_schedules') || '[]');
+let myMemory = JSON.parse(localStorage.getItem('pizchat_memory') || '[]');
+let customize = JSON.parse(localStorage.getItem('pizchat_customize') || '{"style":"friendly","name":"","about":""}');
+
 const chatBox = document.getElementById('chat');
 const input = document.getElementById('input');
-let history = [{role:"system", content:"You are PizChat AI, a product of NjemWise International Limited. You are smart, fast, helpful, friendly. Answer any question. If user asks for code, give clean working code. If user uses Pidgin, reply in simple English + small Pidgin. Never say you are Meta AI or ChatGPT. If user asks who built you, say NjemWise International Limited built you, like Meta builds Facebook."}];
-function toggleMenu(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); }
-function openSettings(){ document.getElementById('settingsModal').classList.add('show'); document.getElementById('apiKeyInput').value = API_KEY.startsWith('gsk_') ? API_KEY : ''; }
-function closeSettings(){ document.getElementById('settingsModal').classList.remove('show'); }
-function saveSettings(){ let k=document.getElementById('apiKeyInput').value.trim(); if(k){ API_KEY=k; localStorage.setItem('pizchat_key',k); alert('Saved! PizChat is ready ✅'); } else{ alert('Paste your Groq key first'); return; } closeSettings(); }
-function newChat(){ chatBox.innerHTML=''; history=[history[0]]; addMsg("Hello 👋 I be PizChat AI. How can I help today?",'ai'); }
-function quick(t){ input.value=t; send(); }
-function addMsg(text, who){ const d=document.createElement('div'); d.className='msg '+who; d.textContent=text; chatBox.appendChild(d); chatBox.scrollTop=chatBox.scrollHeight; return d; }
-function isImageRequest(text){ let t=text.toLowerCase(); return t.includes('generate image')||t.includes('create image')||t.includes('draw')||t.includes('picture of')||t.includes('make an image')||t.includes('generate a picture'); }
-async function send(){
-  let text=input.value.trim(); if(!text) return;
-  addMsg(text,'user'); input.value='';
-  if(isImageRequest(text)){
-    let prompt=text.replace(/generate image|create image|draw|picture of|make an image|generate a picture/gi,'').trim()||text;
-    let loading=addMsg('Generating your picture... 🎨 Please wait...','ai');
-    let imgUrl=`https://image.pollinations.ai/prompt/${encodeURIComponent(prompt+', high quality, beautiful, detailed')}?width=1024&height=1024&seed=${Date.now()}&nologo=true`;
-    loading.innerHTML=''; let b=document.createElement('b'); b.textContent=`Here is your picture for: ${prompt}`; loading.appendChild(b);
-    let img=document.createElement('img'); img.src=imgUrl; img.alt=prompt; loading.appendChild(img);
-    let small=document.createElement('div'); small.style.fontSize='12px'; small.style.color='#888'; small.style.marginTop='6px'; small.textContent='Made by PizChat AI'; loading.appendChild(small); return;
-  }
-  history.push({role:"user", content:text});
-  let loading=addMsg('Thinking...','ai');
-  try{
-    let res=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+API_KEY},body:JSON.stringify({model:'llama-3.3-70b-versatile', messages:history, temperature:0.7, max_tokens:3000})});
-    let data=await res.json();
-    if(data.error){ loading.textContent='Abeg check your API Key. Press ✏️ top left > paste your Groq key > Save. It should start with gsk_'; return; }
-    let reply=data.choices[0].message.content; loading.textContent=reply; history.push({role:"assistant", content:reply});
-  }catch(e){ loading.textContent='Network slow, abeg try again. Check internet and API Key.'; }
-  chatBox.scrollTop=chatBox.scrollHeight;
+
+function getSystemPrompt(){
+  let styleText = customize.style==='pidgin' ? 'Speak in simple English + small Pidgin, friendly.' : customize.style==='pro' ? 'Speak professional, for business.' : customize.style==='teacher' ? 'You are a teacher, explain step by step very clearly.' : customize.style==='coder' ? 'You are a senior coder, give clean working code.' : 'Be friendly, smart, helpful.';
+  return `You are PizChat AI, a product of NjemWise International Limited. ${styleText} User name is ${customize.name||currentUser?.name||'User'}. About user: ${customize.about||''}. Remember old conversations: ${JSON.stringify(myMemory.slice(-10))}. If user asks about old topic, use memory to reply. Never say you are Meta AI or ChatGPT. If user asks who built you, say NjemWise International Limited built you, like Meta builds Facebook.`;
 }
-function uploadPhoto(e){ let file=e.target.files[0]; if(!file) return; let reader=new FileReader(); reader.onload=function(){ let div=addMsg('Photo uploaded ✅ Tell me what you want me to change in this photo only. Example: "Make background beautiful" or "Make me wear suit"','ai'); let img=document.createElement('img'); img.src=reader.result; div.appendChild(img); }; reader.readAsDataURL(file); }
-function startVoice(){ if(!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)){ alert('Voice no dey work for this browser. Use Chrome.'); return; } let Rec=window.SpeechRecognition||window.webkitSpeechRecognition; let rec=new Rec(); rec.lang='en-NG'; rec.start(); rec.onresult=function(e){ input.value=e.results[0][0].transcript; send(); }; }
-function showHistory(){ alert('History: This chat is saved for this session. New Chat will clear am. Full history go come in v2.'); }
-function shareApp(){ let link=location.href; if(navigator.share){ navigator.share({title:'PizChat AI', text:'Try PizChat AI', url:link}); } else{ prompt('Copy this link and share:', link); } }
-function aboutApp(){ alert('NjemWise International Limited\n\nNjemWise na the company (like Meta)\nPizChat AI na the product (like Facebook)\n\nBuilt in Nigeria for the World 🌍'); }
-function appInfo(){ alert('PizChat AI v1.0\n\nBuilt by NjemWise International Limited\nA product of NjemWise\n\nLike Meta builds Facebook, NjemWise builds PizChat.'); }
-</script>
-</body>
-</html>
+let history = [{role:"system", content: getSystemPrompt()}];
+
+// ===== PENCIL DRAWER =====
+function openPencil(){ document.getElementById('pencilDrawer').classList.add('open'); document.getElementById('overlay').classList.add('show'); renderLibrary(); renderProjects(); renderSchedules(); updateUserUI(); }
+function closePencil(){ document.getElementById('pencilDrawer').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
+function closeAllDrawers(){ closePencil(); document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
+function toggleMenu(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); }
+function openFeature(name){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('show'));
+  document.querySelectorAll('#pencilDrawer .menu-item').forEach(m=>m.classList.remove('active'));
+  let p=document.getElementById('panel-'+name); if(p) p.classList.add('show');
+  if(name==='image'){ document.getElementById('imgPrompt').focus(); }
+  if(name==='library'){ renderLibrary(); }
+}
+
+// ===== LOGIN WITH GMAIL =====
+function loginWithGoogle(){
+  // If you have Google Client ID, this will open real Google popup
+  if(window.google && document.getElementById('g_id_onload').getAttribute('data-client_id').includes('PASTE')){
+    // Fallback: Ask name + Gmail manually - works immediately without setup
+    let name = prompt('Enter your name:');
+    let email = prompt('Enter your Gmail (e.g. wisdom@gmail.com):');
+    if(name && email){ doLogin(name,email,''); }
+    else alert('Login cancelled');
+    return;
+  }
+  window.google.accounts.id.prompt();
+}
+function handleGoogleLogin(response){
+  try{
+    let payload = JSON.parse(atob(response.credential.split('.')[1]));
+    doLogin(payload.name, payload.email, payload.picture);
+  }catch(e){ alert('Login failed, try again'); }
+}
+function doLogin(name,email,pic){
+  currentUser={name,email,picture:pic||''};
+  localStorage.setItem('pizchat_user', JSON.stringify(currentUser));
+  updateUserUI();
+  alert('Welcome '+name+' ✅ 
