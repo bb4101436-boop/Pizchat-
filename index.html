@@ -8,26 +8,22 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
 html,body{height:100%}
 body{background:#FFF9FB;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
-/* HEADER - SAME AS YOUR SCREENSHOT */
 header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#fff;border-bottom:1px solid #FFE4EF;flex-shrink:0}
 .brand{display:flex;align-items:center;gap:10px}
-.logo{width:40px;height:40px;background:#FF4D8D;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:21px;flex-shrink:0}
+.logo{width:40px;height:40px;background:#FF4D8D;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:21px}
 .brand h1{font-size:20px;line-height:1.1}
 .brand p{font-size:11px;color:#FF4D8D;font-weight:bold}
 .right{display:flex;align-items:center;gap:10px}
 .new-btn{background:#111;color:#fff;border:none;padding:10px 15px;border-radius:20px;font-size:13px;cursor:pointer;white-space:nowrap}
-.menu-btn{width:42px;height:42px;border-radius:50%;border:1px solid #FFE4EF;background:#FFF0F6;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;flex-shrink:0}
-/* CHIPS */
+.menu-btn{width:42px;height:42px;border-radius:50%;border:1px solid #FFE4EF;background:#FFF0F6;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer}
 .chips{display:flex;gap:8px;flex-wrap:wrap;padding:12px 12px 4px;background:#fff;flex-shrink:0}
 .chips button{background:#FFF0F6;border:1px solid #FFE4EF;padding:8px 13px;border-radius:20px;font-size:13px;cursor:pointer}
 .chips button:nth-child(even){background:#F7FEE7;border-color:#D9F99D}
-/* CHAT */
 #chat{flex:1;min-height:0;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:14px;background:#FFF9FB}
 .msg{max-width:88%;padding:12px 14px;border-radius:18px;line-height:1.55;font-size:15px;white-space:pre-wrap;word-break:break-word}
 .ai{background:#fff;border:1px solid #FFE4EF;align-self:flex-start}
 .user{background:#FF4D8D;color:#fff;align-self:flex-end}
 .msg img{width:100%;border-radius:12px;margin-top:10px}
-/* BOTTOM - FIXED, MUST ALWAYS SHOW */
 .input-wrap{flex-shrink:0;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid #FFE4EF;position:relative}
 .input-box{display:flex;align-items:center;gap:8px;background:#FFF0F6;border:1px solid #FFE4EF;border-radius:28px;padding:6px 6px 6px 10px}
 .plus-btn{width:40px;height:40px;border-radius:50%;border:none;background:#fff;font-size:22px;cursor:pointer;flex-shrink:0}
@@ -36,20 +32,15 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
 #input{flex:1;border:none;background:transparent;outline:none;font-size:15px;padding:10px 0;min-width:0}
 #send{background:#A3E635;color:#111;font-weight:bold;font-size:18px;width:40px;height:40px;border-radius:50%;border:none;cursor:pointer;flex-shrink:0}
 .hint{text-align:center;font-size:11px;color:#999;padding:4px 0 calc(6px + env(safe-area-inset-bottom));background:#fff;flex-shrink:0}
-/* PLUS TRAY - FLOATING, NO PUSH */
 #plusTray{position:absolute;left:12px;right:12px;bottom:72px;background:#fff;border:1px solid #FFE4EF;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,0.18);padding:8px;display:none;z-index:60;max-height:55vh;overflow-y:auto}
 #plusTray.show{display:block}
 .tray-item{padding:13px 12px;border-radius:12px;cursor:pointer;display:flex;gap:11px;align-items:center;font-size:15px}
-.tray-item:active{background:#FFF0F6}
-/* RIGHT MENU - SIMPLE DISPLAY, NO TRANSFORM */
 #overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;z-index:90}
 #overlay.show{display:block}
 #drawerRight{position:fixed;top:0;right:0;width:280px;max-width:88vw;height:100%;height:100dvh;background:#fff;z-index:100;display:none;padding:16px;flex-direction:column;overflow-y:auto}
 #drawerRight.open{display:flex}
 .close-x{width:34px;height:34px;border-radius:50%;border:1px solid #FFE4EF;background:#FFF0F6;cursor:pointer;font-size:18px;position:absolute;top:12px;right:12px}
 .item{margin:4px 10px;padding:13px 12px;border-radius:12px;cursor:pointer;display:flex;gap:10px;align-items:center;font-size:15px}
-.item:active{background:#FFF0F6}
-/* POPUP PANELS - FLOATING, NO PUSH */
 .popup{position:fixed;left:12px;right:12px;bottom:90px;background:#fff;border:1px solid #FFE4EF;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,0.18);padding:14px;display:none;z-index:70;max-height:55vh;overflow-y:auto}
 .popup.show{display:block}
 .popup input,.popup select,.popup textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #FFE4EF;margin-bottom:8px;outline:none}
@@ -98,7 +89,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
 <div class="input-box">
 <button class="plus-btn" id="plusBtn" onclick="toggleTray()">+</button>
 <input type="file" id="file" hidden accept="image/*" onchange="uploadPhoto(event)">
-<button class="mic-btn" onclick="startVoice()">🎤</button>
+<button class="mic-btn" id="micBtn" onclick="startVoice()">🎤</button>
 <input id="input" placeholder="Ask anything, code or image..." onkeydown="if(event.key==='Enter') sendMsg()">
 <button id="send" onclick="sendMsg()">➤</button>
 </div>
@@ -141,9 +132,11 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
 </div>
 
 <script>
+/* ===== SAFE STORAGE - NO CRASH ===== */
 function safeGet(k,def){ try{var v=localStorage.getItem(k); if(!v) return def; return JSON.parse(v);}catch(e){return def;} }
 function safeSet(k,v){ try{localStorage.setItem(k,JSON.stringify(v));}catch(e){} }
 function safeGetStr(k,def){ try{var v=localStorage.getItem(k); return v?v:def;}catch(e){return def;} }
+
 var API_KEY=safeGetStr('pizchat_key','PASTE_YOUR_PIZCHAT_KEY_HERE');
 var currentUser=safeGet('pizchat_user',null);
 var allChats=safeGet('pizchat_all_chats',[]);
@@ -154,21 +147,69 @@ var customize=safeGet('pizchat_customize',{style:'friendly',name:'',about:''});
 var currentChatId=safeGetStr('pizchat_current_id','chat_'+Date.now());
 var chatBox=document.getElementById('chat');
 var inputBox=document.getElementById('input');
+
 function getSystemPrompt(){
   var st=customize.style==='pidgin'?'Speak simple English + small Pidgin.':customize.style==='pro'?'Speak professional.':customize.style==='teacher'?'You are a teacher, explain step by step.':customize.style==='coder'?'You are senior coder, give clean code.':'Be friendly, smart, helpful.';
   var uname=customize.name||(currentUser&&currentUser.name)||'User';
   return 'You are PizChat AI, a product of NjemWise International Limited. '+st+' User name: '+uname+'. About user: '+(customize.about||'')+'. Memory: '+JSON.stringify(myMemory.slice(-10))+'. If user asks about old topic, use memory. Never say you are Meta AI or ChatGPT. If asked who built you, say NjemWise International Limited.';
 }
 var history=[{role:'system',content:getSystemPrompt()}];
-function toggleTray(){ var t=document.getElementById('plusTray'); var b=document.getElementById('plusBtn'); if(t.classList.contains('show')){t.classList.remove('show'); b.classList.remove('open'); b.textContent='+';} else {closePopups(); t.classList.add('show'); b.classList.add('open'); b.textContent='×';} }
-function closeTray(){ var t=document.getElementById('plusTray'); t.classList.remove('show'); var b=document.getElementById('plusBtn'); b.classList.remove('open'); b.textContent='+'; }
-function openPopup(id){ closePopups(); closeTray(); document.getElementById(id).classList.add('show'); if(id==='popLibrary') renderLibrary(); if(id==='popProjects') renderProjects(); if(id==='popScheduled') renderSchedules(); }
-function closePopups(){ var a=document.querySelectorAll('.popup'); for(var i=0;i<a.length;i++) a[i].classList.remove('show'); }
-function openRight(){ document.getElementById('drawerRight').classList.add('open'); document.getElementById('overlay').classList.add('show'); }
-function closeAll(){ document.getElementById('drawerRight').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); closeTray(); closePopups(); }
-function openSettings(){ document.getElementById('settingsModal').classList.add('show'); var el=document.getElementById('apiKeyInput'); el.value=API_KEY.indexOf('gsk_')===0?API_KEY:''; }
-function closeSettings(){ document.getElementById('settingsModal').classList.remove('show'); }
+
+/* ===== 1. PLUS BUTTON - MUST WORK ===== */
+function toggleTray(){
+  try{
+    var t=document.getElementById('plusTray');
+    var b=document.getElementById('plusBtn');
+    if(t.classList.contains('show')){ t.classList.remove('show'); b.classList.remove('open'); b.textContent='+'; }
+    else{ closePopups(); t.classList.add('show'); b.classList.add('open'); b.textContent='×'; }
+  }catch(e){ alert('Plus tray: '+e.message); }
+}
+function closeTray(){ try{ var t=document.getElementById('plusTray'); t.classList.remove('show'); var b=document.getElementById('plusBtn'); b.classList.remove('open'); b.textContent='+'; }catch(e){} }
+
+/* ===== 2. MIC BUTTON - MUST WORK ===== */
+function startVoice(){
+  try{
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(!SR){ alert('Mic no dey work for this browser. Please use Chrome browser.'); return; }
+    var rec = new SR();
+    rec.lang='en-NG';
+    rec.interimResults=false;
+    document.getElementById('micBtn').textContent='🔴';
+    rec.onresult=function(e){
+      var txt=e.results[0][0].transcript;
+      inputBox.value=txt;
+      document.getElementById('micBtn').textContent='🎤';
+      sendMsg();
+    };
+    rec.onerror=function(){ document.getElementById('micBtn').textContent='🎤'; alert('Mic error, try again. Allow microphone permission.'); };
+    rec.onend=function(){ document.getElementById('micBtn').textContent='🎤'; };
+    rec.start();
+  }catch(e){ alert('Mic: '+e.message); }
+}
+
+/* ===== 3. HAMBURGER - MUST WORK ===== */
+function openRight(){
+  try{
+    document.getElementById('drawerRight').classList.add('open');
+    document.getElementById('overlay').classList.add('show');
+  }catch(e){ alert('Menu: '+e.message); }
+}
+function closeAll(){
+  try{
+    document.getElementById('drawerRight').classList.remove('open');
+    document.getElementById('overlay').classList.remove('show');
+    closeTray(); closePopups();
+  }catch(e){}
+}
+
+/* ===== POPUPS / SETTINGS ===== */
+function openPopup(id){ try{ closePopups(); closeTray(); document.getElementById(id).classList.add('show'); if(id==='popLibrary') renderLibrary(); if(id==='popProjects') renderProjects(); if(id==='popScheduled') renderSchedules(); }catch(e){} }
+function closePopups(){ try{ var a=document.querySelectorAll('.popup'); for(var i=0;i<a.length;i++) a[i].classList.remove('show'); }catch(e){} }
+function openSettings(){ try{ document.getElementById('settingsModal').classList.add('show'); var el=document.getElementById('apiKeyInput'); el.value=API_KEY.indexOf('gsk_')===0?API_KEY:''; }catch(e){} }
+function closeSettings(){ try{ document.getElementById('settingsModal').classList.remove('show'); }catch(e){} }
 function saveSettings(){ var k=document.getElementById('apiKeyInput').value.trim(); if(!k){alert('Paste your Groq key first');return;} API_KEY=k; try{localStorage.setItem('pizchat_key',k);}catch(e){} alert('Saved! ✅'); closeSettings(); }
+
+/* ===== LOGIN / MEMORY / LIBRARY ===== */
 function loginGoogle(){ if(currentUser){alert('You don login already as '+currentUser.name); closeTray(); return;} var n=prompt('Enter your name:'); var e=prompt('Enter your Gmail:'); if(n&&e){currentUser={name:n,email:e}; safeSet('pizchat_user',currentUser); updateLoginText(); alert('Welcome '+n+' ✅'); closeTray();} }
 function logoutGoogle(){ currentUser=null; try{localStorage.removeItem('pizchat_user');}catch(e){} updateLoginText(); alert('Logged out'); closeTray(); }
 function updateLoginText(){ var el=document.getElementById('loginText'); if(el) el.textContent=currentUser?'Logged in as '+currentUser.name:'Login with Gmail'; }
@@ -179,9 +220,4 @@ function saveCustomize(){ customize.style=document.getElementById('aiStyle').val
 function createProject(){ var n=document.getElementById('projectName').value.trim(); if(!n) return alert('Type project name'); projects.push({name:n,chatId:currentChatId,date:new Date().toLocaleString()}); safeSet('pizchat_projects',projects); document.getElementById('projectName').value=''; renderProjects(); alert('Project created ✅'); }
 function renderProjects(){ var el=document.getElementById('projectList'); if(!el) return; el.innerHTML=''; for(var i=0;i<projects.length;i++){ (function(p){ var d=document.createElement('div'); d.style.cssText='padding:10px;background:#fff;border:1px solid #FFE4EF;border-radius:10px;margin-bottom:6px;cursor:pointer'; d.innerHTML='<b>📁 '+p.name+'</b><br><small>'+p.date+'</small>'; d.onclick=function(){loadChat(p.chatId); closePopups();}; el.appendChild(d);})(projects[i]); } }
 function scheduleMsg(){ var t=document.getElementById('schedText').value.trim(); var tm=document.getElementById('schedTime').value; if(!t||!tm) return alert('Type message and time'); schedules.push({text:t,time:tm,done:false}); safeSet('pizchat_schedules',schedules); renderSchedules(); alert('Scheduled ✅'); }
-function renderSchedules(){ var el=document.getElementById('schedList'); if(!el) return; el.innerHTML=''; for(var i=0;i<schedules.length;i++){ var d=document.createElement('div'); d.style.cssText='padding:10px;background:#fff;border:1px solid #FFE4EF;border-radius:10px;margin-bottom:6px'; d.innerHTML='<b>⏰ '+schedules[i].text+'</b><br><small>'+schedules[i].time+'</small>'; el.appendChild(d);} }
-function clearMemory(){ myMemory=[]; safeSet('pizchat_memory',myMemory); alert('Memory cleared'); }
-function newChat(){ saveCurrentChat(); currentChatId='chat_'+Date.now(); try{localStorage.setItem('pizchat_current_id',currentChatId);}catch(e){} chatBox.innerHTML=''; history=[{role:'system',content:getSystemPrompt()}]; addMsg('Hello 👋 I be PizChat AI. How can I help today?','ai'); closeTray(); closePopups(); }
-function quick(t){ inputBox.value=t; sendMsg(); }
-function addMsg(text,who){ var d=document.createElement('div'); d.className='msg '+who; d.textContent=text; chatBox.appendChild(d); chatBox.scrollTop=chatBox.scrollHeight; return d; }
-function isImageReq(t){ t=t.toLowerCase(); return t.indexOf('generate image')>=0||t.indexO
+function renderSchedules(){ var el=document.getElementById('schedList'); if(!el) return; el.innerHTML=''; for(var i=0;i<schedules.length;i++){ var
